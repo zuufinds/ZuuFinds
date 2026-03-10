@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Zuu Finds — Cute Fashion, Décor & Home Finds</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--cream:#faf6f0;--warm-white:#fff9f4;--blush:#f2ddd5;--dusty-rose:#d4948a;--rose:#b85f58;--mauve:#9b7b8a;--nude:#e8d4c8;--ink:#2a1f1f;--ink-light:#5c4a4a;--sand:#e8ddd4;--gold:#c8a87a;--border:#edddd6;}
+    *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
+    body{background:var(--cream);color:var(--ink);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;}
+    a{color:inherit;text-decoration:none;}
+    .top-bar{background:var(--ink);color:var(--sand);text-align:center;padding:8px 16px;font-size:12px;letter-spacing:0.06em;}
+    .top-bar a{color:var(--dusty-rose);border-bottom:1px solid var(--dusty-rose);}
+    header{background:var(--warm-white);border-bottom:2px solid var(--nude);padding:0 40px;position:sticky;top:0;z-index:200;}
+    .header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:62px;gap:24px;}
+    .logo{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;white-space:nowrap;color:var(--ink);}
+    .logo em{font-style:italic;color:var(--rose);}
+    .header-search{flex:1;max-width:340px;display:flex;align-items:center;background:var(--blush);border-radius:20px;padding:7px 16px;gap:8px;}
+    .header-search input{border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);width:100%;outline:none;}
+    .header-search input::placeholder{color:var(--ink-light);opacity:0.6;}
+    .header-nav{display:flex;gap:24px;list-style:none;}
+    .header-nav a{font-size:13px;color:var(--ink-light);letter-spacing:0.03em;transition:color 0.2s;white-space:nowrap;}
+    .header-nav a:hover{color:var(--rose);}
+    .header-nav a.active{color:var(--rose);font-weight:500;border-bottom:2px solid var(--rose);padding-bottom:2px;}
+    .hero-banner{background:linear-gradient(120deg,#f7ece6 0%,#f0e4ec 50%,#e8f0e8 100%);border-bottom:1px solid var(--border);padding:40px 40px 36px;}
+    .hero-banner-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:32px;}
+    .hero-text .eyebrow{font-size:10.5px;letter-spacing:0.18em;text-transform:uppercase;color:var(--rose);font-weight:600;margin-bottom:8px;}
+    .hero-text h1{font-family:'Playfair Display',serif;font-size:clamp(26px,3vw,40px);line-height:1.18;color:var(--ink);margin-bottom:10px;}
+    .hero-text h1 em{font-style:italic;color:var(--rose);}
+    .hero-text p{font-family:'Lora',serif;font-size:14.5px;color:var(--ink-light);line-height:1.75;max-width:480px;}
+    .hero-cats{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap;}
+    .hero-cat-btn{background:white;border:1.5px solid var(--nude);padding:7px 16px;border-radius:20px;font-size:12.5px;color:var(--ink-light);cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+    .hero-cat-btn:hover,.hero-cat-btn.active{background:var(--rose);border-color:var(--rose);color:white;}
+    .hero-badge{background:var(--rose);color:white;border-radius:50%;width:110px;height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;flex-shrink:0;font-family:'Playfair Display',serif;box-shadow:0 8px 24px rgba(184,95,88,0.3);animation:float 3s ease-in-out infinite;}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+    .hero-badge .big{font-size:28px;font-weight:700;line-height:1;}
+    .hero-badge .small{font-size:10px;opacity:0.9;margin-top:4px;line-height:1.3;}
+    .marquee-wrap{background:var(--ink);padding:11px 0;overflow:hidden;border-bottom:1px solid var(--border);}
+    .marquee-track{display:flex;gap:48px;animation:marquee 22s linear infinite;white-space:nowrap;}
+    @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    .m-item{color:var(--nude);font-family:'Playfair Display',serif;font-style:italic;font-size:13.5px;display:flex;align-items:center;gap:16px;}
+    .m-dot{width:4px;height:4px;background:var(--dusty-rose);border-radius:50%;display:inline-block;}
+    .page-wrap{max-width:1200px;margin:0 auto;padding:32px 40px 60px;display:grid;grid-template-columns:1fr 280px;gap:36px;align-items:start;}
+    .content-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+    .content-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--ink);}
+    .content-title em{font-style:italic;color:var(--rose);}
+    .content-meta{font-size:12.5px;color:var(--ink-light);}
+    .tab-bar{display:flex;gap:0;border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:24px;width:fit-content;}
+    .tab-btn{padding:8px 18px;font-size:12.5px;font-family:'DM Sans',sans-serif;background:var(--warm-white);border:none;color:var(--ink-light);cursor:pointer;border-right:1px solid var(--border);transition:all 0.2s;letter-spacing:0.02em;}
+    .tab-btn:last-child{border-right:none;}
+    .tab-btn.active{background:var(--rose);color:white;}
+    .tab-btn:hover:not(.active){background:var(--blush);}
+    .cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+    .pcard{background:var(--warm-white);border:1px solid var(--border);border-radius:6px;overflow:hidden;transition:box-shadow 0.25s,transform 0.25s;display:flex;flex-direction:column;}
+    .pcard:hover{box-shadow:0 8px 28px rgba(42,31,31,0.1);transform:translateY(-2px);}
+    .pcard-img{position:relative;padding-top:75%;overflow:hidden;}
+    .pcard-img-fill{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:transform 0.4s ease;}
+    .pcard:hover .pcard-img-fill{transform:scale(1.05);}
+    .pcard-emoji{font-size:52px;opacity:0.32;pointer-events:none;}
+    .pb-1{background:linear-gradient(150deg,#f5ddd8,#e0a89e);}
+    .pb-2{background:linear-gradient(150deg,#ead8ec,#c4a0cc);}
+    .pb-3{background:linear-gradient(150deg,#dce8f4,#a0c0dc);}
+    .pb-4{background:linear-gradient(150deg,#f4eddc,#d8c494);}
+    .pb-5{background:linear-gradient(150deg,#ddf0e4,#98c8aa);}
+    .pb-6{background:linear-gradient(150deg,#fce4d8,#e4a890);}
+    .pb-7{background:linear-gradient(150deg,#e8e4f4,#b8b0d8);}
+    .pb-8{background:linear-gradient(150deg,#f8ecd4,#e0c090);}
+    .pb-9{background:linear-gradient(150deg,#f0d8dc,#d4909a);}
+    .pb-10{background:linear-gradient(150deg,#dce8e0,#90b8a0);}
+    .pb-11{background:linear-gradient(150deg,#ece4d8,#c4a87c);}
+    .pb-12{background:linear-gradient(150deg,#f4dce4,#d498ac);}
+    .pcard-badge{position:absolute;top:8px;left:8px;font-size:9.5px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:3px 9px;border-radius:2px;z-index:2;}
+    .badge-hot{background:var(--rose);color:white;}
+    .badge-new{background:var(--mauve);color:white;}
+    .badge-sale{background:var(--gold);color:var(--ink);}
+    .badge-love{background:#f4a0b0;color:white;}
+    .pcard-body{padding:13px 14px 14px;flex:1;display:flex;flex-direction:column;}
+    .pcard-cat{font-size:10px;letter-spacing:0.13em;text-transform:uppercase;color:var(--dusty-rose);margin-bottom:4px;}
+    .pcard-name{font-family:'Lora',serif;font-size:14px;color:var(--ink);line-height:1.4;margin-bottom:6px;}
+    .pcard-stars{color:var(--gold);font-size:11px;letter-spacing:1px;margin-bottom:8px;}
+    .pcard-price{font-size:14px;font-weight:600;color:var(--rose);margin-bottom:12px;}
+    .pcard-price .was{font-size:11.5px;color:var(--ink-light);font-weight:400;text-decoration:line-through;margin-right:5px;}
+    .pcard-btn{margin-top:auto;display:block;text-align:center;background:var(--ink);color:var(--cream);padding:10px 0;border-radius:3px;font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;font-family:'DM Sans',sans-serif;transition:background 0.2s;}
+    .pcard-btn:hover{background:var(--rose);}
+    .featured-card{grid-column:1/-1;display:grid;grid-template-columns:200px 1fr;background:var(--warm-white);border:1px solid var(--border);border-radius:6px;overflow:hidden;transition:box-shadow 0.25s,transform 0.25s;}
+    .featured-card:hover{box-shadow:0 8px 28px rgba(42,31,31,0.1);transform:translateY(-2px);}
+    .featured-img{position:relative;overflow:hidden;}
+    .featured-img-fill{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:transform 0.4s ease;}
+    .featured-card:hover .featured-img-fill{transform:scale(1.05);}
+    .featured-info{padding:20px 22px;display:flex;flex-direction:column;justify-content:center;}
+    .featured-label{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--rose);font-weight:600;margin-bottom:6px;}
+    .featured-title{font-family:'Playfair Display',serif;font-size:19px;color:var(--ink);line-height:1.35;margin-bottom:8px;}
+    .featured-desc{font-family:'Lora',serif;font-size:13px;color:var(--ink-light);line-height:1.7;margin-bottom:14px;}
+    .featured-meta{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+    .featured-price{font-size:15px;font-weight:600;color:var(--rose);}
+    .featured-price .was{font-size:12px;color:var(--ink-light);font-weight:400;text-decoration:line-through;margin-right:5px;}
+    .featured-stars{color:var(--gold);font-size:12px;}
+    .featured-btn{display:inline-block;width:fit-content;background:var(--rose);color:white;padding:10px 24px;border-radius:3px;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;transition:background 0.2s;}
+    .featured-btn:hover{background:#9e4e48;}
+    .load-more-wrap{text-align:center;margin-top:28px;}
+    .load-more-btn{display:inline-block;border:1.5px solid var(--rose);color:var(--rose);background:transparent;padding:11px 36px;border-radius:3px;font-size:12.5px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
+    .load-more-btn:hover{background:var(--rose);color:white;}
+    .sidebar{display:flex;flex-direction:column;gap:24px;}
+    .sidebar-widget{background:var(--warm-white);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+    .widget-head{background:var(--ink);padding:12px 16px;font-family:'Playfair Display',serif;font-size:14px;color:var(--cream);letter-spacing:0.02em;}
+    .widget-head em{font-style:italic;color:var(--dusty-rose);}
+    .widget-body{padding:16px;}
+    .cat-list{list-style:none;}
+    .cat-list li{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;cursor:pointer;transition:color 0.2s;}
+    .cat-list li:last-child{border-bottom:none;}
+    .cat-list li:hover{color:var(--rose);}
+    .cat-list li span.count{background:var(--blush);color:var(--rose);font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;}
+    .cat-list li .cat-icon{margin-right:8px;}
+    .mini-card{display:grid;grid-template-columns:64px 1fr;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:opacity 0.2s;}
+    .mini-card:last-child{border-bottom:none;padding-bottom:0;}
+    .mini-card:hover{opacity:0.75;}
+    .mini-img{width:64px;height:64px;border-radius:4px;overflow:hidden;position:relative;flex-shrink:0;}
+    .mini-fill{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+    .mini-emoji{font-size:28px;opacity:0.4;}
+    .mini-cat{font-size:9.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--dusty-rose);}
+    .mini-name{font-family:'Lora',serif;font-size:12.5px;color:var(--ink);line-height:1.35;margin:2px 0;}
+    .mini-price{font-size:12.5px;font-weight:600;color:var(--rose);}
+    .nl-widget p{font-family:'Lora',serif;font-size:13px;color:var(--ink-light);line-height:1.7;margin-bottom:12px;}
+    .nl-input{width:100%;padding:9px 12px;border:1.5px solid var(--nude);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--ink);outline:none;margin-bottom:8px;background:var(--cream);}
+    .nl-input:focus{border-color:var(--dusty-rose);}
+    .nl-submit{width:100%;padding:10px;background:var(--rose);color:white;border:none;font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:background 0.2s;}
+    .nl-submit:hover{background:#9e4e48;}
+    .tag-cloud{display:flex;flex-wrap:wrap;gap:6px;}
+    .tag{background:var(--blush);color:var(--ink-light);padding:5px 12px;border-radius:20px;font-size:11.5px;cursor:pointer;transition:all 0.2s;}
+    .tag:hover{background:var(--rose);color:white;}
+    .aff-note{background:var(--blush);border:1px solid var(--dusty-rose);border-radius:4px;padding:12px 14px;font-size:12px;color:var(--ink-light);line-height:1.6;}
+    .aff-note strong{color:var(--rose);}
+    footer{background:var(--ink);color:var(--sand);padding:48px 40px 24px;border-top:2px solid var(--rose);}
+    .footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:36px;margin-bottom:36px;}
+    .f-logo{font-family:'Playfair Display',serif;font-size:20px;color:var(--cream);font-weight:700;}
+    .f-logo em{font-style:italic;color:var(--dusty-rose);}
+    .f-tagline{font-family:'Lora',serif;font-style:italic;font-size:13px;color:var(--sand);opacity:0.65;margin:10px 0 16px;line-height:1.6;}
+    .f-socials{display:flex;gap:8px;}
+    .f-soc{width:32px;height:32px;border:1px solid rgba(232,220,200,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--sand);cursor:pointer;transition:all 0.2s;}
+    .f-soc:hover{border-color:var(--dusty-rose);color:var(--dusty-rose);}
+    .f-col h4{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--dusty-rose);margin-bottom:14px;}
+    .f-col ul{list-style:none;}
+    .f-col ul li{margin-bottom:8px;}
+    .f-col ul li a{color:var(--sand);opacity:0.68;font-size:13px;transition:opacity 0.2s,color 0.2s;}
+    .f-col ul li a:hover{opacity:1;color:var(--dusty-rose);}
+    .footer-bottom{max-width:1200px;margin:0 auto;border-top:1px solid rgba(232,220,200,0.1);padding-top:20px;display:flex;align-items:center;justify-content:space-between;font-size:11.5px;color:var(--sand);opacity:0.5;}
+    .toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:var(--cream);padding:11px 18px;font-size:13px;border-left:3px solid var(--rose);opacity:0;transform:translateY(14px);transition:all 0.3s;z-index:999;pointer-events:none;max-width:260px;line-height:1.4;border-radius:2px;}
+    .toast.show{opacity:1;transform:translateY(0);}
+    .reveal{opacity:0;transform:translateY(18px);transition:opacity 0.5s,transform 0.5s;}
+    .reveal.visible{opacity:1;transform:none;}
+    @media(max-width:900px){.page-wrap{grid-template-columns:1fr;}.sidebar{display:none;}.cards-grid{grid-template-columns:repeat(2,1fr);}.featured-card{grid-template-columns:140px 1fr;}.header-nav{display:none;}}
+    @media(max-width:540px){.cards-grid{grid-template-columns:1fr;}.featured-card{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+
+<div class="top-bar">✨ All product links are affiliate links — <a href="#">learn more</a> &nbsp;·&nbsp; New finds added every week</div>
+
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo">Zuu <em>Finds</em></a>
+    <div class="header-search">
+      <span style="font-size:13px;opacity:0.45">🔍</span>
+      <input type="text" placeholder="Search cute finds…"/>
+    </div>
+    <ul class="header-nav">
+      <li><a href="#" class="active">All Finds</a></li>
+      <li><a href="#">Fashion</a></li>
+      <li><a href="#">Home Décor</a></li>
+      <li><a href="#">Accessories</a></li>
+      <li><a href="#">Gift Sets</a></li>
+      <li><a href="#">Inspo</a></li>
+    </ul>
+  </div>
+</header>
+
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="m-item">Cute Fashion <span class="m-dot"></span></span>
+    <span class="m-item">Dreamy Décor <span class="m-dot"></span></span>
+    <span class="m-item">Cozy Vibes <span class="m-dot"></span></span>
+    <span class="m-item">Aesthetic Finds <span class="m-dot"></span></span>
+    <span class="m-item">Handpicked for You <span class="m-dot"></span></span>
+    <span class="m-item">New Every Week <span class="m-dot"></span></span>
+    <span class="m-item">Soft Girl Era <span class="m-dot"></span></span>
+    <span class="m-item">Cute Fashion <span class="m-dot"></span></span>
+    <span class="m-item">Dreamy Décor <span class="m-dot"></span></span>
+    <span class="m-item">Cozy Vibes <span class="m-dot"></span></span>
+    <span class="m-item">Aesthetic Finds <span class="m-dot"></span></span>
+    <span class="m-item">Handpicked for You <span class="m-dot"></span></span>
+    <span class="m-item">New Every Week <span class="m-dot"></span></span>
+    <span class="m-item">Soft Girl Era <span class="m-dot"></span></span>
+  </div>
+</div>
+
+<div class="hero-banner">
+  <div class="hero-banner-inner">
+    <div class="hero-text">
+      <div class="eyebrow">✦ Affiliate Picks — Updated Weekly</div>
+      <h1>Cute Things,<br><em>Curated Just</em> For You.</h1>
+      <p>Fashion, home décor, and lifestyle finds hand-picked for girls who love things that are pretty, cozy, and a little bit whimsical. Every link is affiliate — shop confidently, discover joyfully.</p>
+      <div class="hero-cats">
+        <div class="hero-cat-btn active" onclick="filterAll(this)">All Finds</div>
+        <div class="hero-cat-btn" onclick="filterCat(this,'fashion')">👗 Fashion</div>
+        <div class="hero-cat-btn" onclick="filterCat(this,'decor')">🕯️ Home Décor</div>
+        <div class="hero-cat-btn" onclick="filterCat(this,'accessories')">💍 Accessories</div>
+        <div class="hero-cat-btn" onclick="filterCat(this,'bags')">👜 Bags</div>
+        <div class="hero-cat-btn" onclick="filterCat(this,'cozy')">🧸 Cozy</div>
+        <div class="hero-cat-btn" onclick="filterCat(this,'beauty')">🌸 Beauty</div>
+        <div class="hero-cat-btn" onclick="filterCat(this,'gifts')">🎁 Gifts</div>
+      </div>
+    </div>
+    <div class="hero-badge">
+      <div class="big">200+</div>
+      <div class="small">Curated<br>Finds</div>
+    </div>
+  </div>
+</div>
+
+<div class="page-wrap">
+  <main>
+    <div class="content-header reveal">
+      <div class="content-title">This Week's <em>Picks</em></div>
+      <div class="content-meta" id="resultCount">Showing 12 finds</div>
+    </div>
+    <div class="tab-bar reveal">
+      <button class="tab-btn active" onclick="setTab(this)">New Arrivals</button>
+      <button class="tab-btn" onclick="setTab(this)">Most Loved</button>
+      <button class="tab-btn" onclick="setTab(this)">On Sale</button>
+      <button class="tab-btn" onclick="setTab(this)">Zuu's Picks</button>
+    </div>
+    <div class="cards-grid reveal" id="cardsGrid">
+
+      <div class="featured-card" data-cat="gifts">
+        <div class="featured-img">
+          <div class="featured-img-fill pb-11"><span style="font-size:72px;opacity:0.3">🎁</span></div>
+          <span class="pcard-badge badge-hot" style="position:absolute;top:8px;left:8px">⭐ Top Pick</span>
+        </div>
+        <div class="featured-info">
+          <div class="featured-label">✦ Featured Find</div>
+          <div class="featured-title">Self-Care Hamper Box</div>
+          <div class="featured-desc">The ultimate gift for yourself (or someone you love). Packed with skincare, cozy essentials, and cute little extras. Looks way more expensive than it is.</div>
+          <div class="featured-meta">
+            <span class="featured-price">$68.00</span>
+            <span class="featured-stars">★★★★★</span>
+            <span style="font-size:11.5px;color:var(--ink-light)">Gift Sets</span>
+          </div>
+          <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="featured-btn" onclick="affClick(event,'Self-Care Hamper Box')">Shop Now →</a>
+        </div>
+      </div>
+
+      <div class="pcard reveal" data-cat="fashion">
+        <div class="pcard-img"><div class="pcard-img-fill pb-1"><span class="pcard-emoji">🌸</span></div><span class="pcard-badge badge-hot">Hot Pick</span></div>
+        <div class="pcard-body"><div class="pcard-cat">Fashion</div><div class="pcard-name">Floral Wrap Mini Dress</div><div class="pcard-stars">★★★★★</div><div class="pcard-price"><span class="was">$52.00</span>$38.00</div><a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn" onclick="affClick(event,'Floral Wrap Mini Dress')">Shop Now →</a></div>
+      </div>
+
+      <div class="pcard reveal" data-cat="decor">
+        <div class="pcard-img"><div class="pcard-img-fill pb-2"><span class="pcard-emoji">🕯️</span></div><span class="pcard-badge badge-new">New In</span></div>
+        <div class="pcard-body"><div class="pcard-cat">Home Décor</div><div class="pcard-name">Lavender Soy Candle Set</div><div class="pcard-stars">★★★★★</div><div class="pcard-price">$24.00</div><a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn" onclick="affClick(event,'Lavender Soy Candle Set')">Shop Now →</a></div>
+      </div>
+
+      <div class="pcard reveal" data-cat="bags">
+        <div class="pcard-img"><div class="pcard-img-fill pb-3"><span class="pcard-emoji">👜</span></div><span class="pcard-badge badge-love">Zuu Loves</span></div>
+        <div class="pcard-body"><div class="pcard-cat">Bags</div><div class="pcard-name">Cloud Quilted Shoulder Bag</div><div class="pcard-stars">★★★★★</div><div class="pcard-price">$45.00</div><a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn" onclick="affClick(event,'Cloud Quilted Shoulder Bag')">Shop Now →</a></div>
+      </div>
+
+      <div class="pcard reveal" data-cat="decor">
+        <div class="pcard-img"><div class="pcard-img-fill pb-4"><span class="pcard-emoji">🖼️</span></div></div>
+        <div class="pcard-body"><div class="pcard-cat">Wall Art</div><div class="pcard-name">Botanical Print Set of 3</div><div class="pcard-stars">★★★★☆</div><div class="pcard-price">$32.00</div><a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn" onclick="affClick(event,'Botanical Print Set')">Shop Now →</a></div>
+      </div>
+
+      <div class="pcard reveal" data-cat="cozy">
+        <div class="pcard-img"><div class="pcard-img-fill pb-5"><span class="pcard-emoji">🧸</span></div><span class="pcard-badge badge-new">New In</span></div>
+        <div class="pcard-body"><div class="pcard-cat">Cozy Corner</div><div class="pcard-name">Teddy Fleece Throw Blanket</div><div class="pcard-stars">★★★★★</div><div class="pcard-price"><span class="was">$42.00</span>$29.00</div><a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn" onclick="affClick(event,'Teddy Fleece Blanket')">Shop Now →</a></div>
+      </div>
+
+      <div class="pcard reveal" data-cat="accessories">
+        <div class="pcard-img"><div class="pcard-img-fill pb-6"><span class="pcard-emoji">🌙</span></div><span class="pcard-badge badge-hot">Trending</span></div>
+        <div class="pcard-body"><div class="pcard-cat">Accessories</div><div class="pcard-name">Pearl Moon Hair Clips Set</div><div class="pcard-stars">★★★★★</div><div class="pcard-price">$14.00</div><a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn" onclick="affClick(event,'Pearl Moon Hair Clips')">Shop Now →</a></div>
+      </div>
+
+      <div class="pcard reveal" data-cat="fashion">
+        <div class="pcard-img"><div class="pcard-img-fill pb-7"><span class="pcard-emoji">🧥</span></div><span class="pcard-badge badge-sale">Sale</span></div>
+        <div class="pcard-body"><div class="pcard-cat">Fashion</div><div class="pcard-name">Oversized Knit Cardigan</div><div class="pcard-stars">★★★★★</div><div class="pcard-price"><span class="was">$68.00</span>$44.00</div><a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn" onclick="affClick(event,'Oversized Knit Cardigan')">Shop Now →</a></div>
+      </div>
+
+      <div class="pcard reveal" data-cat="decor">
+        <div class="pcard-img"><div class="pcard-img-fill pb-8"><span class="pcard-emoji">🪴</span></div><span class="pcard-badge badge-love">Zuu Loves</span></div>
+        <div class="pcard-body"><div class="pcard-cat">Home Décor</div><div class="pcard-name">Ceramic Planter Duo</div><div class="pcard-stars">★★★★☆</div><div class="pcard-price">$26.00</div><a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn" onclick="affClick(event,'Ceramic Planter Duo')">Shop Now →</a></div>
+      </div>
+
+      <div class="pcard reveal" data-cat="beauty">
+        <div class="pcard-img"><div class="pcard-img-fill pb-9"><span class="pcard-emoji">🌷</span></div><span class="pcard-badge badge-new">New In</span></div>
+        <div class="pcard-body"><div class="pcard-cat">Beauty</div><div class="pcard-name">Rose Glow Skincare Set</div><div class="pcard-stars">★★★★★</div><div class="pcard-price">$52.00</div><a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn" onclick="affClick(event,'Rose Glow Skincare Set')">Shop Now →</a></div>
+      </div>
+
+      <div class="pcard reveal" data-cat="accessories">
+        <div class="pcard-img"><div class="pcard-img-fill pb-10"><span class="pcard-emoji">💍</span></div></div>
+        <div class="pcard-body"><div class="pcard-cat">Accessories</div><div class="pcard-name">Dainty Gold Stacking Rings</div><div class="pcard-stars">★★★★★</div><div class="pcard-price">$18.00</div><a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn" onclick="affClick(event,'Gold Stacking Rings')">Shop Now →</a></div>
+      </div>
+
+      <div class="pcard reveal" data-cat="fashion">
+        <div class="pcard-img"><div class="pcard-img-fill pb-12"><span class="pcard-emoji">👟</span></div><span class="pcard-badge badge-sale">Sale</span></div>
+        <div class="pcard-body"><div class="pcard-cat">Fashion</div><div class="pcard-name">Pastel Platform Sneakers</div><div class="pcard-stars">★★★★☆</div><div class="pcard-price"><span class="was">$78.00</span>$56.00</div><a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn" onclick="affClick(event,'Pastel Platform Sneakers')">Shop Now →</a></div>
+      </div>
+
+    </div>
+    <div class="load-more-wrap reveal">
+      <button class="load-more-btn" onclick="showToast('🌸 Loading more finds…')">Load More Finds</button>
+    </div>
+  </main>
+
+  <aside class="sidebar">
+    <div class="sidebar-widget reveal">
+      <div class="widget-head">Browse <em>by Category</em></div>
+      <div class="widget-body">
+        <ul class="cat-list">
+          <li onclick="filterSide('all')"><span><span class="cat-icon">🛍️</span>All Finds</span><span class="count">12</span></li>
+          <li onclick="filterSide('fashion')"><span><span class="cat-icon">👗</span>Fashion</span><span class="count">3</span></li>
+          <li onclick="filterSide('decor')"><span><span class="cat-icon">🕯️</span>Home Décor</span><span class="count">3</span></li>
+          <li onclick="filterSide('accessories')"><span><span class="cat-icon">💍</span>Accessories</span><span class="count">2</span></li>
+          <li onclick="filterSide('bags')"><span><span class="cat-icon">👜</span>Bags & Purses</span><span class="count">1</span></li>
+          <li onclick="filterSide('cozy')"><span><span class="cat-icon">🧸</span>Cozy Corner</span><span class="count">1</span></li>
+          <li onclick="filterSide('beauty')"><span><span class="cat-icon">🌸</span>Beauty</span><span class="count">1</span></li>
+          <li onclick="filterSide('gifts')"><span><span class="cat-icon">🎁</span>Gift Sets</span><span class="count">1</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sidebar-widget reveal">
+      <div class="widget-head">Zuu's <em>Top Picks</em></div>
+      <div class="widget-body">
+        <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="mini-card">
+          <div class="mini-img"><div class="mini-fill pb-1"><span class="mini-emoji">🌸</span></div></div>
+          <div class="mini-info"><div class="mini-cat">Fashion</div><div class="mini-name">Floral Wrap Mini Dress</div><div class="mini-price">$38.00</div></div>
+        </a>
+        <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="mini-card">
+          <div class="mini-img"><div class="mini-fill pb-5"><span class="mini-emoji">🧸</span></div></div>
+          <div class="mini-info"><div class="mini-cat">Cozy Corner</div><div class="mini-name">Teddy Fleece Throw Blanket</div><div class="mini-price">$29.00</div></div>
+        </a>
+        <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="mini-card">
+          <div class="mini-img"><div class="mini-fill pb-9"><span class="mini-emoji">🌷</span></div></div>
+          <div class="mini-info"><div class="mini-cat">Beauty</div><div class="mini-name">Rose Glow Skincare Set</div><div class="mini-price">$52.00</div></div>
+        </a>
+        <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="mini-card">
+          <div class="mini-img"><div class="mini-fill pb-3"><span class="mini-emoji">👜</span></div></div>
+          <div class="mini-info"><div class="mini-cat">Bags</div><div class="mini-name">Cloud Quilted Shoulder Bag</div><div class="mini-price">$45.00</div></div>
+        </a>
+      </div>
+    </div>
+
+    <div class="sidebar-widget reveal">
+      <div class="widget-head">Join the <em>Club</em></div>
+      <div class="widget-body nl-widget">
+        <p>Get new finds, discount codes & inspo in your inbox every week. No spam, just good stuff. 🌸</p>
+        <input class="nl-input" type="email" id="sideEmail" placeholder="your@email.com"/>
+        <button class="nl-submit" onclick="sideSubscribe()">Subscribe →</button>
+      </div>
+    </div>
+
+    <div class="sidebar-widget reveal">
+      <div class="widget-head">Popular <em>Tags</em></div>
+      <div class="widget-body">
+        <div class="tag-cloud">
+          <span class="tag">#aesthetic</span><span class="tag">#softgirl</span><span class="tag">#cozyvibes</span><span class="tag">#homedecor</span><span class="tag">#ootd</span><span class="tag">#giftsforher</span><span class="tag">#cottagecore</span><span class="tag">#minimalstyle</span><span class="tag">#under50</span><span class="tag">#zuuloves</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="aff-note reveal">
+      <strong>Affiliate Disclosure:</strong> Zuu Finds uses affiliate links. When you shop through our links, we may earn a small commission at no extra cost to you. Thank you for supporting this little corner of the internet! 💕
+    </div>
+  </aside>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="f-logo">Zuu <em>Finds</em></div>
+      <p class="f-tagline">Cute fashion, dreamy décor, and lifestyle finds — all in one place. Affiliate links inside.</p>
+      <div class="f-socials">
+        <div class="f-soc">𝓘</div><div class="f-soc">𝓟</div><div class="f-soc">𝓣</div><div class="f-soc">𝓨</div>
+      </div>
+    </div>
+    <div class="f-col"><h4>Shop</h4><ul><li><a href="#">New Arrivals</a></li><li><a href="#">Fashion</a></li><li><a href="#">Home Décor</a></li><li><a href="#">Accessories</a></li><li><a href="#">Gift Sets</a></li></ul></div>
+    <div class="f-col"><h4>Discover</h4><ul><li><a href="#">Style Guides</a></li><li><a href="#">The Zuu Journal</a></li><li><a href="#">Shop The Look</a></li><li><a href="#">Sale Picks</a></li><li><a href="#">Zuu Loves</a></li></ul></div>
+    <div class="f-col"><h4>About</h4><ul><li><a href="#">About Zuu</a></li><li><a href="#">Affiliate Disclaimer</a></li><li><a href="#">Contact</a></li><li><a href="#">Privacy Policy</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Zuu Finds. All rights reserved.</span>
+    <span>✦ All product links are affiliate links.</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function filterCat(el,cat){document.querySelectorAll('.hero-cat-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');applyFilter(cat);}
+function filterAll(el){document.querySelectorAll('.hero-cat-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');applyFilter('all');}
+function filterSide(cat){applyFilter(cat);document.querySelector('.page-wrap').scrollIntoView({behavior:'smooth'});}
+function applyFilter(cat){
+  let shown=0;
+  document.querySelectorAll('#cardsGrid .pcard').forEach((c,i)=>{
+    const match=cat==='all'||c.dataset.cat===cat;
+    if(match){c.style.display='';c.style.opacity='0';c.style.transform='translateY(12px)';setTimeout(()=>{c.style.transition='opacity 0.35s ease,transform 0.35s ease';c.style.opacity='1';c.style.transform='none';},shown*45);shown++;}
+    else{c.style.display='none';}
+  });
+  const feat=document.querySelector('.featured-card');
+  if(feat)feat.style.display=(cat==='all'||cat==='gifts')?'':'none';
+  document.getElementById('resultCount').textContent='Showing '+(shown+(feat&&feat.style.display!=='none'?1:0))+' finds';
+}
+function setTab(el){document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');showToast('✦ Sorted by '+el.textContent);}
+function affClick(e,name){const href=e.currentTarget.getAttribute('href');if(!href||href==='YOUR_AFFILIATE_LINK_HERE'){e.preventDefault();showToast('🔗 Add your affiliate URL\nfor: '+name);}}
+function sideSubscribe(){const v=document.getElementById('sideEmail').value;if(v.includes('@')){showToast('🌸 Welcome to Zuu Finds! ✨');document.getElementById('sideEmail').value='';}else{showToast('Please enter a valid email.');}}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});},{threshold:0.07});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
