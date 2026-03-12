@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Zuu Finds — Admin Panel</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-serif;font-size:15px;line-height:1.6}
+
+/* HEADER */
+.admin-header{background:#2a1f1f;padding:0 24px;border-bottom:2px solid #b85f58;position:sticky;top:0;z-index:100}
+.admin-header-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:58px}
+.admin-logo{color:#fff;font-size:18px;font-weight:700}
+.admin-logo em{font-style:italic;color:#d4948a}
+.admin-logo span{font-size:12px;background:#b85f58;color:#fff;padding:3px 9px;border-radius:20px;margin-left:8px;font-weight:600;letter-spacing:.04em;vertical-align:middle}
+.view-site{color:#d4948a;font-size:13px;text-decoration:none;border:1px solid #d4948a;padding:6px 14px;border-radius:20px;transition:all .2s}
+.view-site:hover{background:#d4948a;color:#fff}
+
+/* LAYOUT */
+.admin-wrap{max-width:960px;margin:0 auto;padding:28px 20px 60px;display:grid;grid-template-columns:1fr 360px;gap:28px;align-items:start}
+
+/* FORM PANEL */
+.panel{background:#fff;border:1px solid #edddd6;border-radius:10px;overflow:hidden}
+.panel-head{background:#2a1f1f;padding:14px 20px;display:flex;align-items:center;gap:10px}
+.panel-head h2{color:#fff;font-size:15px;font-weight:700}
+.panel-head .ph-icon{font-size:18px}
+.panel-body{padding:20px}
+
+/* FORM */
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:12px;font-weight:700;color:#5c4a4a;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.form-group input,
+.form-group select,
+.form-group textarea{
+  width:100%;
+  padding:10px 13px;
+  border:1.5px solid #e0d4cc;
+  border-radius:6px;
+  font-family:"Amazon Ember",Arial,sans-serif;
+  font-size:14px;
+  color:#0f1111;
+  background:#faf6f0;
+  outline:none;
+  transition:border .2s;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{border-color:#b85f58;background:#fff}
+.form-group textarea{resize:vertical;min-height:60px}
+.form-group select{cursor:pointer}
+
+/* STAR RATING */
+.star-row{display:flex;gap:6px}
+.star-opt{display:none}
+.star-opt+label{font-size:22px;cursor:pointer;color:#ddd;transition:color .15s;line-height:1}
+.star-opt:checked~label,.star-row:not(:has(.star-opt:checked)) label:hover,
+.star-row label:hover,.star-row label:hover~label{color:#e47911}
+.star-row{flex-direction:row-reverse;justify-content:flex-end}
+.star-row label:hover,.star-row label:hover~label{color:#e47911}
+.star-opt:checked~label{color:#e47911}
+
+/* IMAGE PREVIEW */
+.img-preview-wrap{margin-top:10px;width:100%;aspect-ratio:1/1;max-width:120px;border:2px dashed #e0d4cc;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#f9eee9;font-size:28px;color:#d4948a}
+.img-preview-wrap img{width:100%;height:100%;object-fit:cover}
+.img-preview-wrap.has-img{border-style:solid;border-color:#b85f58}
+
+/* BADGE SELECTOR */
+.badge-opts{display:flex;gap:8px;flex-wrap:wrap}
+.badge-opt{padding:5px 14px;border-radius:3px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:2px solid transparent;transition:all .15s;opacity:.55}
+.badge-opt.selected{opacity:1;border-color:#0f1111}
+.badge-opt.bh{background:#b85f58;color:#fff}
+.badge-opt.bn{background:#9b7b8a;color:#fff}
+.badge-opt.bs{background:#c8a87a;color:#0f1111}
+.badge-opt.bl{background:#f4a0b0;color:#fff}
+
+/* BUTTONS */
+.btn-primary{width:100%;padding:13px;background:#b85f58;color:#fff;border:none;border-radius:6px;font-size:15px;font-weight:700;cursor:pointer;font-family:"Amazon Ember",Arial,sans-serif;transition:background .2s;margin-top:4px}
+.btn-primary:hover{background:#9e4e48}
+.btn-secondary{width:100%;padding:11px;background:transparent;color:#b85f58;border:1.5px solid #b85f58;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;font-family:"Amazon Ember",Arial,sans-serif;transition:all .2s;margin-top:8px}
+.btn-secondary:hover{background:#b85f58;color:#fff}
+.btn-clear{width:100%;padding:10px;background:#f9eee9;color:#5c4a4a;border:1px solid #e0d4cc;border-radius:6px;font-size:13px;cursor:pointer;font-family:"Amazon Ember",Arial,sans-serif;transition:all .2s;margin-top:8px}
+.btn-clear:hover{background:#ffe0d8}
+
+/* OUTPUT PANEL */
+.output-panel{background:#fff;border:1px solid #edddd6;border-radius:10px;overflow:hidden;position:sticky;top:80px}
+.output-head{background:#f9eee9;padding:14px 20px;border-bottom:1px solid #edddd6;display:flex;align-items:center;justify-content:space-between}
+.output-head h3{font-size:14px;font-weight:700;color:#2a1f1f}
+.copy-btn{background:#b85f58;color:#fff;border:none;padding:7px 16px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;font-family:"Amazon Ember",Arial,sans-serif;transition:background .2s}
+.copy-btn:hover{background:#9e4e48}
+.copy-btn.copied{background:#4caf7d}
+
+/* PREVIEW CARD */
+.preview-section{padding:16px 20px;border-bottom:1px solid #edddd6}
+.preview-label{font-size:11px;font-weight:700;color:#b85f58;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.preview-card{background:#faf6f0;border:1px solid #ddd;border-radius:8px;overflow:hidden;max-width:200px}
+.preview-card-img{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:36px;position:relative;overflow:hidden;background:linear-gradient(150deg,#f5ddd8,#e0a89e)}
+.preview-card-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.preview-badge{position:absolute;top:6px;left:6px;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:2px}
+.preview-body{padding:10px 12px}
+.preview-cat{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#b85f58;font-weight:600;margin-bottom:3px}
+.preview-name{font-size:13px;color:#0f1111;line-height:1.35;margin-bottom:6px;font-weight:500}
+.preview-stars{color:#e47911;font-size:11px;margin-bottom:8px}
+.preview-btn{display:block;text-align:center;background:#FFD814;color:#0f1111;padding:7px 0;border-radius:20px;font-size:12px;font-weight:600;border:1px solid #FCD200}
+
+/* CODE OUTPUT */
+.code-wrap{padding:16px 20px}
+.code-box{background:#1a1a2e;color:#e8ddd4;padding:14px;border-radius:6px;font-family:"Courier New",monospace;font-size:11.5px;line-height:1.7;overflow-x:auto;white-space:pre;max-height:300px;overflow-y:auto}
+.code-box .tag{color:#f4a0b0}
+.code-box .attr{color:#b8e4f9}
+.code-box .val{color:#c8f4a0}
+.code-box .txt{color:#ffe4b0}
+
+/* PRODUCT LIST */
+.products-section{margin-top:28px}
+.products-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.products-head h3{font-size:16px;font-weight:700;color:#2a1f1f}
+.products-count{font-size:12px;color:#b85f58;background:#f9eee9;padding:4px 12px;border-radius:20px;font-weight:600}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+.p-item{background:#fff;border:1px solid #edddd6;border-radius:8px;overflow:hidden;position:relative}
+.p-item-img{width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:32px;background:linear-gradient(150deg,#f5ddd8,#e0a89e);overflow:hidden;position:relative}
+.p-item-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.p-item-cat{position:absolute;top:6px;left:6px;font-size:9px;font-weight:700;text-transform:uppercase;padding:2px 8px;border-radius:2px;background:#b85f58;color:#fff}
+.p-item-body{padding:10px 12px}
+.p-item-name{font-size:13px;font-weight:600;color:#0f1111;margin-bottom:6px;line-height:1.3}
+.p-item-link{font-size:11px;color:#b85f58;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;margin-bottom:8px}
+.p-item-actions{display:flex;gap:6px}
+.p-item-edit{flex:1;padding:6px 0;background:#f9eee9;border:1px solid #e0d4cc;border-radius:4px;font-size:11px;font-weight:600;color:#5c4a4a;cursor:pointer;text-align:center;font-family:"Amazon Ember",Arial,sans-serif;transition:all .2s}
+.p-item-edit:hover{background:#b85f58;color:#fff;border-color:#b85f58}
+.p-item-del{padding:6px 10px;background:#fff0f0;border:1px solid #f4a0a0;border-radius:4px;font-size:12px;color:#c0392b;cursor:pointer;font-family:"Amazon Ember",Arial,sans-serif;transition:all .2s}
+.p-item-del:hover{background:#c0392b;color:#fff}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:40px 20px;color:#aaa;grid-column:1/-1}
+.empty-state .es-icon{font-size:48px;margin-bottom:12px;opacity:.4}
+.empty-state p{font-size:14px}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:#2a1f1f;color:#fff;padding:12px 18px;border-left:3px solid #b85f58;border-radius:3px;font-size:13px;opacity:0;transform:translateY(10px);transition:all .3s;z-index:999;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* SECTION DIVIDER */
+.sec-div{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#b85f58;font-weight:700;margin:0 0 16px;display:flex;align-items:center;gap:10px}
+.sec-div::after{content:'';flex:1;height:1px;background:#edddd6}
+
+/* RESPONSIVE */
+@media(max-width:760px){
+  .admin-wrap{grid-template-columns:1fr}
+  .output-panel{position:static}
+}
+</style>
+</head>
+<body>
+
+<div class="admin-header">
+  <div class="admin-header-inner">
+    <div class="admin-logo">
+      Zuu <em>Finds</em>
+      <span>Admin</span>
+    </div>
+    <a href="index.html" class="view-site" target="_blank">View Site →</a>
+  </div>
+</div>
+
+<div class="admin-wrap">
+
+  <!-- LEFT: FORM -->
+  <div>
+    <div class="panel">
+      <div class="panel-head">
+        <span class="ph-icon">🛍️</span>
+        <h2>Add New Product</h2>
+      </div>
+      <div class="panel-body">
+
+        <div class="form-group">
+          <label>Product Name</label>
+          <input type="text" id="prodName" placeholder="e.g. Parlovable Women's Fuzzy Slippers" oninput="updatePreview()"/>
+        </div>
+
+        <div class="form-group">
+          <label>Category</label>
+          <select id="prodCat" onchange="updatePreview()">
+            <option value="">— Select category —</option>
+            <option value="cute">Cute Finds</option>
+            <option value="cool">Cool Finds</option>
+            <option value="home">Home Finds</option>
+            <option value="bedroom">Bedroom Finds</option>
+            <option value="bathroom">Bathroom Finds</option>
+            <option value="kitchen">Kitchen Favorites</option>
+            <option value="toys">Toys & Games</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Affiliate Link (Amazon)</label>
+          <input type="url" id="prodLink" placeholder="https://amzn.to/xxxxxxx" oninput="updatePreview()"/>
+        </div>
+
+        <div class="form-group">
+          <label>Product Image Path or URL</label>
+          <input type="text" id="prodImg" placeholder="images/product.jpg  or  https://..." oninput="updateImgPreview()"/>
+          <div class="img-preview-wrap" id="imgPreviewWrap">
+            <span>🖼️</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Star Rating</label>
+          <div class="star-row">
+            <input class="star-opt" type="radio" name="stars" id="s5" value="★★★★★" onchange="updatePreview()">
+            <label for="s5" title="5 stars">★</label>
+            <input class="star-opt" type="radio" name="stars" id="s4" value="★★★★☆" onchange="updatePreview()">
+            <label for="s4" title="4 stars">★</label>
+            <input class="star-opt" type="radio" name="stars" id="s3" value="★★★☆☆" onchange="updatePreview()">
+            <label for="s3" title="3 stars">★</label>
+            <input class="star-opt" type="radio" name="stars" id="s2" value="★★☆☆☆" onchange="updatePreview()">
+            <label for="s2" title="2 stars">★</label>
+            <input class="star-opt" type="radio" name="stars" id="s1" value="★☆☆☆☆" onchange="updatePreview()">
+            <label for="s1" title="1 star">★</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Badge Color</label>
+          <div class="badge-opts">
+            <div class="badge-opt bh selected" data-badge="bh" onclick="selectBadge(this)">Rose</div>
+            <div class="badge-opt bn" data-badge="bn" onclick="selectBadge(this)">Mauve</div>
+            <div class="badge-opt bs" data-badge="bs" onclick="selectBadge(this)">Gold</div>
+            <div class="badge-opt bl" data-badge="bl" onclick="selectBadge(this)">Pink</div>
+          </div>
+        </div>
+
+        <button class="btn-primary" onclick="addProduct()">✦ Generate Card Code</button>
+        <button class="btn-secondary" onclick="saveProduct()">💾 Save to Product List</button>
+        <button class="btn-clear" onclick="clearForm()">✕ Clear Form</button>
+
+      </div>
+    </div>
+
+    <!-- SAVED PRODUCTS LIST -->
+    <div class="products-section">
+      <div class="products-head">
+        <h3>Saved Products</h3>
+        <span class="products-count" id="prodCount">0 products</span>
+      </div>
+      <div class="sec-div">✦ Your product list</div>
+      <div class="products-grid" id="productsList">
+        <div class="empty-state">
+          <div class="es-icon">🛒</div>
+          <p>No products saved yet.<br>Fill the form and click "Save to Product List".</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: PREVIEW + CODE -->
+  <div class="output-panel">
+    <div class="output-head">
+      <h3>Live Preview & Code</h3>
+      <button class="copy-btn" id="copyBtn" onclick="copyCode()">Copy Code</button>
+    </div>
+
+    <div class="preview-section">
+      <div class="preview-label">Card Preview</div>
+      <div class="preview-card" id="previewCard">
+        <div class="preview-card-img" id="previewImg">
+          <span id="previewEmoji">🛍️</span>
+        </div>
+        <div class="preview-body">
+          <div class="preview-cat" id="previewCat">Category</div>
+          <div class="preview-name" id="previewName">Product name will appear here</div>
+          <div class="preview-stars" id="previewStars">★★★★★</div>
+          <div class="preview-btn">Buy on Amazon →</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="code-wrap">
+      <div class="preview-label" style="margin-bottom:10px">Generated Code</div>
+      <div class="code-box" id="codeOutput"><span style="opacity:.4">// Fill the form to generate your card code...</span></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ──────────────────────────────────────────
+const CAT_LABELS = {
+  cute:'Cute Finds', cool:'Cool Finds', home:'Home Finds',
+  bedroom:'Bedroom Finds', bathroom:'Bathroom Finds',
+  kitchen:'Kitchen Favorites', toys:'Toys & Games'
+};
+
+const CAT_EMOJIS = {
+  cute:'🌸', cool:'✨', home:'🕯️',
+  bedroom:'🧸', bathroom:'🌷', kitchen:'🍳', toys:'🎮'
+};
+
+const PB_MAP = {
+  cute:'pb1', cool:'pb6', home:'pb2',
+  bedroom:'pb5', bathroom:'pb9', kitchen:'pb10', toys:'pb11'
+};
+
+let selectedBadge = 'bh';
+let products = JSON.parse(localStorage.getItem('zuuProducts') || '[]');
+
+// ── HELPERS ───────────────────────────────────────
+function getStars(){
+  const checked = document.querySelector('.star-opt:checked');
+  return checked ? checked.value : '★★★★★';
+}
+
+function selectBadge(el){
+  document.querySelectorAll('.badge-opt').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedBadge = el.dataset.badge;
+  updatePreview();
+}
+
+function showToast(msg, success=true){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.borderLeftColor = success ? '#b85f58' : '#f4a0a0';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2800);
+}
+
+// ── PREVIEW ───────────────────────────────────────
+function updateImgPreview(){
+  const src = document.getElementById('prodImg').value.trim();
+  const wrap = document.getElementById('imgPreviewWrap');
+  if(src){
+    wrap.innerHTML = `<img src="${src}" onerror="this.style.display='none'" alt="preview">`;
+    wrap.classList.add('has-img');
+  } else {
+    wrap.innerHTML = '<span>🖼️</span>';
+    wrap.classList.remove('has-img');
+  }
+  updatePreview();
+}
+
+function updatePreview(){
+  const name = document.getElementById('prodName').value.trim() || 'Product name will appear here';
+  const cat  = document.getElementById('prodCat').value;
+  const img  = document.getElementById('prodImg').value.trim();
+  const stars = getStars();
+  const catLabel = CAT_LABELS[cat] || 'Category';
+  const emoji = CAT_EMOJIS[cat] || '🛍️';
+  const pb = PB_MAP[cat] || 'pb1';
+
+  document.getElementById('previewName').textContent = name;
+  document.getElementById('previewCat').textContent = catLabel;
+  document.getElementById('previewStars').textContent = stars;
+
+  const previewImg = document.getElementById('previewImg');
+  previewImg.className = `preview-card-img ${pb}`;
+
+  // Badge
+  let badgeEl = previewImg.querySelector('.preview-badge');
+  if(!badgeEl){
+    badgeEl = document.createElement('span');
+    badgeEl.className = 'preview-badge';
+    previewImg.appendChild(badgeEl);
+  }
+  badgeEl.className = `preview-badge ${selectedBadge} cat-badge`;
+  badgeEl.textContent = catLabel;
+
+  // Image or emoji
+  let existingImg = previewImg.querySelector('img');
+  let existingEmoji = document.getElementById('previewEmoji');
+
+  if(img){
+    if(!existingImg){
+      existingImg = document.createElement('img');
+      existingImg.style.cssText = 'width:100%;height:100%;object-fit:cover;position:absolute;inset:0';
+      previewImg.insertBefore(existingImg, badgeEl);
+    }
+    existingImg.src = img;
+    if(existingEmoji) existingEmoji.style.display = 'none';
+  } else {
+    if(existingImg) existingImg.remove();
+    if(!existingEmoji){
+      existingEmoji = document.createElement('span');
+      existingEmoji.id = 'previewEmoji';
+      previewImg.insertBefore(existingEmoji, badgeEl);
+    }
+    existingEmoji.style.display = '';
+    existingEmoji.textContent = emoji;
+  }
+
+  updateCode();
+}
+
+// ── CODE GENERATOR ────────────────────────────────
+function generateCode(p){
+  const cat      = p.cat || '';
+  const name     = p.name || 'Product Name';
+  const link     = p.link || 'YOUR_AFFILIATE_LINK_HERE';
+  const img      = p.img || '';
+  const stars    = p.stars || '★★★★★';
+  const badge    = p.badge || 'bh';
+  const catLabel = CAT_LABELS[cat] || cat;
+  const pb       = PB_MAP[cat] || 'pb1';
+
+  const imgLine = img
+    ? `\n    <img src="${img}" alt="${name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`
+    : `\n    <span>${CAT_EMOJIS[cat]||'🛍️'}</span>`;
+
+  return `<div class="pcard" data-cat="${cat}">
+  <div class="pcard-img ${pb}">${imgLine}
+    <span class="p-badge ${badge} cat-badge">${catLabel}</span>
+  </div>
+  <div class="pcard-body">
+    <div class="pcard-cat">${catLabel}</div>
+    <div class="pcard-name">${name}</div>
+    <div class="pcard-stars">${stars}</div>
+    <a href="${link}" target="_blank" class="pcard-btn">Buy on Amazon →</a>
+  </div>
+</div>`;
+}
+
+function updateCode(){
+  const p = {
+    name:  document.getElementById('prodName').value.trim(),
+    cat:   document.getElementById('prodCat').value,
+    link:  document.getElementById('prodLink').value.trim(),
+    img:   document.getElementById('prodImg').value.trim(),
+    stars: getStars(),
+    badge: selectedBadge
+  };
+  if(!p.name && !p.cat){
+    document.getElementById('codeOutput').innerHTML = '<span style="opacity:.4">// Fill the form to generate your card code...</span>';
+    return;
+  }
+  document.getElementById('codeOutput').textContent = generateCode(p);
+}
+
+function addProduct(){
+  const name = document.getElementById('prodName').value.trim();
+  const cat  = document.getElementById('prodCat').value;
+  const link = document.getElementById('prodLink').value.trim();
+  if(!name){ showToast('⚠️ Please enter a product name', false); return; }
+  if(!cat){  showToast('⚠️ Please select a category', false); return; }
+  if(!link){ showToast('⚠️ Please enter an affiliate link', false); return; }
+  updateCode();
+  copyCode(true);
+  showToast('✅ Code generated & copied to clipboard!');
+}
+
+// ── COPY ──────────────────────────────────────────
+function copyCode(silent=false){
+  const code = document.getElementById('codeOutput').textContent;
+  if(code.includes('Fill the form')){ showToast('⚠️ Generate code first', false); return; }
+  navigator.clipboard.writeText(code).then(()=>{
+    if(!silent){
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = '✓ Copied!';
+      btn.classList.add('copied');
+      setTimeout(()=>{ btn.textContent = 'Copy Code'; btn.classList.remove('copied'); }, 2000);
+      showToast('📋 Code copied! Paste it into index.html');
+    }
+  });
+}
+
+// ── SAVE / DELETE ─────────────────────────────────
+function saveProduct(){
+  const name  = document.getElementById('prodName').value.trim();
+  const cat   = document.getElementById('prodCat').value;
+  const link  = document.getElementById('prodLink').value.trim();
+  const img   = document.getElementById('prodImg').value.trim();
+  const stars = getStars();
+  if(!name){ showToast('⚠️ Please enter a product name', false); return; }
+  if(!cat){  showToast('⚠️ Please select a category', false); return; }
+  if(!link){ showToast('⚠️ Please enter an affiliate link', false); return; }
+
+  const product = { id: Date.now(), name, cat, link, img, stars, badge: selectedBadge };
+  products.push(product);
+  localStorage.setItem('zuuProducts', JSON.stringify(products));
+  renderProducts();
+  showToast('💾 Product saved to list!');
+}
+
+function deleteProduct(id){
+  if(!confirm('Remove this product from the list?')) return;
+  products = products.filter(p=>p.id!==id);
+  localStorage.setItem('zuuProducts', JSON.stringify(products));
+  renderProducts();
+  showToast('🗑️ Product removed');
+}
+
+function editProduct(id){
+  const p = products.find(p=>p.id===id);
+  if(!p) return;
+  document.getElementById('prodName').value = p.name;
+  document.getElementById('prodCat').value  = p.cat;
+  document.getElementById('prodLink').value = p.link;
+  document.getElementById('prodImg').value  = p.img || '';
+  // Stars
+  document.querySelectorAll('.star-opt').forEach(s=>{ if(s.value===p.stars) s.checked=true; });
+  // Badge
+  document.querySelectorAll('.badge-opt').forEach(b=>{
+    b.classList.toggle('selected', b.dataset.badge===p.badge);
+  });
+  selectedBadge = p.badge;
+  updateImgPreview();
+  updatePreview();
+  window.scrollTo({top:0,behavior:'smooth'});
+  showToast('✏️ Loaded into editor — make changes & generate code');
+}
+
+// ── RENDER PRODUCTS ───────────────────────────────
+function renderProducts(){
+  const grid = document.getElementById('productsList');
+  document.getElementById('prodCount').textContent = `${products.length} product${products.length!==1?'s':''}`;
+
+  if(products.length===0){
+    grid.innerHTML = `<div class="empty-state"><div class="es-icon">🛒</div><p>No products saved yet.<br>Fill the form and click "Save to Product List".</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = products.map(p=>`
+    <div class="p-item">
+      <div class="p-item-img">
+        ${p.img ? `<img src="${p.img}" alt="${p.name}" onerror="this.style.display='none'">` : `<span>${CAT_EMOJIS[p.cat]||'🛍️'}</span>`}
+        <span class="p-item-cat">${CAT_LABELS[p.cat]||p.cat}</span>
+      </div>
+      <div class="p-item-body">
+        <div class="p-item-name">${p.name}</div>
+        <span class="p-item-link">${p.link}</span>
+        <div class="p-item-actions">
+          <button class="p-item-edit" onclick="editProduct(${p.id})">Edit</button>
+          <button class="p-item-del" onclick="deleteProduct(${p.id})">✕</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── EXPORT ALL ────────────────────────────────────
+function exportAll(){
+  if(products.length===0){ showToast('⚠️ No products to export', false); return; }
+  const allCode = products.map(p=>generateCode(p)).join('\n\n');
+  navigator.clipboard.writeText(allCode).then(()=>{
+    showToast(`📋 All ${products.length} product codes copied!`);
+  });
+}
+
+// ── CLEAR ─────────────────────────────────────────
+function clearForm(){
+  document.getElementById('prodName').value = '';
+  document.getElementById('prodCat').value  = '';
+  document.getElementById('prodLink').value = '';
+  document.getElementById('prodImg').value  = '';
+  document.querySelectorAll('.star-opt').forEach(s=>s.checked=false);
+  document.querySelectorAll('.badge-opt').forEach(b=>b.classList.toggle('selected', b.dataset.badge==='bh'));
+  selectedBadge = 'bh';
+  document.getElementById('imgPreviewWrap').innerHTML = '<span>🖼️</span>';
+  document.getElementById('imgPreviewWrap').classList.remove('has-img');
+  document.getElementById('codeOutput').innerHTML = '<span style="opacity:.4">// Fill the form to generate your card code...</span>';
+  document.getElementById('previewName').textContent = 'Product name will appear here';
+  document.getElementById('previewCat').textContent  = 'Category';
+  document.getElementById('previewStars').textContent = '★★★★★';
+}
+
+// ── INIT ──────────────────────────────────────────
+renderProducts();
+
+// Export all button — add to products section
+document.querySelector('.products-head').insertAdjacentHTML('beforeend',
+  `<button onclick="exportAll()" style="background:#f9eee9;border:1px solid #e0d4cc;color:#5c4a4a;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;font-family:Arial,sans-serif;transition:all .2s" onmouseover="this.style.background='#b85f58';this.style.color='#fff'" onmouseout="this.style.background='#f9eee9';this.style.color='#5c4a4a'">Export All Codes</button>`
+);
+</script>
+</body>
+</html>
