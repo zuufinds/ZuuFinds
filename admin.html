@@ -95,14 +95,14 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
 .preview-section{padding:16px 20px;border-bottom:1px solid #edddd6}
 .preview-label{font-size:11px;font-weight:700;color:#b85f58;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
 .preview-card{background:#faf6f0;border:1px solid #ddd;border-radius:8px;overflow:hidden;max-width:200px}
-.preview-card-img{width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:36px;position:relative;overflow:hidden;background:linear-gradient(150deg,#f5ddd8,#e0a89e)}
-.preview-card-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.preview-card-img{width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:36px;position:relative;overflow:hidden;background:linear-gradient(150deg,#f5ddd8,#e0a89e)}
+.preview-card-img img{width:100%;height:100%;object-fit:contain;position:absolute;inset:0;padding:6px}
 .preview-badge{position:absolute;top:6px;left:6px;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:2px}
 .preview-body{padding:10px 12px}
 .preview-cat{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#b85f58;font-weight:600;margin-bottom:3px}
-.preview-name{font-size:13px;color:#0f1111;line-height:1.35;margin-bottom:6px;font-weight:500}
-.preview-stars{color:#e47911;font-size:11px;margin-bottom:8px}
-.preview-btn{display:block;text-align:center;background:#FFD814;color:#0f1111;padding:7px 0;border-radius:20px;font-size:12px;font-weight:600;border:1px solid #FCD200}
+.preview-name{font-size:13px;color:#0f1111;line-height:1.35;margin-bottom:4px;font-weight:500}
+.preview-meta{font-size:11px;color:#e47911;margin-bottom:8px}
+.preview-btn{display:block;text-align:center;background:#fff4c2;color:#0f1111;padding:7px 0;border-radius:20px;font-size:12px;font-weight:700;border:1px solid #e8d87a}
 
 /* CODE OUTPUT */
 .code-wrap{padding:16px 20px}
@@ -223,6 +223,16 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
         </div>
 
         <div class="form-group">
+          <label>Numeric Rating</label>
+          <input type="number" id="prodRating" placeholder="e.g. 4.8" min="1" max="5" step="0.1" oninput="updatePreview()"/>
+        </div>
+
+        <div class="form-group">
+          <label>Sold Count (optional)</label>
+          <input type="text" id="prodSold" placeholder="e.g. 2.3k+ sold" oninput="updatePreview()"/>
+        </div>
+
+        <div class="form-group">
           <label>Badge Color</label>
           <div class="badge-opts">
             <div class="badge-opt bh selected" data-badge="bh" onclick="selectBadge(this)">Rose</div>
@@ -271,8 +281,8 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
         <div class="preview-body">
           <div class="preview-cat" id="previewCat">Category</div>
           <div class="preview-name" id="previewName">Product name will appear here</div>
-          <div class="preview-stars" id="previewStars">★★★★★</div>
-          <div class="preview-btn">Buy on Amazon →</div>
+          <div class="preview-meta" id="previewMeta">★★★★★ 4.8 · 1.2k+ sold</div>
+          <div class="preview-btn">Shop on Amazon</div>
         </div>
       </div>
     </div>
@@ -348,13 +358,16 @@ function updatePreview(){
   const cat  = document.getElementById('prodCat').value;
   const img  = document.getElementById('prodImg').value.trim();
   const stars = getStars();
+  const sold = document.getElementById('prodSold').value.trim() || '1.2k+ sold';
+  const rating = document.getElementById('prodRating').value.trim() || '4.8';
   const catLabel = CAT_LABELS[cat] || 'Category';
   const emoji = CAT_EMOJIS[cat] || '🛍️';
   const pb = PB_MAP[cat] || 'pb1';
 
   document.getElementById('previewName').textContent = name;
   document.getElementById('previewCat').textContent = catLabel;
-  document.getElementById('previewStars').textContent = stars;
+  // Build meta: stars symbols + numeric + sold
+  document.getElementById('previewMeta').textContent = `${stars} ${rating} · ${sold}`;
 
   const previewImg = document.getElementById('previewImg');
   previewImg.className = `preview-card-img ${pb}`;
@@ -376,7 +389,7 @@ function updatePreview(){
   if(img){
     if(!existingImg){
       existingImg = document.createElement('img');
-      existingImg.style.cssText = 'width:100%;height:100%;object-fit:cover;position:absolute;inset:0';
+      existingImg.style.cssText = 'width:100%;height:100%;object-fit:contain;position:absolute;inset:0;padding:6px';
       previewImg.insertBefore(existingImg, badgeEl);
     }
     existingImg.src = img;
@@ -402,23 +415,29 @@ function generateCode(p){
   const link     = p.link || 'YOUR_AFFILIATE_LINK_HERE';
   const img      = p.img || '';
   const stars    = p.stars || '★★★★★';
+  const sold     = p.sold || '1.2k+ sold';
+  const rating   = p.rating || '4.8';
   const badge    = p.badge || 'bh';
   const catLabel = CAT_LABELS[cat] || cat;
   const pb       = PB_MAP[cat] || 'pb1';
 
   const imgLine = img
-    ? `\n    <img src="${img}" alt="${name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`
-    : `\n    <span>${CAT_EMOJIS[cat]||'🛍️'}</span>`;
+    ? `\n    <img src="${img}" alt="${name}">`
+    : `\n    <span class="emoji-ph">${CAT_EMOJIS[cat]||'🛍️'}</span>`;
 
-  return `<div class="pcard" data-cat="${cat}">
+  return `<div class="pcard" data-cat="${cat}" data-name="${name}">
   <div class="pcard-img ${pb}">${imgLine}
     <span class="p-badge ${badge} cat-badge">${catLabel}</span>
   </div>
   <div class="pcard-body">
     <div class="pcard-cat">${catLabel}</div>
     <div class="pcard-name">${name}</div>
-    <div class="pcard-stars">${stars}</div>
-    <a href="${link}" target="_blank" class="pcard-btn">Buy on Amazon →</a>
+    <div class="pcard-meta">
+      <span class="pcard-stars">${stars}</span>
+      <span class="pcard-rating">${rating}</span>
+      <span class="pcard-sold">${sold}</span>
+    </div>
+    <a href="${link}" target="_blank" rel="noopener" class="pcard-btn">Shop on Amazon</a>
   </div>
 </div>`;
 }
@@ -430,6 +449,8 @@ function updateCode(){
     link:  document.getElementById('prodLink').value.trim(),
     img:   document.getElementById('prodImg').value.trim(),
     stars: getStars(),
+    sold:  document.getElementById('prodSold').value.trim(),
+    rating: document.getElementById('prodRating').value.trim(),
     badge: selectedBadge
   };
   if(!p.name && !p.cat){
@@ -473,11 +494,13 @@ function saveProduct(){
   const link  = document.getElementById('prodLink').value.trim();
   const img   = document.getElementById('prodImg').value.trim();
   const stars = getStars();
+  const sold  = document.getElementById('prodSold').value.trim();
+  const rating = document.getElementById('prodRating').value.trim();
   if(!name){ showToast('⚠️ Please enter a product name', false); return; }
   if(!cat){  showToast('⚠️ Please select a category', false); return; }
   if(!link){ showToast('⚠️ Please enter an affiliate link', false); return; }
 
-  const product = { id: Date.now(), name, cat, link, img, stars, badge: selectedBadge };
+  const product = { id: Date.now(), name, cat, link, img, stars, sold, rating, badge: selectedBadge };
   products.push(product);
   localStorage.setItem('zuuProducts', JSON.stringify(products));
   renderProducts();
@@ -499,6 +522,8 @@ function editProduct(id){
   document.getElementById('prodCat').value  = p.cat;
   document.getElementById('prodLink').value = p.link;
   document.getElementById('prodImg').value  = p.img || '';
+  document.getElementById('prodSold').value = p.sold || '';
+  document.getElementById('prodRating').value = p.rating || '';
   // Stars
   document.querySelectorAll('.star-opt').forEach(s=>{ if(s.value===p.stars) s.checked=true; });
   // Badge
@@ -555,6 +580,8 @@ function clearForm(){
   document.getElementById('prodCat').value  = '';
   document.getElementById('prodLink').value = '';
   document.getElementById('prodImg').value  = '';
+  document.getElementById('prodSold').value = '';
+  document.getElementById('prodRating').value = '';
   document.querySelectorAll('.star-opt').forEach(s=>s.checked=false);
   document.querySelectorAll('.badge-opt').forEach(b=>b.classList.toggle('selected', b.dataset.badge==='bh'));
   selectedBadge = 'bh';
@@ -563,7 +590,7 @@ function clearForm(){
   document.getElementById('codeOutput').innerHTML = '<span style="opacity:.4">// Fill the form to generate your card code...</span>';
   document.getElementById('previewName').textContent = 'Product name will appear here';
   document.getElementById('previewCat').textContent  = 'Category';
-  document.getElementById('previewStars').textContent = '★★★★★';
+  document.getElementById('previewMeta').textContent = '★★★★★ 4.8 · 1.2k+ sold';
 }
 
 // ── INIT ──────────────────────────────────────────
