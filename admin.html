@@ -144,6 +144,38 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
 .sec-div{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#b85f58;font-weight:700;margin:0 0 16px;display:flex;align-items:center;gap:10px}
 .sec-div::after{content:'';flex:1;height:1px;background:#edddd6}
 
+/* GITHUB SETUP BAR */
+.gh-bar{background:#1a2332;border-bottom:1px solid #2d3f55;padding:10px 24px}
+.gh-bar-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.gh-bar label{font-size:12px;color:#7a9cc0;font-weight:600;white-space:nowrap}
+.gh-token-input{flex:1;min-width:200px;max-width:380px;padding:7px 12px;background:#0d1117;border:1.5px solid #2d3f55;border-radius:6px;font-size:13px;color:#e6edf3;font-family:"Amazon Ember",Arial,sans-serif;outline:none;transition:border .2s}
+.gh-token-input:focus{border-color:#58a6ff}
+.gh-token-input::placeholder{color:#484f58}
+.gh-save-btn{padding:7px 16px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:"Amazon Ember",Arial,sans-serif;white-space:nowrap;transition:background .2s}
+.gh-save-btn:hover{background:#2ea043}
+.gh-status{font-size:12px;padding:5px 12px;border-radius:20px;font-weight:600;white-space:nowrap}
+.gh-status.connected{background:#0f3d1a;color:#3fb950;border:1px solid #238636}
+.gh-status.disconnected{background:#3d1a0f;color:#f85149;border:1px solid #da3633}
+.gh-howto{font-size:11px;color:#484f58;margin-left:4px}
+.gh-howto a{color:#58a6ff;text-decoration:none}
+.gh-howto a:hover{text-decoration:underline}
+
+/* PUSH BUTTON */
+.btn-push{width:100%;padding:13px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:15px;font-weight:700;cursor:pointer;font-family:"Amazon Ember",Arial,sans-serif;transition:background .2s;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-push:hover{background:#2ea043}
+.btn-push:disabled{background:#555;cursor:not-allowed;opacity:.6}
+.btn-push-tp{width:100%;padding:13px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:15px;font-weight:700;cursor:pointer;font-family:"Amazon Ember",Arial,sans-serif;transition:background .2s;margin-top:8px}
+.btn-push-tp:hover{background:#2ea043}
+.btn-push-tp:disabled{background:#555;cursor:not-allowed;opacity:.6}
+
+/* TABS */
+.tab-bar{display:flex;border-bottom:2px solid #edddd6;background:#fff;margin-bottom:0}
+.tab-btn{flex:1;padding:13px 10px;background:none;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;font-family:"Amazon Ember",Arial,sans-serif;font-size:13px;font-weight:600;color:#999;cursor:pointer;transition:all .2s;letter-spacing:.02em}
+.tab-btn.active{color:#b85f58;border-bottom-color:#b85f58}
+.tab-btn:hover:not(.active){color:#5c4a4a}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+
 /* RESPONSIVE */
 @media(max-width:760px){
   .admin-wrap{grid-template-columns:1fr}
@@ -163,91 +195,194 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
   </div>
 </div>
 
-<div class="admin-wrap">
+<!-- GITHUB TOKEN BAR -->
+<div class="gh-bar">
+  <div class="gh-bar-inner">
+    <label>🔑 GitHub Token:</label>
+    <input type="password" class="gh-token-input" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" oninput="checkToken()"/>
+    <button class="gh-save-btn" onclick="saveToken()">Save Token</button>
+    <span class="gh-status disconnected" id="ghStatus">Not connected</span>
+    <span class="gh-howto"><a href="https://github.com/settings/tokens/new?scopes=repo&description=ZuuFinds+Admin" target="_blank">Get a token ↗</a> — select <strong>repo</strong> scope</span>
+  </div>
+</div>
 
-  <!-- LEFT: FORM -->
+  <!-- LEFT: TABBED FORM -->
   <div>
     <div class="panel">
       <div class="panel-head">
         <span class="ph-icon">🛍️</span>
         <h2>Add New Product</h2>
       </div>
+
+      <!-- TAB BAR -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('allfnds',this)">✦ All Finds Card</button>
+        <button class="tab-btn" onclick="switchTab('toppick',this)">🏆 Top Picks Card</button>
+      </div>
+
       <div class="panel-body">
 
-        <div class="form-group">
-          <label>Product Name</label>
-          <input type="text" id="prodName" placeholder="e.g. Parlovable Women's Fuzzy Slippers" oninput="updatePreview()"/>
-        </div>
+        <!-- ── ALL FINDS TAB ── -->
+        <div class="tab-pane active" id="tab-allfnds">
 
-        <div class="form-group">
-          <label>Category</label>
-          <select id="prodCat" onchange="updatePreview()">
-            <option value="">— Select category —</option>
-            <option value="cute">Cute Finds</option>
-            <option value="cool">Cool Finds</option>
-            <option value="home">Home Finds</option>
-            <option value="bedroom">Bedroom Finds</option>
-            <option value="bathroom">Bathroom Finds</option>
-            <option value="kitchen">Kitchen Favorites</option>
-            <option value="toys">Toys & Games</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Affiliate Link (Amazon)</label>
-          <input type="url" id="prodLink" placeholder="https://amzn.to/xxxxxxx" oninput="updatePreview()"/>
-        </div>
-
-        <div class="form-group">
-          <label>Product Image Path or URL</label>
-          <input type="text" id="prodImg" placeholder="images/product.jpg  or  https://..." oninput="updateImgPreview()"/>
-          <div class="img-preview-wrap" id="imgPreviewWrap">
-            <span>🖼️</span>
+          <div class="form-group">
+            <label>Product Name</label>
+            <input type="text" id="prodName" placeholder="e.g. Parlovable Women's Fuzzy Slippers" oninput="updatePreview()"/>
           </div>
-        </div>
 
-        <div class="form-group">
-          <label>Star Rating</label>
-          <div class="star-row">
-            <input class="star-opt" type="radio" name="stars" id="s5" value="★★★★★" onchange="updatePreview()">
-            <label for="s5" title="5 stars">★</label>
-            <input class="star-opt" type="radio" name="stars" id="s4" value="★★★★☆" onchange="updatePreview()">
-            <label for="s4" title="4 stars">★</label>
-            <input class="star-opt" type="radio" name="stars" id="s3" value="★★★☆☆" onchange="updatePreview()">
-            <label for="s3" title="3 stars">★</label>
-            <input class="star-opt" type="radio" name="stars" id="s2" value="★★☆☆☆" onchange="updatePreview()">
-            <label for="s2" title="2 stars">★</label>
-            <input class="star-opt" type="radio" name="stars" id="s1" value="★☆☆☆☆" onchange="updatePreview()">
-            <label for="s1" title="1 star">★</label>
+          <div class="form-group">
+            <label>Category</label>
+            <select id="prodCat" onchange="updatePreview()">
+              <option value="">— Select category —</option>
+              <option value="cute">Cute Finds</option>
+              <option value="cool">Cool Finds</option>
+              <option value="home">Home Finds</option>
+              <option value="bedroom">Bedroom Finds</option>
+              <option value="bathroom">Bathroom Finds</option>
+              <option value="kitchen">Kitchen Favorites</option>
+              <option value="toys">Toys & Games</option>
+            </select>
           </div>
-        </div>
 
-        <div class="form-group">
-          <label>Numeric Rating</label>
-          <input type="number" id="prodRating" placeholder="e.g. 4.8" min="1" max="5" step="0.1" oninput="updatePreview()"/>
-        </div>
-
-        <div class="form-group">
-          <label>Sold Count (optional)</label>
-          <input type="text" id="prodSold" placeholder="e.g. 2.3k+ sold" oninput="updatePreview()"/>
-        </div>
-
-        <div class="form-group">
-          <label>Badge Color</label>
-          <div class="badge-opts">
-            <div class="badge-opt bh selected" data-badge="bh" onclick="selectBadge(this)">Rose</div>
-            <div class="badge-opt bn" data-badge="bn" onclick="selectBadge(this)">Mauve</div>
-            <div class="badge-opt bs" data-badge="bs" onclick="selectBadge(this)">Gold</div>
-            <div class="badge-opt bl" data-badge="bl" onclick="selectBadge(this)">Pink</div>
+          <div class="form-group">
+            <label>Affiliate Link (Amazon)</label>
+            <input type="url" id="prodLink" placeholder="https://amzn.to/xxxxxxx" oninput="updatePreview()"/>
           </div>
-        </div>
 
-        <button class="btn-primary" onclick="addProduct()">✦ Generate Card Code</button>
-        <button class="btn-secondary" onclick="saveProduct()">💾 Save to Product List</button>
-        <button class="btn-clear" onclick="clearForm()">✕ Clear Form</button>
+          <div class="form-group">
+            <label>Product Image Path or URL</label>
+            <input type="text" id="prodImg" placeholder="images/product.jpg  or  https://..." oninput="updateImgPreview()"/>
+            <div class="img-preview-wrap" id="imgPreviewWrap"><span>🖼️</span></div>
+          </div>
 
-      </div>
-    </div>
+          <div class="form-group">
+            <label>Star Rating</label>
+            <div class="star-row">
+              <input class="star-opt" type="radio" name="stars" id="s5" value="★★★★★" onchange="updatePreview()">
+              <label for="s5" title="5 stars">★</label>
+              <input class="star-opt" type="radio" name="stars" id="s4" value="★★★★☆" onchange="updatePreview()">
+              <label for="s4" title="4 stars">★</label>
+              <input class="star-opt" type="radio" name="stars" id="s3" value="★★★☆☆" onchange="updatePreview()">
+              <label for="s3" title="3 stars">★</label>
+              <input class="star-opt" type="radio" name="stars" id="s2" value="★★☆☆☆" onchange="updatePreview()">
+              <label for="s2" title="2 stars">★</label>
+              <input class="star-opt" type="radio" name="stars" id="s1" value="★☆☆☆☆" onchange="updatePreview()">
+              <label for="s1" title="1 star">★</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Numeric Rating</label>
+            <input type="number" id="prodRating" placeholder="e.g. 4.8" min="1" max="5" step="0.1" oninput="updatePreview()"/>
+          </div>
+
+          <div class="form-group">
+            <label>Sold Count (optional)</label>
+            <input type="text" id="prodSold" placeholder="e.g. 2.3k+ sold" oninput="updatePreview()"/>
+          </div>
+
+          <div class="form-group">
+            <label>Badge Color</label>
+            <div class="badge-opts">
+              <div class="badge-opt bh selected" data-badge="bh" onclick="selectBadge(this)">Rose</div>
+              <div class="badge-opt bn" data-badge="bn" onclick="selectBadge(this)">Mauve</div>
+              <div class="badge-opt bs" data-badge="bs" onclick="selectBadge(this)">Gold</div>
+              <div class="badge-opt bl" data-badge="bl" onclick="selectBadge(this)">Pink</div>
+            </div>
+          </div>
+
+          <button class="btn-primary" onclick="addProduct()">✦ Generate Card Code</button>
+          <button class="btn-push" id="pushBtn" onclick="pushToSite('allfnds')" disabled>🚀 Add to Site (GitHub)</button>
+          <button class="btn-secondary" onclick="saveProduct()">💾 Save to Product List</button>
+          <button class="btn-clear" onclick="clearForm()">✕ Clear Form</button>
+
+        </div><!-- /tab-allfnds -->
+
+        <!-- ── TOP PICKS TAB ── -->
+        <div class="tab-pane" id="tab-toppick">
+
+          <div class="form-group">
+            <label>Product Name</label>
+            <input type="text" id="tpName" placeholder="e.g. Parlovable Women's Fuzzy Slippers" oninput="updateTpPreview()"/>
+          </div>
+
+          <div class="form-group">
+            <label>Category</label>
+            <select id="tpCat" onchange="updateTpPreview()">
+              <option value="">— Select category —</option>
+              <option value="cute">Cute Finds</option>
+              <option value="cool">Cool Finds</option>
+              <option value="home">Home Finds</option>
+              <option value="bedroom">Bedroom Finds</option>
+              <option value="bathroom">Bathroom Finds</option>
+              <option value="kitchen">Kitchen Favorites</option>
+              <option value="toys">Toys & Games</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Affiliate Link (Amazon)</label>
+            <input type="url" id="tpLink" placeholder="https://amzn.to/xxxxxxx" oninput="updateTpPreview()"/>
+          </div>
+
+          <div class="form-group">
+            <label>Product Image Path or URL</label>
+            <input type="text" id="tpImg" placeholder="images/product.jpg  or  https://..." oninput="updateTpImgPreview()"/>
+            <div class="img-preview-wrap" id="tpImgPreviewWrap"><span>🖼️</span></div>
+          </div>
+
+          <div class="form-group">
+            <label>Star Rating</label>
+            <div class="star-row">
+              <input class="tp-star-opt" type="radio" name="tpstars" id="tp5" value="★★★★★" onchange="updateTpPreview()">
+              <label for="tp5" title="5 stars">★</label>
+              <input class="tp-star-opt" type="radio" name="tpstars" id="tp4" value="★★★★☆" onchange="updateTpPreview()">
+              <label for="tp4" title="4 stars">★</label>
+              <input class="tp-star-opt" type="radio" name="tpstars" id="tp3" value="★★★☆☆" onchange="updateTpPreview()">
+              <label for="tp3" title="3 stars">★</label>
+              <input class="tp-star-opt" type="radio" name="tpstars" id="tp2" value="★★☆☆☆" onchange="updateTpPreview()">
+              <label for="tp2" title="2 stars">★</label>
+              <input class="tp-star-opt" type="radio" name="tpstars" id="tp1" value="★☆☆☆☆" onchange="updateTpPreview()">
+              <label for="tp1" title="1 star">★</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Numeric Rating</label>
+            <input type="number" id="tpRating" placeholder="e.g. 4.9" min="1" max="5" step="0.1" oninput="updateTpPreview()"/>
+          </div>
+
+          <div class="form-group">
+            <label>Sold Count (optional)</label>
+            <input type="text" id="tpSold" placeholder="e.g. 2.3k+ sold" oninput="updateTpPreview()"/>
+          </div>
+
+          <div class="form-group">
+            <label>Card Background</label>
+            <select id="tpBg" onchange="updateTpPreview()">
+              <option value="pb1">pb1 — Pink Coral</option>
+              <option value="pb2">pb2 — Lavender</option>
+              <option value="pb3">pb3 — Sky Blue</option>
+              <option value="pb4">pb4 — Warm Sand</option>
+              <option value="pb5">pb5 — Mint Green</option>
+              <option value="pb6">pb6 — Peach</option>
+              <option value="pb7">pb7 — Soft Purple</option>
+              <option value="pb8">pb8 — Butter</option>
+              <option value="pb9">pb9 — Rose</option>
+              <option value="pb10">pb10 — Sage</option>
+              <option value="pb11">pb11 — Caramel</option>
+              <option value="pb12">pb12 — Dusty Pink</option>
+            </select>
+          </div>
+
+          <button class="btn-primary" onclick="generateTpCode()">🏆 Generate Top Pick Code</button>
+          <button class="btn-push-tp" id="pushTpBtn" onclick="pushToSite('toppick')" disabled>🚀 Add to Site (GitHub)</button>
+          <button class="btn-clear" onclick="clearTpForm()" style="margin-top:8px">✕ Clear Form</button>
+
+        </div><!-- /tab-toppick -->
+
+      </div><!-- /panel-body -->
+    </div><!-- /panel -->
 
     <!-- SAVED PRODUCTS LIST -->
     <div class="products-section">
@@ -268,7 +403,7 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
   <!-- RIGHT: PREVIEW + CODE -->
   <div class="output-panel">
     <div class="output-head">
-      <h3>Live Preview & Code</h3>
+      <h3 id="previewPanelTitle">Live Preview & Code</h3>
       <button class="copy-btn" id="copyBtn" onclick="copyCode()">Copy Code</button>
     </div>
 
@@ -593,13 +728,305 @@ function clearForm(){
   document.getElementById('previewMeta').textContent = '★★★★★ 4.8 · 1.2k+ sold';
 }
 
+// ── TABS ──────────────────────────────────────────
+let activeTab = 'allfnds';
+function switchTab(tab, btn){
+  activeTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+  // Reset code output
+  document.getElementById('codeOutput').innerHTML = '<span style="opacity:.4">// Fill the form to generate your card code...</span>';
+  document.getElementById('previewPanelTitle').textContent = tab === 'toppick' ? '🏆 Top Pick Preview & Code' : 'Live Preview & Code';
+}
+
+// ── TOP PICKS HELPERS ─────────────────────────────
+function getTpStars(){
+  const checked = document.querySelector('.tp-star-opt:checked');
+  return checked ? checked.value : '★★★★★';
+}
+
+function updateTpImgPreview(){
+  const src = document.getElementById('tpImg').value.trim();
+  const wrap = document.getElementById('tpImgPreviewWrap');
+  if(src){
+    wrap.innerHTML = `<img src="${src}" onerror="this.style.display='none'" alt="preview">`;
+    wrap.classList.add('has-img');
+  } else {
+    wrap.innerHTML = '<span>🖼️</span>';
+    wrap.classList.remove('has-img');
+  }
+  updateTpPreview();
+}
+
+function updateTpPreview(){
+  const name   = document.getElementById('tpName').value.trim() || 'Product name will appear here';
+  const cat    = document.getElementById('tpCat').value;
+  const img    = document.getElementById('tpImg').value.trim();
+  const stars  = getTpStars();
+  const rating = document.getElementById('tpRating').value.trim() || '4.8';
+  const sold   = document.getElementById('tpSold').value.trim() || '1.2k+ sold';
+  const pb     = document.getElementById('tpBg').value || 'pb1';
+  const catLabel = CAT_LABELS[cat] || 'Category';
+  const emoji  = CAT_EMOJIS[cat] || '🛍️';
+
+  document.getElementById('previewName').textContent = name;
+  document.getElementById('previewCat').textContent  = catLabel;
+  document.getElementById('previewMeta').textContent = `${stars} ${rating} · ${sold}`;
+
+  const previewImg = document.getElementById('previewImg');
+  previewImg.className = `preview-card-img ${pb}`;
+  // No badge on top picks
+  const existingBadge = previewImg.querySelector('.preview-badge');
+  if(existingBadge) existingBadge.remove();
+
+  let existingImg   = previewImg.querySelector('img');
+  let existingEmoji = document.getElementById('previewEmoji');
+  if(img){
+    if(!existingImg){
+      existingImg = document.createElement('img');
+      existingImg.style.cssText = 'width:100%;height:100%;object-fit:contain;position:absolute;inset:0;padding:6px';
+      previewImg.appendChild(existingImg);
+    }
+    existingImg.src = img;
+    if(existingEmoji) existingEmoji.style.display = 'none';
+  } else {
+    if(existingImg) existingImg.remove();
+    if(!existingEmoji){
+      existingEmoji = document.createElement('span');
+      existingEmoji.id = 'previewEmoji';
+      previewImg.appendChild(existingEmoji);
+    }
+    existingEmoji.style.display = '';
+    existingEmoji.textContent = emoji;
+  }
+
+  updateTpCode();
+}
+
+function updateTpCode(){
+  const cat    = document.getElementById('tpCat').value;
+  const name   = document.getElementById('tpName').value.trim();
+  const link   = document.getElementById('tpLink').value.trim();
+  const img    = document.getElementById('tpImg').value.trim();
+  const stars  = getTpStars();
+  const rating = document.getElementById('tpRating').value.trim() || '4.8';
+  const sold   = document.getElementById('tpSold').value.trim() || '1.2k+ sold';
+  const pb     = document.getElementById('tpBg').value || 'pb1';
+  const catLabel = CAT_LABELS[cat] || (cat || 'Category');
+
+  if(!name && !cat){
+    document.getElementById('codeOutput').innerHTML = '<span style="opacity:.4">// Fill the form to generate your Top Pick code...</span>';
+    return;
+  }
+
+  const imgLine = img
+    ? `\n    <img src="${img}" alt="${name||'Product'}">`
+    : `\n    <span>${CAT_EMOJIS[cat]||'🛍️'}</span>`;
+
+  const code = `<div class="tp-card">
+  <div class="tp-img ${pb}">${imgLine}
+  </div>
+  <div class="tp-body">
+    <div class="tp-cat">${catLabel}</div>
+    <div class="tp-name">${name||'Product Name'}</div>
+    <div class="tp-meta">
+      <span class="tp-stars">${stars}</span>
+      <span class="tp-rating">${rating}</span>
+      <span class="tp-sold">${sold}</span>
+    </div>
+    <a href="${link||'YOUR_AFFILIATE_LINK_HERE'}" target="_blank" rel="noopener" class="tp-btn">Shop on Amazon</a>
+  </div>
+</div>`;
+
+  document.getElementById('codeOutput').textContent = code;
+}
+
+function generateTpCode(){
+  const name = document.getElementById('tpName').value.trim();
+  const cat  = document.getElementById('tpCat').value;
+  const link = document.getElementById('tpLink').value.trim();
+  if(!name){ showToast('⚠️ Please enter a product name', false); return; }
+  if(!cat){  showToast('⚠️ Please select a category', false); return; }
+  if(!link){ showToast('⚠️ Please enter an affiliate link', false); return; }
+  updateTpCode();
+  const code = document.getElementById('codeOutput').textContent;
+  navigator.clipboard.writeText(code).then(()=>{
+    showToast('🏆 Top Pick code generated & copied! Paste inside sliderTrack in index.html');
+  });
+}
+
+function clearTpForm(){
+  document.getElementById('tpName').value   = '';
+  document.getElementById('tpCat').value    = '';
+  document.getElementById('tpLink').value   = '';
+  document.getElementById('tpImg').value    = '';
+  document.getElementById('tpRating').value = '';
+  document.getElementById('tpSold').value   = '';
+  document.getElementById('tpBg').value     = 'pb1';
+  document.querySelectorAll('.tp-star-opt').forEach(s => s.checked = false);
+  document.getElementById('tpImgPreviewWrap').innerHTML = '<span>🖼️</span>';
+  document.getElementById('tpImgPreviewWrap').classList.remove('has-img');
+  document.getElementById('codeOutput').innerHTML = '<span style="opacity:.4">// Fill the form to generate your Top Pick code...</span>';
+  document.getElementById('previewName').textContent = 'Product name will appear here';
+  document.getElementById('previewCat').textContent  = 'Category';
+  document.getElementById('previewMeta').textContent = '★★★★★ 4.8 · 1.2k+ sold';
+}
+
 // ── INIT ──────────────────────────────────────────
 renderProducts();
 
-// Export all button — add to products section
+// Export all button
 document.querySelector('.products-head').insertAdjacentHTML('beforeend',
   `<button onclick="exportAll()" style="background:#f9eee9;border:1px solid #e0d4cc;color:#5c4a4a;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;font-family:Arial,sans-serif;transition:all .2s" onmouseover="this.style.background='#b85f58';this.style.color='#fff'" onmouseout="this.style.background='#f9eee9';this.style.color='#5c4a4a'">Export All Codes</button>`
 );
+
+// Load saved token on startup
+(function(){
+  const saved = localStorage.getItem('ghToken');
+  if(saved){
+    document.getElementById('ghToken').value = saved;
+    setTokenStatus(true);
+    enablePushBtns(true);
+  }
+})();
+
+// ── GITHUB TOKEN ──────────────────────────────────
+function saveToken(){
+  const t = document.getElementById('ghToken').value.trim();
+  if(!t){ showToast('⚠️ Please paste your GitHub token first', false); return; }
+  localStorage.setItem('ghToken', t);
+  setTokenStatus(true);
+  enablePushBtns(true);
+  showToast('🔑 Token saved! You can now push directly to GitHub.');
+}
+
+function checkToken(){
+  const t = document.getElementById('ghToken').value.trim();
+  if(!t){ setTokenStatus(false); enablePushBtns(false); }
+}
+
+function setTokenStatus(ok){
+  const el = document.getElementById('ghStatus');
+  if(ok){ el.textContent = '✓ Connected'; el.className = 'gh-status connected'; }
+  else  { el.textContent = 'Not connected'; el.className = 'gh-status disconnected'; }
+}
+
+function enablePushBtns(ok){
+  const b1 = document.getElementById('pushBtn');
+  const b2 = document.getElementById('pushTpBtn');
+  if(b1) b1.disabled = !ok;
+  if(b2) b2.disabled = !ok;
+}
+
+// ── GITHUB PUSH ───────────────────────────────────
+const GH_USER = 'zuufinds';
+const GH_REPO = 'ZuuFinds';
+const GH_FILE = 'index.html';
+const GH_API  = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
+
+async function pushToSite(tab){
+  const token = localStorage.getItem('ghToken');
+  if(!token){ showToast('⚠️ No GitHub token saved. Enter your token first.', false); return; }
+
+  // Validate fields
+  if(tab === 'allfnds'){
+    const name = document.getElementById('prodName').value.trim();
+    const cat  = document.getElementById('prodCat').value;
+    const link = document.getElementById('prodLink').value.trim();
+    if(!name){ showToast('⚠️ Please enter a product name', false); return; }
+    if(!cat){  showToast('⚠️ Please select a category', false); return; }
+    if(!link){ showToast('⚠️ Please enter an affiliate link', false); return; }
+  } else {
+    const name = document.getElementById('tpName').value.trim();
+    const cat  = document.getElementById('tpCat').value;
+    const link = document.getElementById('tpLink').value.trim();
+    if(!name){ showToast('⚠️ Please enter a product name', false); return; }
+    if(!cat){  showToast('⚠️ Please select a category', false); return; }
+    if(!link){ showToast('⚠️ Please enter an affiliate link', false); return; }
+  }
+
+  const btn = document.getElementById(tab === 'allfnds' ? 'pushBtn' : 'pushTpBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Pushing to GitHub...';
+
+  try {
+    // 1. Fetch current index.html from GitHub
+    const res = await fetch(GH_API, {
+      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    if(!res.ok){
+      const err = await res.json();
+      throw new Error(err.message || `GitHub error ${res.status}`);
+    }
+    const data = await res.json();
+    const currentContent = atob(data.content.replace(/\n/g,''));
+    const sha = data.sha;
+
+    // 2. Build new card code
+    let newCard = '';
+    if(tab === 'allfnds'){
+      updateCode();
+      newCard = document.getElementById('codeOutput').textContent;
+      if(newCard.includes('Fill the form')){ addProduct(); newCard = document.getElementById('codeOutput').textContent; }
+    } else {
+      updateTpCode();
+      newCard = document.getElementById('codeOutput').textContent;
+    }
+
+    // 3. Find insertion point and insert
+    let updatedContent;
+    if(tab === 'allfnds'){
+      const marker = '<div class="finds-grid" id="findsGrid">';
+      const idx = currentContent.indexOf(marker);
+      if(idx === -1) throw new Error('Could not find finds-grid in index.html. Make sure your index.html is up to date.');
+      const insertAt = idx + marker.length;
+      updatedContent = currentContent.slice(0, insertAt) + '\n\n    ' + newCard.split('\n').join('\n    ') + '\n' + currentContent.slice(insertAt);
+    } else {
+      const marker = '<div class="slider-track" id="sliderTrack">';
+      const idx = currentContent.indexOf(marker);
+      if(idx === -1) throw new Error('Could not find sliderTrack in index.html. Make sure your index.html is up to date.');
+      const insertAt = idx + marker.length;
+      updatedContent = currentContent.slice(0, insertAt) + '\n\n        ' + newCard.split('\n').join('\n        ') + '\n' + currentContent.slice(insertAt);
+    }
+
+    // 4. Push updated file back to GitHub
+    const prodName = tab === 'allfnds'
+      ? document.getElementById('prodName').value.trim()
+      : document.getElementById('tpName').value.trim();
+
+    const pushRes = await fetch(GH_API, {
+      method: 'PUT',
+      headers: {
+        Authorization: `token ${token}`,
+        Accept: 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: `Add product: ${prodName}`,
+        content: btoa(unescape(encodeURIComponent(updatedContent))),
+        sha: sha
+      })
+    });
+
+    if(!pushRes.ok){
+      const err = await pushRes.json();
+      throw new Error(err.message || `Push failed with status ${pushRes.status}`);
+    }
+
+    showToast(`✅ "${prodName}" is now live on your site!`);
+    if(tab === 'allfnds'){ clearForm(); saveProduct(); }
+    else clearTpForm();
+
+  } catch(e){
+    showToast(`❌ ${e.message}`, false);
+    console.error(e);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = tab === 'allfnds' ? '🚀 Add to Site (GitHub)' : '🚀 Add to Site (GitHub)';
+  }
+}
 </script>
 </body>
 </html>
