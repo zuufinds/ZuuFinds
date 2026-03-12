@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Zuu Finds Ã¢ÂÂ Your Favourite Amazon Finds</title>
+<title>Zuu Finds — Your Favourite Amazon Finds</title>
 <link rel="icon" type="image/png" href="logoimgs/zuufavicon.png">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -12,30 +12,25 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
 a{text-decoration:none;color:inherit}
 img{display:block;max-width:100%}
 
-/* Ã¢ÂÂÃ¢ÂÂ NAV Ã¢ÂÂÃ¢ÂÂ */
+/* NAV */
 nav{background:#2a1f1f;padding:0 24px;position:sticky;top:0;z-index:100;border-bottom:2px solid #b85f58}
 .nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:16px;height:76px}
-
 .nav-brand{display:flex;align-items:center;gap:10px;flex-shrink:0;text-decoration:none}
 .nav-brand img{height:40px;display:block}
 .nav-brand-text{color:#fff;font-size:19px;font-weight:700;line-height:1;letter-spacing:-.01em}
 .nav-brand-text em{font-style:italic;color:#d4948a}
-
 .nav-search{display:flex;align-items:center;background:#fff;border-radius:4px;overflow:hidden;border:2px solid #b85f58;width:580px;flex-shrink:0}
 .nav-search input{flex:1;border:none;outline:none;padding:10px 16px;font-size:14px;font-family:"Amazon Ember",Arial,sans-serif;color:#0f1111;background:transparent}
 .nav-search input::placeholder{color:#aaa}
 .nav-search button{background:#b85f58;border:none;padding:0 18px;height:42px;cursor:pointer;color:#fff;font-size:18px;transition:background .2s;flex-shrink:0}
 .nav-search button:hover{background:#9e4e48}
-
-/* Social icons beside search */
 .nav-socials{display:flex;align-items:center;gap:8px;flex-shrink:0}
 .nav-socials a{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#e8ddd4;transition:all .2s}
 .nav-socials a:hover{background:#b85f58;border-color:#b85f58;color:#fff}
 .nav-socials a svg{width:17px;height:17px;fill:currentColor}
-
 .nav-menu-btn{display:none;background:none;border:none;color:#e8ddd4;font-size:24px;cursor:pointer;padding:4px;margin-left:4px}
 
-/* Ã¢ÂÂÃ¢ÂÂ MOBILE NAV Ã¢ÂÂÃ¢ÂÂ */
+/* MOBILE NAV */
 .mobile-nav{display:none;background:#2a1f1f;padding:8px 0 12px;border-top:1px solid #3a2f2f}
 .mobile-nav.open{display:block}
 .mobile-search{padding:10px 16px;border-bottom:1px solid #3a2f2f}
@@ -47,13 +42,15 @@ nav{background:#2a1f1f;padding:0 24px;position:sticky;top:0;z-index:100;border-b
 .mobile-nav a img{width:26px;height:26px;object-fit:contain;border-radius:50%}
 .mobile-nav a:hover{background:rgba(255,255,255,.07);color:#fff}
 
-/* Ã¢ÂÂÃ¢ÂÂ HERO Ã¢ÂÂÃ¢ÂÂ */
+/* HERO */
 .hero{background:linear-gradient(135deg,#f7ece6,#f0e4ec);padding:22px 20px 0;text-align:center;border-bottom:2px solid #edddd6}
 .hero h1{font-size:clamp(17px,3vw,24px);color:#0f1111;font-weight:700;margin-bottom:4px}
 .hero h1 em{font-style:italic;color:#b85f58}
 .hero p{font-size:13px;color:#777;max-width:480px;margin:0 auto 4px}
+.hero-disclosure{font-size:11.5px;color:#999;margin:2px auto 14px;max-width:480px}
+.hero-disclosure .disc-label{color:#d4948a;font-weight:600}
 
-/* Ã¢ÂÂÃ¢ÂÂ CATEGORY STRIP (inside hero) Ã¢ÂÂÃ¢ÂÂ */
+/* CATEGORY STRIP */
 .cat-strip{background:transparent;overflow-x:auto;scrollbar-width:none;padding-bottom:0}
 .cat-strip::-webkit-scrollbar{display:none}
 .cat-strip-inner{max-width:1200px;margin:0 auto;display:flex;gap:0;white-space:nowrap;justify-content:center;border-top:1px solid rgba(184,95,88,.15)}
@@ -62,10 +59,10 @@ nav{background:#2a1f1f;padding:0 24px;position:sticky;top:0;z-index:100;border-b
 .f-btn:hover{color:#b85f58;border-bottom-color:#e8d4c8}
 .f-btn.active{color:#b85f58;border-bottom-color:#b85f58;font-weight:700}
 
-/* Ã¢ÂÂÃ¢ÂÂ LAYOUT Ã¢ÂÂÃ¢ÂÂ */
+/* LAYOUT */
 .wrap{max-width:1200px;margin:0 auto;padding:24px 20px 60px}
 
-/* Ã¢ÂÂÃ¢ÂÂ TOP PICKS SLIDER Ã¢ÂÂÃ¢ÂÂ */
+/* TOP PICKS SLIDER */
 .toppicks-section{background:#fff;border:1px solid #edddd6;border-radius:10px;padding:18px 0;margin-bottom:28px;overflow:hidden}
 .toppicks-head{display:flex;align-items:center;justify-content:space-between;padding:0 20px;margin-bottom:14px}
 .toppicks-head h2{font-size:17px;font-weight:700;color:#0f1111}
@@ -74,7 +71,6 @@ nav{background:#2a1f1f;padding:0 24px;position:sticky;top:0;z-index:100;border-b
 .tp-nav-btn:hover{background:#b85f58;border-color:#b85f58;color:#fff}
 .slider-track-wrap{overflow:hidden;padding:0 20px}
 .slider-track{display:flex;gap:14px;transition:transform .35s cubic-bezier(.4,0,.2,1);will-change:transform}
-
 .tp-card{flex:0 0 180px;background:#faf6f0;border:1px solid #edddd6;border-radius:8px;overflow:hidden;transition:box-shadow .2s,transform .2s;display:flex;flex-direction:column}
 .tp-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.1);transform:translateY(-2px)}
 .tp-img{width:100%;aspect-ratio:1/1;position:relative;overflow:hidden;background:#f0e8e4;display:flex;align-items:center;justify-content:center;font-size:38px;flex-shrink:0}
@@ -89,23 +85,18 @@ nav{background:#2a1f1f;padding:0 24px;position:sticky;top:0;z-index:100;border-b
 .tp-btn{display:block;text-align:center;background:#fff4c2;color:#0f1111;padding:8px 0;border-radius:20px;font-size:12px;font-weight:700;border:1px solid #e8d87a;transition:background .2s;margin-top:auto}
 .tp-btn:hover{background:#ffe566}
 
-/* Ã¢ÂÂÃ¢ÂÂ DISCLOSURE Ã¢ÂÂÃ¢ÂÂ */
-.hero-disclosure{font-size:11.5px;color:#999;margin:2px auto 14px;max-width:480px}
-.hero-disclosure .disc-label{color:#d4948a;font-weight:600}
-
-/* Ã¢ÂÂÃ¢ÂÂ ALL FINDS Ã¢ÂÂÃ¢ÂÂ */
+/* ALL FINDS */
 .finds-section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
 .finds-section-head h2{font-size:17px;font-weight:700;color:#0f1111}
 .finds-count{font-size:12px;color:#999}
 
-/* Ã¢ÂÂÃ¢ÂÂ PRODUCT GRID Ã¢ÂÂ 4 cols, max 5 rows = 20 items shown Ã¢ÂÂÃ¢ÂÂ */
+/* PRODUCT GRID */
 .finds-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
 .pcard{background:#fff;border:1px solid #e8ddd6;border-radius:8px;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .2s,transform .2s}
 .pcard:hover{box-shadow:0 4px 18px rgba(0,0,0,.1);transform:translateY(-2px)}
 .pcard-img{width:100%;aspect-ratio:1/1;position:relative;overflow:hidden;background:#f8f4f0;display:flex;align-items:center;justify-content:center;font-size:44px}
 .pcard-img img{width:100%;height:100%;object-fit:contain;position:absolute;inset:0;padding:8px}
 .pcard-img .emoji-ph{position:relative;z-index:1}
-
 .pb1{background:linear-gradient(150deg,#f5ddd8,#e0a89e)}
 .pb2{background:linear-gradient(150deg,#ead8ec,#c4a0cc)}
 .pb3{background:linear-gradient(150deg,#dce8f4,#a0c0dc)}
@@ -118,14 +109,12 @@ nav{background:#2a1f1f;padding:0 24px;position:sticky;top:0;z-index:100;border-b
 .pb10{background:linear-gradient(150deg,#dce8e0,#90b8a0)}
 .pb11{background:linear-gradient(150deg,#ece4d8,#c4a87c)}
 .pb12{background:linear-gradient(150deg,#f4dce4,#d498ac)}
-
 .p-badge{position:absolute;top:7px;left:7px;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:2px;z-index:3}
 .bh{background:#b85f58;color:#fff}
 .bn{background:#9b7b8a;color:#fff}
 .bs{background:#c8a87a;color:#0f1111}
 .bl{background:#f4a0b0;color:#fff}
 body.filtered .cat-badge{display:none}
-
 .pcard-body{padding:11px 12px 13px;flex:1;display:flex;flex-direction:column;gap:5px}
 .pcard-cat{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#b85f58;font-weight:600}
 .pcard-name{font-size:13.5px;color:#0f1111;line-height:1.35;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -135,14 +124,12 @@ body.filtered .cat-badge{display:none}
 .pcard-sold{font-size:10.5px;color:#999}
 .pcard-btn{display:block;text-align:center;background:#fff4c2;color:#0f1111;padding:9px 0;border-radius:20px;font-size:13px;font-weight:700;margin-top:8px;transition:background .2s;border:1px solid #e8d87a}
 .pcard-btn:hover{background:#ffe566}
-
-/* Hidden beyond row 5 (20 items) */
 .pcard.row-hidden{display:none}
 .show-more-wrap{text-align:center;margin-top:20px}
 .show-more-btn{background:#fff;border:1.5px solid #b85f58;color:#b85f58;padding:10px 32px;border-radius:20px;font-size:14px;font-weight:600;cursor:pointer;font-family:"Amazon Ember",Arial,sans-serif;transition:all .2s}
 .show-more-btn:hover{background:#b85f58;color:#fff}
 
-/* Ã¢ÂÂÃ¢ÂÂ FOOTER Ã¢ÂÂÃ¢ÂÂ */
+/* FOOTER */
 footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid #b85f58;text-align:center}
 .footer-top{max-width:1200px;margin:0 auto 24px}
 .footer-logo-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px}
@@ -159,7 +146,7 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
 .footer-links a:hover{color:#fff}
 .footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:14px;font-size:11.5px;color:#666;max-width:1200px;margin:0 auto}
 
-/* Ã¢ÂÂÃ¢ÂÂ RESPONSIVE Ã¢ÂÂÃ¢ÂÂ */
+/* RESPONSIVE */
 @media(max-width:1000px){.finds-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:740px){
   .finds-grid{grid-template-columns:repeat(2,1fr);gap:12px}
@@ -179,20 +166,16 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
 </head>
 <body>
 
-<!-- Ã¢ÂÂÃ¢ÂÂ NAV Ã¢ÂÂÃ¢ÂÂ -->
 <nav>
   <div class="nav-inner">
     <a href="#" class="nav-brand">
       <img src="logoimgs/zuu512.png" alt="Zuu Finds">
       <div class="nav-brand-text">Zuu <em>Finds</em></div>
     </a>
-
     <div class="nav-search">
       <input type="text" id="searchInput" placeholder="Search for cute finds, home picks, gifts..." oninput="searchProducts()">
-      <button onclick="searchProducts()">Ã°ÂÂÂ</button>
+      <button onclick="searchProducts()">&#128269;</button>
     </div>
-
-    <!-- X, Pinterest, TikTok beside search bar -->
     <div class="nav-socials">
       <a href="https://x.com/zuufinds" target="_blank" rel="noopener" title="X / Twitter">
         <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
@@ -204,15 +187,13 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
         <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.27 8.27 0 0 0 4.84 1.55V6.79a4.85 4.85 0 0 1-1.07-.1z"/></svg>
       </a>
     </div>
-
-    <button class="nav-menu-btn" onclick="toggleMenu()">Ã¢ÂÂ°</button>
+    <button class="nav-menu-btn" onclick="toggleMenu()">&#9776;</button>
   </div>
-
   <div class="mobile-nav" id="mobileNav">
     <div class="mobile-search">
       <div class="mobile-search-inner">
         <input type="text" id="mobileSearchInput" placeholder="Search finds..." oninput="searchProducts()">
-        <button onclick="searchProducts()">Ã°ÂÂÂ</button>
+        <button onclick="searchProducts()">&#128269;</button>
       </div>
     </div>
     <a href="#" onclick="filterAll();toggleMenu();return false"><img src="icons/allfinds.png"> All Finds</a>
@@ -222,14 +203,13 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
     <a href="#" onclick="filterCat(this,'bedroom');toggleMenu();return false"><img src="icons/bedroom.png"> Bedroom Finds</a>
     <a href="#" onclick="filterCat(this,'bathroom');toggleMenu();return false"><img src="icons/bathroom.png"> Bathroom Finds</a>
     <a href="#" onclick="filterCat(this,'kitchen');toggleMenu();return false"><img src="icons/kitchenfav.png"> Kitchen Favorites</a>
-    <a href="#" onclick="filterCat(this,'toys');toggleMenu();return false"><img src="icons/toysgames.png"> Toys & Games</a>
+    <a href="#" onclick="filterCat(this,'toys');toggleMenu();return false"><img src="icons/toysgames.png"> Toys &amp; Games</a>
   </div>
 </nav>
 
-<!-- Ã¢ÂÂÃ¢ÂÂ HERO with categories underneath Ã¢ÂÂÃ¢ÂÂ -->
 <div class="hero">
   <h1>Your Favourite <em>Amazon Finds</em></h1>
-  <p>Cute, cool & cosy picks hand-curated just for you. New finds everyday Ã°ÂÂÂ</p>
+  <p>Cute, cool &amp; cosy picks hand-curated just for you. New finds everyday &#128149;</p>
   <p class="hero-disclosure"><span class="disc-label">Affiliate Disclosure:</span> As an Amazon Associate I earn from qualifying purchases.</p>
   <div class="cat-strip">
     <div class="cat-strip-inner">
@@ -240,20 +220,20 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
       <button class="f-btn" onclick="filterCat(this,'bedroom')"><img src="icons/bedroom.png"> Bedroom Finds</button>
       <button class="f-btn" onclick="filterCat(this,'bathroom')"><img src="icons/bathroom.png"> Bathroom Finds</button>
       <button class="f-btn" onclick="filterCat(this,'kitchen')"><img src="icons/kitchenfav.png"> Kitchen Favorites</button>
-      <button class="f-btn" onclick="filterCat(this,'toys')"><img src="icons/toysgames.png"> Toys & Games</button>
+      <button class="f-btn" onclick="filterCat(this,'toys')"><img src="icons/toysgames.png"> Toys &amp; Games</button>
     </div>
   </div>
 </div>
 
 <div class="wrap">
 
-  <!-- Ã¢ÂÂÃ¢ÂÂ TOP PICKS SLIDER Ã¢ÂÂÃ¢ÂÂ -->
+  <!-- TOP PICKS SLIDER -->
   <div class="toppicks-section" id="toppicksSection">
     <div class="toppicks-head">
-      <h2>Ã°ÂÂÂ Top Picks</h2>
+      <h2>&#127942; Top Picks</h2>
       <div class="toppicks-nav">
-        <button class="tp-nav-btn" onclick="slideLeft()">Ã¢ÂÂ¹</button>
-        <button class="tp-nav-btn" onclick="slideRight()">Ã¢ÂÂº</button>
+        <button class="tp-nav-btn" onclick="slideLeft()">&#8249;</button>
+        <button class="tp-nav-btn" onclick="slideRight()">&#8250;</button>
       </div>
     </div>
     <div class="slider-track-wrap">
@@ -261,20 +241,19 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
 
         <div class="tp-card">
           <div class="tp-img pb1">
-            <img src="products/catpaw.jpg" alt="Cat Paw Cushion — Kawaii Plush Seat 🐾">
+            <img src="products/catpaw.jpg" alt="Cat Paw Cushion Kawaii Plush Seat">
           </div>
           <div class="tp-body">
             <div class="tp-cat">Cute Finds</div>
-            <div class="tp-name">Cat Paw Cushion — Kawaii Plush Seat 🐾</div>
+            <div class="tp-name">Cat Paw Cushion &#8212; Kawaii Plush Seat &#128062;</div>
             <div class="tp-meta">
-              <span class="tp-stars">★★★★☆</span>
+              <span class="tp-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
               <span class="tp-rating">4.3</span>
               <span class="tp-sold">3k+ sold</span>
             </div>
             <a href="https://amzn.to/40nc2Z0" target="_blank" rel="noopener" class="tp-btn">Shop on Amazon</a>
           </div>
         </div>
-
 
         <div class="tp-card">
           <div class="tp-img pb1">
@@ -284,7 +263,7 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
             <div class="tp-cat">Cute Finds</div>
             <div class="tp-name">Parlovable Women's Fuzzy Slippers</div>
             <div class="tp-meta">
-              <span class="tp-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span>
+              <span class="tp-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
               <span class="tp-rating">4.8</span>
               <span class="tp-sold">2.3k+ sold</span>
             </div>
@@ -293,12 +272,12 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
         </div>
 
         <div class="tp-card">
-          <div class="tp-img pb2"><span>Ã°ÂÂÂ¯Ã¯Â¸Â</span></div>
+          <div class="tp-img pb2"><span>&#128367;&#65039;</span></div>
           <div class="tp-body">
             <div class="tp-cat">Home Finds</div>
-            <div class="tp-name">Zuu's Pick #2 Ã¢ÂÂ Home Finds</div>
+            <div class="tp-name">Zuu's Pick #2 &#8212; Home Finds</div>
             <div class="tp-meta">
-              <span class="tp-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span>
+              <span class="tp-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
               <span class="tp-rating">4.5</span>
               <span class="tp-sold">1.1k+ sold</span>
             </div>
@@ -307,12 +286,12 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
         </div>
 
         <div class="tp-card">
-          <div class="tp-img pb3"><span>Ã¢ÂÂ¨</span></div>
+          <div class="tp-img pb3"><span>&#10024;</span></div>
           <div class="tp-body">
             <div class="tp-cat">Cool Finds</div>
-            <div class="tp-name">Zuu's Pick #3 Ã¢ÂÂ Cool Finds</div>
+            <div class="tp-name">Zuu's Pick #3 &#8212; Cool Finds</div>
             <div class="tp-meta">
-              <span class="tp-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span>
+              <span class="tp-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
               <span class="tp-rating">4.7</span>
               <span class="tp-sold">890+ sold</span>
             </div>
@@ -321,12 +300,12 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
         </div>
 
         <div class="tp-card">
-          <div class="tp-img pb9"><span>Ã°ÂÂÂ</span></div>
+          <div class="tp-img pb9"><span>&#128705;</span></div>
           <div class="tp-body">
             <div class="tp-cat">Bathroom Finds</div>
-            <div class="tp-name">Zuu's Pick #4 Ã¢ÂÂ Bathroom</div>
+            <div class="tp-name">Zuu's Pick #4 &#8212; Bathroom</div>
             <div class="tp-meta">
-              <span class="tp-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span>
+              <span class="tp-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
               <span class="tp-rating">4.9</span>
               <span class="tp-sold">3.4k+ sold</span>
             </div>
@@ -335,12 +314,12 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
         </div>
 
         <div class="tp-card">
-          <div class="tp-img pb7"><span>Ã°ÂÂ§Â¥</span></div>
+          <div class="tp-img pb7"><span>&#129381;</span></div>
           <div class="tp-body">
             <div class="tp-cat">Cute Finds</div>
             <div class="tp-name">Oversized Knit Cardigan</div>
             <div class="tp-meta">
-              <span class="tp-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span>
+              <span class="tp-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
               <span class="tp-rating">4.8</span>
               <span class="tp-sold">5.6k+ sold</span>
             </div>
@@ -349,12 +328,12 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
         </div>
 
         <div class="tp-card">
-          <div class="tp-img pb4"><span>Ã°ÂÂÂ¼Ã¯Â¸Â</span></div>
+          <div class="tp-img pb4"><span>&#128444;&#65039;</span></div>
           <div class="tp-body">
             <div class="tp-cat">Home Finds</div>
             <div class="tp-name">Botanical Print Set of 3</div>
             <div class="tp-meta">
-              <span class="tp-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span>
+              <span class="tp-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span>
               <span class="tp-rating">4.4</span>
               <span class="tp-sold">720+ sold</span>
             </div>
@@ -363,12 +342,12 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
         </div>
 
         <div class="tp-card">
-          <div class="tp-img pb10"><span>Ã°ÂÂÂ³</span></div>
+          <div class="tp-img pb10"><span>&#127859;</span></div>
           <div class="tp-body">
             <div class="tp-cat">Kitchen Favorites</div>
             <div class="tp-name">Aesthetic Kitchen Essentials</div>
             <div class="tp-meta">
-              <span class="tp-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span>
+              <span class="tp-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
               <span class="tp-rating">4.6</span>
               <span class="tp-sold">1.8k+ sold</span>
             </div>
@@ -380,148 +359,143 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
     </div>
   </div>
 
-  <!-- Ã¢ÂÂÃ¢ÂÂ ALL FINDS Ã¢ÂÂÃ¢ÂÂ -->
+  <!-- ALL FINDS -->
   <div class="finds-section-head">
-    <h2>Ã¢ÂÂ¦ All Finds</h2>
+    <h2>&#10022; All Finds</h2>
     <span class="finds-count" id="findsCount"></span>
   </div>
 
   <div class="finds-grid" id="findsGrid">
 
-    <div class="pcard" data-cat="cute" data-name="Cat Paw Cushion - Kawaii Plush Seat ð¾">
+    <div class="pcard" data-cat="cute" data-name="Cat Paw Cushion Kawaii Plush Seat">
       <div class="pcard-img pb1">
-        <img src="products/catpaw.jpg" alt="Cat Paw Cushion - Kawaii Plush Seat ð¾">
+        <img src="products/catpaw.jpg" alt="Cat Paw Cushion Kawaii Plush Seat">
         <span class="p-badge bh cat-badge">Cute Finds</span>
       </div>
       <div class="pcard-body">
         <div class="pcard-cat">Cute Finds</div>
-        <div class="pcard-name">Cat Paw Cushion - Kawaii Plush Seat ð¾</div>
-        <div class="pcard-meta">
-          <span class="pcard-stars">âââââ</span>
-          <span class="pcard-rating">4.3</span>
-          <span class="pcard-sold">3k+ sold</span>
-        </div>
+        <div class="pcard-name">Cat Paw Cushion &#8212; Kawaii Plush Seat &#128062;</div>
+        <div class="pcard-meta"><span class="pcard-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span><span class="pcard-rating">4.3</span><span class="pcard-sold">3k+ sold</span></div>
         <a href="https://amzn.to/40nc2Z0" target="_blank" rel="noopener" class="pcard-btn">Shop on Amazon</a>
       </div>
     </div>
 
-
     <div class="pcard" data-cat="cute" data-name="Floral Wrap Mini Dress">
-      <div class="pcard-img pb1"><span class="emoji-ph">Ã°ÂÂÂ¸</span><span class="p-badge bh cat-badge">Cute Finds</span></div>
+      <div class="pcard-img pb1"><span class="emoji-ph">&#128248;</span><span class="p-badge bh cat-badge">Cute Finds</span></div>
       <div class="pcard-body">
         <div class="pcard-cat">Cute Finds</div>
         <div class="pcard-name">Floral Wrap Mini Dress</div>
-        <div class="pcard-meta"><span class="pcard-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span><span class="pcard-rating">4.8</span><span class="pcard-sold">1.2k+ sold</span></div>
+        <div class="pcard-meta"><span class="pcard-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="pcard-rating">4.8</span><span class="pcard-sold">1.2k+ sold</span></div>
         <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn">Shop on Amazon</a>
       </div>
     </div>
 
     <div class="pcard" data-cat="home" data-name="Lavender Soy Candle Set">
-      <div class="pcard-img pb2"><span class="emoji-ph">Ã°ÂÂÂ¯Ã¯Â¸Â</span><span class="p-badge bn cat-badge">Home Finds</span></div>
+      <div class="pcard-img pb2"><span class="emoji-ph">&#128367;&#65039;</span><span class="p-badge bn cat-badge">Home Finds</span></div>
       <div class="pcard-body">
         <div class="pcard-cat">Home Finds</div>
         <div class="pcard-name">Lavender Soy Candle Set</div>
-        <div class="pcard-meta"><span class="pcard-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span><span class="pcard-rating">4.9</span><span class="pcard-sold">3.4k+ sold</span></div>
+        <div class="pcard-meta"><span class="pcard-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="pcard-rating">4.9</span><span class="pcard-sold">3.4k+ sold</span></div>
         <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn">Shop on Amazon</a>
       </div>
     </div>
 
     <div class="pcard" data-cat="cute" data-name="Cloud Quilted Shoulder Bag">
-      <div class="pcard-img pb3"><span class="emoji-ph">Ã°ÂÂÂ</span><span class="p-badge bl cat-badge">Cute Finds</span></div>
+      <div class="pcard-img pb3"><span class="emoji-ph">&#128092;</span><span class="p-badge bl cat-badge">Cute Finds</span></div>
       <div class="pcard-body">
         <div class="pcard-cat">Cute Finds</div>
         <div class="pcard-name">Cloud Quilted Shoulder Bag</div>
-        <div class="pcard-meta"><span class="pcard-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span><span class="pcard-rating">4.7</span><span class="pcard-sold">980+ sold</span></div>
+        <div class="pcard-meta"><span class="pcard-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="pcard-rating">4.7</span><span class="pcard-sold">980+ sold</span></div>
         <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn">Shop on Amazon</a>
       </div>
     </div>
 
     <div class="pcard" data-cat="home" data-name="Botanical Print Set of 3">
-      <div class="pcard-img pb4"><span class="emoji-ph">Ã°ÂÂÂ¼Ã¯Â¸Â</span><span class="p-badge bs cat-badge">Home Finds</span></div>
+      <div class="pcard-img pb4"><span class="emoji-ph">&#128444;&#65039;</span><span class="p-badge bs cat-badge">Home Finds</span></div>
       <div class="pcard-body">
         <div class="pcard-cat">Home Finds</div>
         <div class="pcard-name">Botanical Print Set of 3</div>
-        <div class="pcard-meta"><span class="pcard-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span><span class="pcard-rating">4.4</span><span class="pcard-sold">720+ sold</span></div>
+        <div class="pcard-meta"><span class="pcard-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span><span class="pcard-rating">4.4</span><span class="pcard-sold">720+ sold</span></div>
         <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn">Shop on Amazon</a>
       </div>
     </div>
 
     <div class="pcard" data-cat="bedroom" data-name="Teddy Fleece Throw Blanket">
-      <div class="pcard-img pb5"><span class="emoji-ph">Ã°ÂÂ§Â¸</span><span class="p-badge bn cat-badge">Bedroom Finds</span></div>
+      <div class="pcard-img pb5"><span class="emoji-ph">&#129528;</span><span class="p-badge bn cat-badge">Bedroom Finds</span></div>
       <div class="pcard-body">
         <div class="pcard-cat">Bedroom Finds</div>
         <div class="pcard-name">Teddy Fleece Throw Blanket</div>
-        <div class="pcard-meta"><span class="pcard-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span><span class="pcard-rating">4.9</span><span class="pcard-sold">6.1k+ sold</span></div>
+        <div class="pcard-meta"><span class="pcard-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="pcard-rating">4.9</span><span class="pcard-sold">6.1k+ sold</span></div>
         <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn">Shop on Amazon</a>
       </div>
     </div>
 
     <div class="pcard" data-cat="cool" data-name="Pearl Moon Hair Clips Set">
-      <div class="pcard-img pb6"><span class="emoji-ph">Ã°ÂÂÂ</span><span class="p-badge bh cat-badge">Cool Finds</span></div>
+      <div class="pcard-img pb6"><span class="emoji-ph">&#127769;</span><span class="p-badge bh cat-badge">Cool Finds</span></div>
       <div class="pcard-body">
         <div class="pcard-cat">Cool Finds</div>
         <div class="pcard-name">Pearl Moon Hair Clips Set</div>
-        <div class="pcard-meta"><span class="pcard-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span><span class="pcard-rating">4.8</span><span class="pcard-sold">2.7k+ sold</span></div>
+        <div class="pcard-meta"><span class="pcard-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="pcard-rating">4.8</span><span class="pcard-sold">2.7k+ sold</span></div>
         <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn">Shop on Amazon</a>
       </div>
     </div>
 
     <div class="pcard" data-cat="cute" data-name="Oversized Knit Cardigan">
-      <div class="pcard-img pb7"><span class="emoji-ph">Ã°ÂÂ§Â¥</span><span class="p-badge bl cat-badge">Cute Finds</span></div>
+      <div class="pcard-img pb7"><span class="emoji-ph">&#129381;</span><span class="p-badge bl cat-badge">Cute Finds</span></div>
       <div class="pcard-body">
         <div class="pcard-cat">Cute Finds</div>
         <div class="pcard-name">Oversized Knit Cardigan</div>
-        <div class="pcard-meta"><span class="pcard-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span><span class="pcard-rating">4.8</span><span class="pcard-sold">5.6k+ sold</span></div>
+        <div class="pcard-meta"><span class="pcard-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="pcard-rating">4.8</span><span class="pcard-sold">5.6k+ sold</span></div>
         <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn">Shop on Amazon</a>
       </div>
     </div>
 
     <div class="pcard" data-cat="home" data-name="Ceramic Planter Duo">
-      <div class="pcard-img pb8"><span class="emoji-ph">Ã°ÂÂªÂ´</span><span class="p-badge bl cat-badge">Home Finds</span></div>
+      <div class="pcard-img pb8"><span class="emoji-ph">&#129716;</span><span class="p-badge bl cat-badge">Home Finds</span></div>
       <div class="pcard-body">
         <div class="pcard-cat">Home Finds</div>
         <div class="pcard-name">Ceramic Planter Duo</div>
-        <div class="pcard-meta"><span class="pcard-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span><span class="pcard-rating">4.3</span><span class="pcard-sold">430+ sold</span></div>
+        <div class="pcard-meta"><span class="pcard-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span><span class="pcard-rating">4.3</span><span class="pcard-sold">430+ sold</span></div>
         <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn">Shop on Amazon</a>
       </div>
     </div>
 
     <div class="pcard" data-cat="bathroom" data-name="Rose Glow Skincare Set">
-      <div class="pcard-img pb9"><span class="emoji-ph">Ã°ÂÂÂ·</span><span class="p-badge bn cat-badge">Bathroom Finds</span></div>
+      <div class="pcard-img pb9"><span class="emoji-ph">&#127799;</span><span class="p-badge bn cat-badge">Bathroom Finds</span></div>
       <div class="pcard-body">
         <div class="pcard-cat">Bathroom Finds</div>
         <div class="pcard-name">Rose Glow Skincare Set</div>
-        <div class="pcard-meta"><span class="pcard-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span><span class="pcard-rating">4.9</span><span class="pcard-sold">4.2k+ sold</span></div>
+        <div class="pcard-meta"><span class="pcard-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="pcard-rating">4.9</span><span class="pcard-sold">4.2k+ sold</span></div>
         <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn">Shop on Amazon</a>
       </div>
     </div>
 
     <div class="pcard" data-cat="kitchen" data-name="Aesthetic Kitchen Essentials">
-      <div class="pcard-img pb10"><span class="emoji-ph">Ã°ÂÂÂ³</span><span class="p-badge bs cat-badge">Kitchen Favorites</span></div>
+      <div class="pcard-img pb10"><span class="emoji-ph">&#127859;</span><span class="p-badge bs cat-badge">Kitchen Favorites</span></div>
       <div class="pcard-body">
         <div class="pcard-cat">Kitchen Favorites</div>
         <div class="pcard-name">Aesthetic Kitchen Essentials</div>
-        <div class="pcard-meta"><span class="pcard-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span><span class="pcard-rating">4.6</span><span class="pcard-sold">1.8k+ sold</span></div>
+        <div class="pcard-meta"><span class="pcard-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="pcard-rating">4.6</span><span class="pcard-sold">1.8k+ sold</span></div>
         <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn">Shop on Amazon</a>
       </div>
     </div>
 
     <div class="pcard" data-cat="toys" data-name="Fun Games Pick">
-      <div class="pcard-img pb11"><span class="emoji-ph">Ã°ÂÂÂ®</span><span class="p-badge bh cat-badge">Toys & Games</span></div>
+      <div class="pcard-img pb11"><span class="emoji-ph">&#127918;</span><span class="p-badge bh cat-badge">Toys &amp; Games</span></div>
       <div class="pcard-body">
-        <div class="pcard-cat">Toys & Games</div>
-        <div class="pcard-name">Fun & Games Pick</div>
-        <div class="pcard-meta"><span class="pcard-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span><span class="pcard-rating">4.7</span><span class="pcard-sold">890+ sold</span></div>
+        <div class="pcard-cat">Toys &amp; Games</div>
+        <div class="pcard-name">Fun &amp; Games Pick</div>
+        <div class="pcard-meta"><span class="pcard-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="pcard-rating">4.7</span><span class="pcard-sold">890+ sold</span></div>
         <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn">Shop on Amazon</a>
       </div>
     </div>
 
     <div class="pcard" data-cat="cool" data-name="Pastel Platform Sneakers">
-      <div class="pcard-img pb12"><span class="emoji-ph">Ã°ÂÂÂ</span><span class="p-badge bs cat-badge">Cool Finds</span></div>
+      <div class="pcard-img pb12"><span class="emoji-ph">&#128608;</span><span class="p-badge bs cat-badge">Cool Finds</span></div>
       <div class="pcard-body">
         <div class="pcard-cat">Cool Finds</div>
         <div class="pcard-name">Pastel Platform Sneakers</div>
-        <div class="pcard-meta"><span class="pcard-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span><span class="pcard-rating">4.3</span><span class="pcard-sold">310+ sold</span></div>
+        <div class="pcard-meta"><span class="pcard-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</span><span class="pcard-rating">4.3</span><span class="pcard-sold">310+ sold</span></div>
         <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn">Shop on Amazon</a>
       </div>
     </div>
@@ -534,77 +508,77 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
       <div class="pcard-body">
         <div class="pcard-cat">Cute Finds</div>
         <div class="pcard-name">Parlovable Women's Fuzzy Slippers</div>
-        <div class="pcard-meta"><span class="pcard-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span><span class="pcard-rating">4.8</span><span class="pcard-sold">2.3k+ sold</span></div>
+        <div class="pcard-meta"><span class="pcard-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="pcard-rating">4.8</span><span class="pcard-sold">2.3k+ sold</span></div>
         <a href="https://amzn.to/4djh1Bo" target="_blank" rel="noopener" class="pcard-btn">Shop on Amazon</a>
       </div>
     </div>
 
     <div class="pcard" data-cat="bedroom" data-name="Aesthetic Vanity Mirror with Lights">
-      <div class="pcard-img pb5"><span class="emoji-ph">Ã°ÂÂªÂ</span><span class="p-badge bh cat-badge">Bedroom Finds</span></div>
+      <div class="pcard-img pb5"><span class="emoji-ph">&#129758;</span><span class="p-badge bh cat-badge">Bedroom Finds</span></div>
       <div class="pcard-body">
         <div class="pcard-cat">Bedroom Finds</div>
         <div class="pcard-name">Aesthetic Vanity Mirror with Lights</div>
-        <div class="pcard-meta"><span class="pcard-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span><span class="pcard-rating">4.8</span><span class="pcard-sold">3.2k+ sold</span></div>
+        <div class="pcard-meta"><span class="pcard-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="pcard-rating">4.8</span><span class="pcard-sold">3.2k+ sold</span></div>
         <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn">Shop on Amazon</a>
       </div>
     </div>
 
     <div class="pcard" data-cat="cool" data-name="Portable Mini Projector">
-      <div class="pcard-img pb6"><span class="emoji-ph">Ã°ÂÂÂ¬</span><span class="p-badge bn cat-badge">Cool Finds</span></div>
+      <div class="pcard-img pb6"><span class="emoji-ph">&#127916;</span><span class="p-badge bn cat-badge">Cool Finds</span></div>
       <div class="pcard-body">
         <div class="pcard-cat">Cool Finds</div>
         <div class="pcard-name">Portable Mini Projector</div>
-        <div class="pcard-meta"><span class="pcard-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span><span class="pcard-rating">4.6</span><span class="pcard-sold">4.5k+ sold</span></div>
+        <div class="pcard-meta"><span class="pcard-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="pcard-rating">4.6</span><span class="pcard-sold">4.5k+ sold</span></div>
         <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn">Shop on Amazon</a>
       </div>
     </div>
 
     <div class="pcard" data-cat="kitchen" data-name="Cute Pastel Toaster 2 Slice">
-      <div class="pcard-img pb10"><span class="emoji-ph">Ã°ÂÂÂ</span><span class="p-badge bs cat-badge">Kitchen Favorites</span></div>
+      <div class="pcard-img pb10"><span class="emoji-ph">&#129379;</span><span class="p-badge bs cat-badge">Kitchen Favorites</span></div>
       <div class="pcard-body">
         <div class="pcard-cat">Kitchen Favorites</div>
         <div class="pcard-name">Cute Pastel Toaster 2 Slice</div>
-        <div class="pcard-meta"><span class="pcard-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span><span class="pcard-rating">4.7</span><span class="pcard-sold">2.1k+ sold</span></div>
+        <div class="pcard-meta"><span class="pcard-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="pcard-rating">4.7</span><span class="pcard-sold">2.1k+ sold</span></div>
         <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn">Shop on Amazon</a>
       </div>
     </div>
 
     <div class="pcard" data-cat="bathroom" data-name="Fluffy Bath Mat Set">
-      <div class="pcard-img pb9"><span class="emoji-ph">Ã°ÂÂÂ</span><span class="p-badge bl cat-badge">Bathroom Finds</span></div>
+      <div class="pcard-img pb9"><span class="emoji-ph">&#128705;</span><span class="p-badge bl cat-badge">Bathroom Finds</span></div>
       <div class="pcard-body">
         <div class="pcard-cat">Bathroom Finds</div>
         <div class="pcard-name">Fluffy Bath Mat Set</div>
-        <div class="pcard-meta"><span class="pcard-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span><span class="pcard-rating">4.8</span><span class="pcard-sold">5.3k+ sold</span></div>
+        <div class="pcard-meta"><span class="pcard-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="pcard-rating">4.8</span><span class="pcard-sold">5.3k+ sold</span></div>
         <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn">Shop on Amazon</a>
       </div>
     </div>
 
     <div class="pcard" data-cat="toys" data-name="Squishy Stress Relief Toys Set">
-      <div class="pcard-img pb11"><span class="emoji-ph">Ã°ÂÂ§Â¸</span><span class="p-badge bh cat-badge">Toys & Games</span></div>
+      <div class="pcard-img pb11"><span class="emoji-ph">&#129528;</span><span class="p-badge bh cat-badge">Toys &amp; Games</span></div>
       <div class="pcard-body">
-        <div class="pcard-cat">Toys & Games</div>
+        <div class="pcard-cat">Toys &amp; Games</div>
         <div class="pcard-name">Squishy Stress Relief Toys Set</div>
-        <div class="pcard-meta"><span class="pcard-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span><span class="pcard-rating">4.9</span><span class="pcard-sold">7.8k+ sold</span></div>
+        <div class="pcard-meta"><span class="pcard-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="pcard-rating">4.9</span><span class="pcard-sold">7.8k+ sold</span></div>
         <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn">Shop on Amazon</a>
       </div>
     </div>
 
     <div class="pcard" data-cat="home" data-name="Boho Woven Wall Hanging Decor">
-      <div class="pcard-img pb4"><span class="emoji-ph">Ã°ÂÂªÂ¡</span><span class="p-badge bn cat-badge">Home Finds</span></div>
+      <div class="pcard-img pb4"><span class="emoji-ph">&#129505;</span><span class="p-badge bn cat-badge">Home Finds</span></div>
       <div class="pcard-body">
         <div class="pcard-cat">Home Finds</div>
         <div class="pcard-name">Boho Woven Wall Hanging Decor</div>
-        <div class="pcard-meta"><span class="pcard-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span><span class="pcard-rating">4.7</span><span class="pcard-sold">1.6k+ sold</span></div>
+        <div class="pcard-meta"><span class="pcard-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="pcard-rating">4.7</span><span class="pcard-sold">1.6k+ sold</span></div>
         <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn">Shop on Amazon</a>
       </div>
     </div>
 
     <div class="pcard" data-cat="cute" data-name="Kawaii Plushie Backpack">
-      <div class="pcard-img pb3"><span class="emoji-ph">Ã°ÂÂÂ»</span><span class="p-badge bl cat-badge">Cute Finds</span></div>
+      <div class="pcard-img pb3"><span class="emoji-ph">&#128059;</span><span class="p-badge bl cat-badge">Cute Finds</span></div>
       <div class="pcard-body">
         <div class="pcard-cat">Cute Finds</div>
         <div class="pcard-name">Kawaii Plushie Backpack</div>
-        <div class="pcard-meta"><span class="pcard-stars">Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ</span><span class="pcard-rating">4.9</span><span class="pcard-sold">3.1k+ sold</span></div>
+        <div class="pcard-meta"><span class="pcard-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span><span class="pcard-rating">4.9</span><span class="pcard-sold">3.1k+ sold</span></div>
         <a href="YOUR_AFFILIATE_LINK_HERE" target="_blank" class="pcard-btn">Shop on Amazon</a>
       </div>
     </div>
@@ -617,14 +591,13 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
 
 </div>
 
-<!-- Ã¢ÂÂÃ¢ÂÂ FOOTER Ã¢ÂÂÃ¢ÂÂ -->
 <footer>
   <div class="footer-top">
     <div class="footer-logo-row">
       <img src="logoimgs/zuu512.png" alt="Zuu Finds">
       <span>Zuu <em>Finds</em></span>
     </div>
-    <p class="footer-tagline">just finding the good stuff so you don't have to Ã°ÂÂÂÃ¯Â¸Â<br>every pick is chosen with love, new finds dropped everyday Ã¢ÂÂ¨</p>
+    <p class="footer-tagline">just finding the good stuff so you don't have to &#128717;&#65039;<br>every pick is chosen with love, new finds dropped everyday &#10024;</p>
     <div class="footer-social">
       <a href="https://x.com/zuufinds" target="_blank" rel="noopener" title="X / Twitter">
         <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
@@ -644,12 +617,12 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
     </div>
   </div>
   <div class="footer-bottom">
-    ÃÂ© 2025 Zuu Finds ÃÂ· All rights reserved ÃÂ· <a href="#">Affiliate Disclaimer</a>
+    &copy; 2025 Zuu Finds &middot; All rights reserved &middot; <a href="#">Affiliate Disclaimer</a>
   </div>
 </footer>
 
 <script>
-// Ã¢ÂÂÃ¢ÂÂ SLIDER Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+// SLIDER
 let slideIndex = 0;
 function getCardWidth(){
   const card = document.querySelector('.tp-card');
@@ -660,84 +633,83 @@ function slideRight(){
   const cards = track.querySelectorAll('.tp-card');
   const maxSlide = Math.max(0, cards.length - Math.floor(track.parentElement.offsetWidth / getCardWidth()));
   slideIndex = Math.min(slideIndex + 1, maxSlide);
-  track.style.transform = `translateX(-${slideIndex * getCardWidth()}px)`;
+  track.style.transform = 'translateX(-' + (slideIndex * getCardWidth()) + 'px)';
 }
 function slideLeft(){
   slideIndex = Math.max(slideIndex - 1, 0);
-  document.getElementById('sliderTrack').style.transform = `translateX(-${slideIndex * getCardWidth()}px)`;
+  document.getElementById('sliderTrack').style.transform = 'translateX(-' + (slideIndex * getCardWidth()) + 'px)';
 }
 (function(){
   let startX = 0;
   const wrap = document.querySelector('.slider-track-wrap');
   if(!wrap) return;
-  wrap.addEventListener('touchstart', e => startX = e.touches[0].clientX, {passive:true});
-  wrap.addEventListener('touchend', e => {
+  wrap.addEventListener('touchstart', function(e){ startX = e.touches[0].clientX; }, {passive:true});
+  wrap.addEventListener('touchend', function(e){
     const diff = startX - e.changedTouches[0].clientX;
     if(diff > 40) slideRight();
     else if(diff < -40) slideLeft();
   }, {passive:true});
 })();
 
-// Ã¢ÂÂÃ¢ÂÂ MOBILE MENU Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+// MOBILE MENU
 function toggleMenu(){
   document.getElementById('mobileNav').classList.toggle('open');
 }
 
-// Ã¢ÂÂÃ¢ÂÂ ROW LIMIT (4 cols ÃÂ 5 rows = 20) Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+// ROW LIMIT
 const ROWS = 5, COLS = 4, MAX = ROWS * COLS;
 function applyRowLimit(cards){
   let shown = 0;
-  cards.forEach(c => {
+  cards.forEach(function(c){
     if(c.style.display === 'none') return;
     shown++;
     if(shown > MAX) c.classList.add('row-hidden');
     else c.classList.remove('row-hidden');
   });
   const showMoreWrap = document.getElementById('showMoreWrap');
-  const hidden = [...cards].filter(c => c.classList.contains('row-hidden')).length;
+  const hidden = Array.from(cards).filter(function(c){ return c.classList.contains('row-hidden'); }).length;
   if(showMoreWrap) showMoreWrap.style.display = hidden > 0 ? 'block' : 'none';
 }
 function showMore(){
-  document.querySelectorAll('#findsGrid .pcard.row-hidden').forEach(c => c.classList.remove('row-hidden'));
+  document.querySelectorAll('#findsGrid .pcard.row-hidden').forEach(function(c){ c.classList.remove('row-hidden'); });
   document.getElementById('showMoreWrap').style.display = 'none';
   updateCount();
 }
 
-// Ã¢ÂÂÃ¢ÂÂ FILTER Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+// FILTER
 function filterAll(el){
-  document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.f-btn').forEach(function(b){ b.classList.remove('active'); });
   if(el && el.classList) el.classList.add('active');
   const cards = document.querySelectorAll('#findsGrid .pcard');
-  cards.forEach(c => { c.style.display = ''; c.classList.remove('search-hide'); });
+  cards.forEach(function(c){ c.style.display = ''; c.classList.remove('search-hide'); });
   document.body.classList.remove('filtered');
-  // Show top picks slider on All Finds
   const tp = document.getElementById('toppicksSection');
   if(tp) tp.style.display = '';
   applyRowLimit(cards);
   updateCount();
 }
 function filterCat(el, cat){
-  document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.f-btn').forEach(function(b){ b.classList.remove('active'); });
   if(el && el.classList) el.classList.add('active');
   const cards = document.querySelectorAll('#findsGrid .pcard');
-  cards.forEach(c => {
+  cards.forEach(function(c){
     c.style.display = (c.dataset.cat === cat) ? '' : 'none';
     c.classList.remove('search-hide', 'row-hidden');
   });
   document.body.classList.add('filtered');
-  // Hide top picks slider on category filter
   const tp = document.getElementById('toppicksSection');
   if(tp) tp.style.display = 'none';
   applyRowLimit(cards);
   updateCount();
 }
 
-// Ã¢ÂÂÃ¢ÂÂ SEARCH Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+// SEARCH
 function searchProducts(){
-  const val = (document.getElementById('searchInput').value ||
-               document.getElementById('mobileSearchInput').value).toLowerCase().trim();
+  const si = document.getElementById('searchInput');
+  const mi = document.getElementById('mobileSearchInput');
+  const val = ((si ? si.value : '') || (mi ? mi.value : '')).toLowerCase().trim();
   const cards = document.querySelectorAll('#findsGrid .pcard');
-  cards.forEach(c => {
+  cards.forEach(function(c){
     const name = (c.dataset.name || '').toLowerCase();
     const cat  = (c.dataset.cat  || '').toLowerCase();
     if(!val){ c.classList.remove('search-hide'); c.style.display = ''; }
@@ -748,10 +720,10 @@ function searchProducts(){
   updateCount();
 }
 
-// Ã¢ÂÂÃ¢ÂÂ COUNT Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+// COUNT
 function updateCount(){
-  const visible = [...document.querySelectorAll('#findsGrid .pcard')]
-    .filter(c => c.style.display !== 'none' && !c.classList.contains('row-hidden')).length;
+  const visible = Array.from(document.querySelectorAll('#findsGrid .pcard'))
+    .filter(function(c){ return c.style.display !== 'none' && !c.classList.contains('row-hidden'); }).length;
   const el = document.getElementById('findsCount');
   if(el) el.textContent = visible + ' item' + (visible !== 1 ? 's' : '') + ' shown';
 }
