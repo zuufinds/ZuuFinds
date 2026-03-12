@@ -989,7 +989,11 @@ async function pushToSite(tab){
       throw new Error(err.message || `GitHub error ${res.status}`);
     }
     const data = await res.json();
-    const currentContent = atob(data.content.replace(/\n/g,''));
+    // Safe UTF-8 decode that handles emojis and special characters
+    const binary = atob(data.content.replace(/\n/g,''));
+    const bytes = new Uint8Array(binary.length);
+    for(let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    const currentContent = new TextDecoder('utf-8').decode(bytes);
     const sha = data.sha;
 
     // 2. Build new card code
@@ -1024,6 +1028,13 @@ async function pushToSite(tab){
       ? document.getElementById('prodName').value.trim()
       : document.getElementById('tpName').value.trim();
 
+    // Safe base64 encoding that handles emojis and all Unicode characters
+    const encoder = new TextEncoder();
+    const bytes = encoder.encode(updatedContent);
+    let binary = '';
+    bytes.forEach(b => binary += String.fromCharCode(b));
+    const safeBase64 = btoa(binary);
+
     const pushRes = await fetch(GH_API, {
       method: 'PUT',
       headers: {
@@ -1033,7 +1044,7 @@ async function pushToSite(tab){
       },
       body: JSON.stringify({
         message: `Add product: ${prodName}`,
-        content: btoa(unescape(encodeURIComponent(updatedContent))),
+        content: safeBase64,
         sha: sha
       })
     });
