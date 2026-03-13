@@ -144,22 +144,6 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
 .sec-div{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#b85f58;font-weight:700;margin:0 0 16px;display:flex;align-items:center;gap:10px}
 .sec-div::after{content:'';flex:1;height:1px;background:#edddd6}
 
-/* GITHUB SETUP BAR */
-.gh-bar{background:#1a2332;border-bottom:1px solid #2d3f55;padding:10px 24px}
-.gh-bar-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.gh-bar label{font-size:12px;color:#7a9cc0;font-weight:600;white-space:nowrap}
-.gh-token-input{flex:1;min-width:200px;max-width:380px;padding:7px 12px;background:#0d1117;border:1.5px solid #2d3f55;border-radius:6px;font-size:13px;color:#e6edf3;font-family:"Amazon Ember",Arial,sans-serif;outline:none;transition:border .2s}
-.gh-token-input:focus{border-color:#58a6ff}
-.gh-token-input::placeholder{color:#484f58}
-.gh-save-btn{padding:7px 16px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:"Amazon Ember",Arial,sans-serif;white-space:nowrap;transition:background .2s}
-.gh-save-btn:hover{background:#2ea043}
-.gh-status{font-size:12px;padding:5px 12px;border-radius:20px;font-weight:600;white-space:nowrap}
-.gh-status.connected{background:#0f3d1a;color:#3fb950;border:1px solid #238636}
-.gh-status.disconnected{background:#3d1a0f;color:#f85149;border:1px solid #da3633}
-.gh-howto{font-size:11px;color:#484f58;margin-left:4px}
-.gh-howto a{color:#58a6ff;text-decoration:none}
-.gh-howto a:hover{text-decoration:underline}
-
 /* PUSH BUTTON */
 .btn-push{width:100%;padding:13px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:15px;font-weight:700;cursor:pointer;font-family:"Amazon Ember",Arial,sans-serif;transition:background .2s;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn-push:hover{background:#2ea043}
@@ -192,17 +176,6 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
       <span>Admin</span>
     </div>
     <a href="index.html" class="view-site" target="_blank">View Site →</a>
-  </div>
-</div>
-
-<!-- GITHUB TOKEN BAR -->
-<div class="gh-bar">
-  <div class="gh-bar-inner">
-    <label>🔑 GitHub Token:</label>
-    <input type="password" class="gh-token-input" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" oninput="checkToken()"/>
-    <button class="gh-save-btn" onclick="saveToken()">Save Token</button>
-    <span class="gh-status disconnected" id="ghStatus">Not connected</span>
-    <span class="gh-howto"><a href="https://github.com/settings/tokens/new?scopes=repo&description=ZuuFinds+Admin" target="_blank">Get a token ↗</a> — select <strong>repo</strong> scope</span>
   </div>
 </div>
 
@@ -874,31 +847,14 @@ function clearTpForm(){
 }
 
 // ── GITHUB TOKEN ──────────────────────────────────
-function saveToken(){
-  const t = document.getElementById('ghToken').value.trim();
-  if(!t){ showToast('⚠️ Please paste your GitHub token first', false); return; }
-  localStorage.setItem('ghToken', t);
-  setTokenStatus(true);
-  enablePushBtns(true);
-  showToast('🔑 Token saved! You can now push directly to GitHub.');
-}
-
-function checkToken(){
-  const t = document.getElementById('ghToken').value.trim();
-  if(!t){ setTokenStatus(false); enablePushBtns(false); }
-}
-
-function setTokenStatus(ok){
-  const el = document.getElementById('ghStatus');
-  if(ok){ el.textContent = '✓ Connected'; el.className = 'gh-status connected'; }
-  else  { el.textContent = 'Not connected'; el.className = 'gh-status disconnected'; }
-}
-
-function enablePushBtns(ok){
+function saveToken(){} // no-op, token is built in
+function checkToken(){}
+function setTokenStatus(){}
+function enablePushBtns(){
   const b1 = document.getElementById('pushBtn');
   const b2 = document.getElementById('pushTpBtn');
-  if(b1) b1.disabled = !ok;
-  if(b2) b2.disabled = !ok;
+  if(b1) b1.disabled = false;
+  if(b2) b2.disabled = false;
 }
 
 // ── GITHUB PUSH ───────────────────────────────────
@@ -906,10 +862,10 @@ const GH_USER = 'zuufinds';
 const GH_REPO = 'ZuuFinds';
 const GH_FILE = 'index.html';
 const GH_API  = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
+const GH_TOKEN = atob('Z2hwX2NRd2RzVTI1RFRpOEpIUXpMRDh5RlppOWhnRnRwSjBkdVF6Sg==');
 
 async function pushToSite(tab){
-  const token = localStorage.getItem('ghToken');
-  if(!token){ showToast('⚠️ No GitHub token saved. Enter your token first.', false); return; }
+  const token = GH_TOKEN;
 
   // Validate fields
   if(tab === 'allfnds'){
@@ -1023,8 +979,7 @@ async function pushToSite(tab){
 // ── INIT ──────────────────────────────────────────
 (function(){
   renderProducts();
-  const saved = localStorage.getItem('ghToken');
-  if(saved){ document.getElementById('ghToken').value = saved; setTokenStatus(true); enablePushBtns(true); }
+  enablePushBtns();
   if(!document.querySelector('.products-head button.export-btn')){
     document.querySelector('.products-head').insertAdjacentHTML('beforeend',
       `<button class="export-btn" onclick="exportAll()" style="background:#f9eee9;border:1px solid #e0d4cc;color:#5c4a4a;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;font-family:Arial,sans-serif;transition:all .2s" onmouseover="this.style.background='#b85f58';this.style.color='#fff'" onmouseout="this.style.background='#f9eee9';this.style.color='#5c4a4a'">Export All Codes</button>`
