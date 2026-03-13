@@ -265,7 +265,7 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
           </div>
 
           <button class="btn-primary" onclick="addProduct()">✦ Generate Card Code</button>
-          <button class="btn-push" id="pushBtn" onclick="pushToSite('allfnds')" disabled>🚀 Add to Site (GitHub)</button>
+          <button class="btn-push" id="pushBtn" onclick="pushToSite('allfnds')">🚀 Add to Site (GitHub)</button>
           <button class="btn-secondary" onclick="saveProduct()">💾 Save to Product List</button>
           <button class="btn-clear" onclick="clearForm()">✕ Clear Form</button>
 
@@ -349,7 +349,7 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
           </div>
 
           <button class="btn-primary" onclick="generateTpCode()">🏆 Generate Top Pick Code</button>
-          <button class="btn-push-tp" id="pushTpBtn" onclick="pushToSite('toppick')" disabled>🚀 Add to Site (GitHub)</button>
+          <button class="btn-push-tp" id="pushTpBtn" onclick="pushToSite('toppick')">🚀 Add to Site (GitHub)</button>
           <button class="btn-clear" onclick="clearTpForm()" style="margin-top:8px">✕ Clear Form</button>
 
         </div><!-- /tab-toppick -->
@@ -447,11 +447,18 @@ function showToast(msg, success=true){
 }
 
 // ── PREVIEW ───────────────────────────────────────
+const SITE_URL = 'https://www.zuufinds.com';
+function resolveImgSrc(src){
+  if(!src) return '';
+  if(src.startsWith('http://') || src.startsWith('https://')) return src;
+  return SITE_URL + '/' + src.replace(/^\//,'');
+}
+
 function updateImgPreview(){
   const src = document.getElementById('prodImg').value.trim();
   const wrap = document.getElementById('imgPreviewWrap');
   if(src){
-    wrap.innerHTML = `<img src="${src}" onerror="this.style.display='none'" alt="preview">`;
+    wrap.innerHTML = `<img src="${resolveImgSrc(src)}" onerror="this.style.display='none'" alt="preview">`;
     wrap.classList.add('has-img');
   } else {
     wrap.innerHTML = '<span>🖼️</span>';
@@ -723,7 +730,7 @@ function updateTpImgPreview(){
   const src = document.getElementById('tpImg').value.trim();
   const wrap = document.getElementById('tpImgPreviewWrap');
   if(src){
-    wrap.innerHTML = `<img src="${src}" onerror="this.style.display='none'" alt="preview">`;
+    wrap.innerHTML = `<img src="${resolveImgSrc(src)}" onerror="this.style.display='none'" alt="preview">`;
     wrap.classList.add('has-img');
   } else {
     wrap.innerHTML = '<span>🖼️</span>';
