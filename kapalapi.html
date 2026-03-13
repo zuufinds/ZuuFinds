@@ -9,28 +9,6 @@
 html{scroll-behavior:smooth}
 body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-serif;font-size:15px;line-height:1.6}
 
-/* PASSWORD LOCK SCREEN */
-.lock-screen{position:fixed;inset:0;background:#1a0f0f;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:0}
-.lock-screen.hidden{display:none}
-.lock-box{background:#2a1f1f;border:1px solid #b85f58;border-radius:16px;padding:40px 36px;width:100%;max-width:360px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5)}
-.lock-logo{font-size:20px;font-weight:700;color:#fff;margin-bottom:6px}
-.lock-logo em{font-style:italic;color:#d4948a}
-.lock-icon{font-size:42px;margin-bottom:16px;display:block}
-.lock-title{font-size:16px;font-weight:700;color:#e8ddd4;margin-bottom:6px}
-.lock-sub{font-size:13px;color:#888;margin-bottom:24px}
-.lock-input{width:100%;padding:12px 16px;background:#1a0f0f;border:2px solid #3a2f2f;border-radius:8px;font-size:15px;color:#fff;font-family:"Amazon Ember",Arial,sans-serif;outline:none;text-align:center;letter-spacing:.1em;transition:border .2s;margin-bottom:14px}
-.lock-input:focus{border-color:#b85f58}
-.lock-input.error{border-color:#e74c3c;animation:shake .3s ease}
-.lock-btn{width:100%;padding:13px;background:#b85f58;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;font-family:"Amazon Ember",Arial,sans-serif;transition:background .2s}
-.lock-btn:hover{background:#9e4e48}
-.lock-error{font-size:12px;color:#e74c3c;margin-top:8px;min-height:18px}
-.lock-attempts{font-size:11px;color:#666;margin-top:10px}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-
-/* ADMIN CONTENT (hidden until unlocked) */
-.admin-content{display:none}
-.admin-content.unlocked{display:block}
-
 /* HEADER */
 .admin-header{background:#2a1f1f;padding:0 24px;border-bottom:2px solid #b85f58;position:sticky;top:0;z-index:100}
 .admin-header-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:58px}
@@ -206,23 +184,6 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
 </style>
 </head>
 <body>
-
-<!-- ── LOCK SCREEN ── -->
-<div class="lock-screen" id="lockScreen">
-  <div class="lock-box">
-    <div class="lock-logo">Zuu <em>Finds</em></div>
-    <span class="lock-icon">🔒</span>
-    <div class="lock-title">Admin Access Only</div>
-    <div class="lock-sub">Enter your password to continue</div>
-    <input type="password" class="lock-input" id="lockInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkPassword()"/>
-    <button class="lock-btn" onclick="checkPassword()">Unlock</button>
-    <div class="lock-error" id="lockError"></div>
-    <div class="lock-attempts" id="lockAttempts"></div>
-  </div>
-</div>
-
-<!-- ── ADMIN CONTENT (hidden until unlocked) ── -->
-<div class="admin-content" id="adminContent">
 
 <div class="admin-header">
   <div class="admin-header-inner">
@@ -470,8 +431,6 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
 </div>
 
 <div class="toast" id="toast"></div>
-
-</div><!-- /admin-content -->
 
 <script>
 const CAT_LABELS = {
@@ -914,12 +873,6 @@ function clearTpForm(){
   document.getElementById('previewMeta').textContent = '★★★★★ 4.8 · 1.2k+ sold';
 }
 
-// ── INIT ──────────────────────────────────────────
-// (renderProducts and export button are initialized after password unlock)
-
-// Load saved token on startup — runs after unlock
-
-
 // ── GITHUB TOKEN ──────────────────────────────────
 function saveToken(){
   const t = document.getElementById('ghToken').value.trim();
@@ -1067,66 +1020,15 @@ async function pushToSite(tab){
   }
 }
 
-// ── PASSWORD LOCK ─────────────────────────────────
-// Change this password to whatever you want
-const ADMIN_PASSWORD = '11111qqq';
-let failedAttempts = 0;
-const MAX_ATTEMPTS = 5;
-let lockoutUntil = 0;
-
-function checkPassword(){
-  const now = Date.now();
-  if(now < lockoutUntil){
-    const secs = Math.ceil((lockoutUntil - now) / 1000);
-    document.getElementById('lockError').textContent = `Too many attempts. Try again in ${secs}s`;
-    return;
-  }
-
-  const input = document.getElementById('lockInput').value;
-  if(input === ADMIN_PASSWORD){
-    // Correct — unlock
-    failedAttempts = 0;
-    document.getElementById('lockScreen').classList.add('hidden');
-    document.getElementById('adminContent').classList.add('unlocked');
-    sessionStorage.setItem('zuuUnlocked', '1');
-    renderProducts();
-    const saved = localStorage.getItem('ghToken');
-    if(saved){ document.getElementById('ghToken').value = saved; setTokenStatus(true); enablePushBtns(true); }
-    // Add export button
-    if(!document.querySelector('.products-head button.export-btn')){
-      document.querySelector('.products-head').insertAdjacentHTML('beforeend',
-        `<button class="export-btn" onclick="exportAll()" style="background:#f9eee9;border:1px solid #e0d4cc;color:#5c4a4a;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;font-family:Arial,sans-serif;transition:all .2s" onmouseover="this.style.background='#b85f58';this.style.color='#fff'" onmouseout="this.style.background='#f9eee9';this.style.color='#5c4a4a'">Export All Codes</button>`
-      );
-    }
-  } else {
-    // Wrong
-    failedAttempts++;
-    const lockInput = document.getElementById('lockInput');
-    lockInput.classList.add('error');
-    setTimeout(() => lockInput.classList.remove('error'), 300);
-    lockInput.value = '';
-
-    const remaining = MAX_ATTEMPTS - failedAttempts;
-    if(failedAttempts >= MAX_ATTEMPTS){
-      lockoutUntil = Date.now() + 30000;
-      failedAttempts = 0;
-      document.getElementById('lockError').textContent = '🔒 Too many attempts. Locked for 30 seconds.';
-      document.getElementById('lockAttempts').textContent = '';
-      setTimeout(() => {
-        document.getElementById('lockError').textContent = '';
-      }, 30000);
-    } else {
-      document.getElementById('lockError').textContent = 'Incorrect password. Try again.';
-      document.getElementById('lockAttempts').textContent = `${remaining} attempt${remaining!==1?'s':''} remaining`;
-    }
-  }
-}
-
-// Check if already unlocked this session
+// ── INIT ──────────────────────────────────────────
 (function(){
-  if(sessionStorage.getItem('zuuUnlocked') === '1'){
-    document.getElementById('lockScreen').classList.add('hidden');
-    document.getElementById('adminContent').classList.add('unlocked');
+  renderProducts();
+  const saved = localStorage.getItem('ghToken');
+  if(saved){ document.getElementById('ghToken').value = saved; setTokenStatus(true); enablePushBtns(true); }
+  if(!document.querySelector('.products-head button.export-btn')){
+    document.querySelector('.products-head').insertAdjacentHTML('beforeend',
+      `<button class="export-btn" onclick="exportAll()" style="background:#f9eee9;border:1px solid #e0d4cc;color:#5c4a4a;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;font-family:Arial,sans-serif;transition:all .2s" onmouseover="this.style.background='#b85f58';this.style.color='#fff'" onmouseout="this.style.background='#f9eee9';this.style.color='#5c4a4a'">Export All Codes</button>`
+    );
   }
 })();
 </script>
