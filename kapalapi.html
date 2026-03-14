@@ -292,7 +292,7 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
           </div>
 
           <button class="btn-primary" onclick="addProduct()">✦ Generate Card Code</button>
-          <button class="btn-push" id="pushBtn" onclick="pushToSite('allfnds')" disabled>🚀 Add to Site (GitHub)</button>
+          <button class="btn-push" id="pushBtn" onclick="pushToSite('allfnds')">🚀 Add to Site (GitHub)</button>
           <button class="btn-secondary" onclick="saveProduct()">💾 Save to Product List</button>
           <button class="btn-clear" onclick="clearForm()">✕ Clear Form</button>
 
@@ -376,7 +376,7 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
           </div>
 
           <button class="btn-primary" onclick="generateTpCode()">🏆 Generate Top Pick Code</button>
-          <button class="btn-push-tp" id="pushTpBtn" onclick="pushToSite('toppick')" disabled>🚀 Add to Site (GitHub)</button>
+          <button class="btn-push-tp" id="pushTpBtn" onclick="pushToSite('toppick')">🚀 Add to Site (GitHub)</button>
           <button class="btn-clear" onclick="clearTpForm()" style="margin-top:8px">✕ Clear Form</button>
 
         </div><!-- /tab-toppick -->
@@ -899,6 +899,8 @@ function enablePushBtns(ok){
   const b2 = document.getElementById('pushTpBtn');
   if(b1) b1.disabled = !ok;
   if(b2) b2.disabled = !ok;
+  // Update button style opacity
+  [b1,b2].forEach(b => { if(b) b.style.opacity = ok ? '1' : '0.6'; });
 }
 
 // ── GITHUB PUSH ───────────────────────────────────
@@ -943,10 +945,10 @@ async function pushToSite(tab){
     }
     const data = await res.json();
     // Safe UTF-8 decode that handles emojis and special characters
-    const binary = atob(data.content.replace(/\n/g,''));
-    const bytes = new Uint8Array(binary.length);
-    for(let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-    const currentContent = new TextDecoder('utf-8').decode(bytes);
+    const rawBinary = atob(data.content.replace(/\n/g,''));
+    const rawBytes = new Uint8Array(rawBinary.length);
+    for(let i = 0; i < rawBinary.length; i++) rawBytes[i] = rawBinary.charCodeAt(i);
+    const currentContent = new TextDecoder('utf-8').decode(rawBytes);
     const sha = data.sha;
 
     // 2. Build new card code
@@ -983,10 +985,10 @@ async function pushToSite(tab){
 
     // Safe base64 encoding that handles emojis and all Unicode characters
     const encoder = new TextEncoder();
-    const bytes = encoder.encode(updatedContent);
-    let binary = '';
-    bytes.forEach(b => binary += String.fromCharCode(b));
-    const safeBase64 = btoa(binary);
+    const encBytes = encoder.encode(updatedContent);
+    let encBinary = '';
+    encBytes.forEach(b => encBinary += String.fromCharCode(b));
+    const safeBase64 = btoa(encBinary);
 
     const pushRes = await fetch(GH_API, {
       method: 'PUT',
