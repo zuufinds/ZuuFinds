@@ -265,7 +265,7 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
               <option value="bedroom">Bedroom Finds</option>
               <option value="bathroom">Bathroom Finds</option>
               <option value="kitchen">Kitchen Favorites</option>
-              <option value="toys">Toys & Games</option>
+              <option value="tech">Tech &amp; Electronics</option>
             </select>
           </div>
 
@@ -356,7 +356,7 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
               <option value="bedroom">Bedroom Finds</option>
               <option value="bathroom">Bathroom Finds</option>
               <option value="kitchen">Kitchen Favorites</option>
-              <option value="toys">Toys & Games</option>
+              <option value="tech">Tech &amp; Electronics</option>
             </select>
           </div>
 
@@ -488,17 +488,17 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
 const CAT_LABELS = {
   cute:'Cute Finds', cool:'Cool Finds', home:'Home Finds',
   bedroom:'Bedroom Finds', bathroom:'Bathroom Finds',
-  kitchen:'Kitchen Favorites', toys:'Toys & Games'
+  kitchen:'Kitchen Favorites', tech:'Tech & Electronics'
 };
 
 const CAT_EMOJIS = {
   cute:'🌸', cool:'✨', home:'🕯️',
-  bedroom:'🧸', bathroom:'🌷', kitchen:'🍳', toys:'🎮'
+  bedroom:'🧸', bathroom:'🌷', kitchen:'🍳', tech:'🎮'
 };
 
 const PB_MAP = {
   cute:'pb1', cool:'pb6', home:'pb2',
-  bedroom:'pb5', bathroom:'pb9', kitchen:'pb10', toys:'pb11'
+  bedroom:'pb5', bathroom:'pb9', kitchen:'pb10', tech:'pb11'
 };
 
 let selectedBadge = 'bh';
@@ -1047,15 +1047,54 @@ async function pushToSite(tab){
     const currentContent = new TextDecoder('utf-8').decode(rawBytes);
     const sha = data.sha;
 
-    // 2. Build new card code
+    // 2. Build new card code directly (not via codeOutput to avoid any encoding issues)
     let newCard = '';
     if(tab === 'allfnds'){
-      updateCode();
-      newCard = document.getElementById('codeOutput').textContent;
-      if(newCard.includes('Fill the form')){ addProduct(); newCard = document.getElementById('codeOutput').textContent; }
+      const p = {
+        name:   document.getElementById('prodName').value.trim(),
+        cat:    document.getElementById('prodCat').value,
+        link:   document.getElementById('prodLink').value.trim(),
+        img:    document.getElementById('prodImg').value.trim(),
+        img2:   document.getElementById('prodImg2').value.trim(),
+        stars:  getStars(),
+        sold:   document.getElementById('prodSold').value.trim(),
+        rating: document.getElementById('prodRating').value.trim(),
+        badge:  selectedBadge
+      };
+      newCard = generateCode(p);
     } else {
-      updateTpCode();
-      newCard = document.getElementById('codeOutput').textContent;
+      const soldRaw = (document.getElementById('tpSold').value.trim() || '').replace(/\s*(bought|sold|in past month)\s*/gi,'').trim();
+      const soldHtml = soldRaw ? `<strong>${soldRaw} bought</strong> in past month` : '';
+      const cat    = document.getElementById('tpCat').value;
+      const name   = document.getElementById('tpName').value.trim();
+      const link   = document.getElementById('tpLink').value.trim();
+      const img    = document.getElementById('tpImg').value.trim();
+      const img2   = document.getElementById('tpImg2').value.trim();
+      const stars  = getTpStars();
+      const rating = document.getElementById('tpRating').value.trim() || '4.8';
+      const pb     = document.getElementById('tpBg').value || 'pb1';
+      const catLabel = CAT_LABELS[cat] || cat;
+      let imgLines = '';
+      if(img){
+        imgLines = `\n    <img src="${img}" alt="${name}">`;
+        if(img2) imgLines += `\n    <img src="${img2}" alt="${name} detail">`;
+      } else {
+        imgLines = `\n    <span>${CAT_EMOJIS[cat]||'🛍️'}</span>`;
+      }
+      newCard = `<div class="tp-card">
+  <div class="tp-img ${pb}">${imgLines}
+  </div>
+  <div class="tp-body">
+    <div class="tp-cat">${catLabel}</div>
+    <div class="tp-name">${name}</div>
+    <div class="tp-meta">
+      <span class="tp-stars">${stars}</span>
+      <span class="tp-rating">${rating}</span>
+      <span class="tp-sold">${soldHtml}</span>
+    </div>
+    <a href="${link}" target="_blank" rel="noopener" class="tp-btn">Shop on Amazon</a>
+  </div>
+</div>`;
     }
 
     // 3. Find insertion point and insert
@@ -1079,7 +1118,8 @@ async function pushToSite(tab){
         const tpImg2   = document.getElementById('prodImg2').value.trim();
         const tpStars  = getStars();
         const tpRating = document.getElementById('prodRating').value.trim() || '4.8';
-        const tpSold   = document.getElementById('prodSold').value.trim() || '';
+        const tpSoldRaw = (document.getElementById('prodSold').value.trim() || '').replace(/\s*(bought|sold|in past month)\s*/gi,'').trim();
+        const tpSoldHtml = tpSoldRaw ? `<strong>${tpSoldRaw} bought</strong> in past month` : '';
         const tpCatLabel = CAT_LABELS[tpCat] || tpCat;
         let tpImgLines = '';
         if(tpImg){
@@ -1097,7 +1137,7 @@ async function pushToSite(tab){
     <div class="tp-meta">
       <span class="tp-stars">${tpStars}</span>
       <span class="tp-rating">${tpRating}</span>
-      <span class="tp-sold">${tpSold}</span>
+      <span class="tp-sold">${tpSoldHtml}</span>
     </div>
     <a href="${tpLink}" target="_blank" rel="noopener" class="tp-btn">Shop on Amazon</a>
   </div>
@@ -1268,7 +1308,7 @@ function buildEditorCard(c, i, type){
     ? `<img class="editor-card-img" src="${c.imgSrc.startsWith('http') ? c.imgSrc : 'https://www.zuufinds.com/'+c.imgSrc}" onerror="this.style.display='none'">`
     : `<div class="editor-card-img-ph">🛍️</div>`;
 
-  const catOptions = ['cute','cool','home','bedroom','bathroom','kitchen','toys']
+  const catOptions = ['cute','cool','home','bedroom','bathroom','kitchen','tech']
     .map(v => `<option value="${v}" ${c.cat===v?'selected':''}>${CAT_LABELS[v]||v}</option>`).join('');
 
   return `
