@@ -308,8 +308,8 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
           </div>
 
           <div class="form-group">
-            <label>Sold Count (optional)</label>
-            <input type="text" id="prodSold" placeholder="e.g. 2.3k+ sold" oninput="updatePreview()"/>
+            <label>Sold Count <span style="font-weight:400;color:#999;text-transform:none;letter-spacing:0">("in past month" added automatically)</span></label>
+            <input type="text" id="prodSold" placeholder="e.g. 2.3k+ or 200+" oninput="updatePreview()"/>
           </div>
 
           <div class="form-group">
@@ -399,8 +399,8 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
           </div>
 
           <div class="form-group">
-            <label>Sold Count (optional)</label>
-            <input type="text" id="tpSold" placeholder="e.g. 2.3k+ sold" oninput="updateTpPreview()"/>
+            <label>Sold Count <span style="font-weight:400;color:#999;text-transform:none;letter-spacing:0">("in past month" added automatically)</span></label>
+            <input type="text" id="tpSold" placeholder="e.g. 2.3k+ or 200+" oninput="updateTpPreview()"/>
           </div>
 
           <div class="form-group">
@@ -556,7 +556,8 @@ function updatePreview(){
   const cat  = document.getElementById('prodCat').value;
   const img  = document.getElementById('prodImg').value.trim();
   const stars = getStars();
-  const sold = document.getElementById('prodSold').value.trim() || '1.2k+ sold';
+  const soldRaw = (document.getElementById('prodSold').value.trim() || '').replace(/\s*(bought|sold|in past month)\s*/gi,'').trim();
+  const soldPreview = soldRaw ? `${soldRaw}+ bought in past month` : '';
   const rating = document.getElementById('prodRating').value.trim() || '4.8';
   const catLabel = CAT_LABELS[cat] || 'Category';
   const emoji = CAT_EMOJIS[cat] || '🛍️';
@@ -564,8 +565,7 @@ function updatePreview(){
 
   document.getElementById('previewName').textContent = name;
   document.getElementById('previewCat').textContent = catLabel;
-  // Build meta: stars symbols + numeric + sold
-  document.getElementById('previewMeta').textContent = `${stars} ${rating} · ${sold}`;
+  document.getElementById('previewMeta').textContent = `${stars} ${rating}${soldPreview ? ' · ' + soldPreview : ''}`;
 
   const previewImg = document.getElementById('previewImg');
   previewImg.className = `preview-card-img ${pb}`;
@@ -614,7 +614,8 @@ function generateCode(p){
   const img      = p.img || '';
   const img2     = p.img2 || '';
   const stars    = p.stars || '★★★★★';
-  const sold     = p.sold || '1.2k+ sold';
+  const soldRaw  = p.sold ? p.sold.replace(/\s*(bought|sold|in past month)\s*/gi,'').trim() : '';
+  const soldHtml = soldRaw ? `<strong>${soldRaw} bought</strong> in past month` : '';
   const rating   = p.rating || '4.8';
   const badge    = p.badge || 'bh';
   const catLabel = CAT_LABELS[cat] || cat;
@@ -638,7 +639,7 @@ function generateCode(p){
     <div class="pcard-meta">
       <span class="pcard-stars">${stars}</span>
       <span class="pcard-rating">${rating}</span>
-      <span class="pcard-sold">${sold}</span>
+      <span class="pcard-sold">${soldHtml}</span>
     </div>
     <a href="${link}" target="_blank" rel="noopener" class="pcard-btn">Shop on Amazon</a>
   </div>
@@ -850,14 +851,15 @@ function updateTpPreview(){
   const img    = document.getElementById('tpImg').value.trim();
   const stars  = getTpStars();
   const rating = document.getElementById('tpRating').value.trim() || '4.8';
-  const sold   = document.getElementById('tpSold').value.trim() || '1.2k+ sold';
+  const tpSoldRaw = (document.getElementById('tpSold').value.trim() || '').replace(/\s*(bought|sold|in past month)\s*/gi,'').trim();
+  const tpSoldPreview = tpSoldRaw ? `${tpSoldRaw}+ bought in past month` : '';
   const pb     = document.getElementById('tpBg').value || 'pb1';
   const catLabel = CAT_LABELS[cat] || 'Category';
   const emoji  = CAT_EMOJIS[cat] || '🛍️';
 
   document.getElementById('previewName').textContent = name;
   document.getElementById('previewCat').textContent  = catLabel;
-  document.getElementById('previewMeta').textContent = `${stars} ${rating} · ${sold}`;
+  document.getElementById('previewMeta').textContent = `${stars} ${rating}${tpSoldPreview ? ' · ' + tpSoldPreview : ''}`;
 
   const previewImg = document.getElementById('previewImg');
   previewImg.className = `preview-card-img ${pb}`;
@@ -897,7 +899,8 @@ function updateTpCode(){
   const img2   = document.getElementById('tpImg2').value.trim();
   const stars  = getTpStars();
   const rating = document.getElementById('tpRating').value.trim() || '4.8';
-  const sold   = document.getElementById('tpSold').value.trim() || '1.2k+ sold';
+  const soldRaw = (document.getElementById('tpSold').value.trim() || '').replace(/\s*(bought|sold|in past month)\s*/gi,'').trim();
+  const soldHtml = soldRaw ? `<strong>${soldRaw} bought</strong> in past month` : '';
   const pb     = document.getElementById('tpBg').value || 'pb1';
   const catLabel = CAT_LABELS[cat] || (cat || 'Category');
 
@@ -923,7 +926,7 @@ function updateTpCode(){
     <div class="tp-meta">
       <span class="tp-stars">${stars}</span>
       <span class="tp-rating">${rating}</span>
-      <span class="tp-sold">${sold}</span>
+      <span class="tp-sold">${soldHtml}</span>
     </div>
     <a href="${link||'YOUR_AFFILIATE_LINK_HERE'}" target="_blank" rel="noopener" class="tp-btn">Shop on Amazon</a>
   </div>
