@@ -168,6 +168,30 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
 .btn-push-tp:hover{background:#2ea043}
 .btn-push-tp:disabled{background:#555;cursor:not-allowed;opacity:.6}
 
+/* EDITOR */
+.editor-card{background:#faf6f0;border:1px solid #edddd6;border-radius:8px;padding:14px;margin-bottom:12px;position:relative}
+.editor-card-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.editor-card-img{width:48px;height:48px;border-radius:6px;object-fit:cover;background:#f0e8e4;flex-shrink:0;border:1px solid #edddd6}
+.editor-card-img-ph{width:48px;height:48px;border-radius:6px;background:#f0e8e4;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid #edddd6}
+.editor-card-title{font-size:13px;font-weight:700;color:#0f1111;flex:1}
+.editor-card-cat{font-size:10px;color:#b85f58;text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.editor-field{margin-bottom:8px}
+.editor-field label{display:block;font-size:11px;font-weight:700;color:#5c4a4a;letter-spacing:.06em;text-transform:uppercase;margin-bottom:3px}
+.editor-field input,.editor-field select{width:100%;padding:7px 10px;border:1.5px solid #e0d4cc;border-radius:5px;font-size:13px;font-family:"Amazon Ember",Arial,sans-serif;color:#0f1111;background:#fff;outline:none;transition:border .2s}
+.editor-field input:focus,.editor-field select:focus{border-color:#b85f58}
+.editor-actions{display:flex;gap:8px;margin-top:10px}
+.editor-save-btn{flex:1;padding:9px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;font-family:"Amazon Ember",Arial,sans-serif;transition:background .2s}
+.editor-save-btn:hover{background:#2ea043}
+.editor-del-btn{padding:9px 14px;background:#fff0f0;border:1px solid #f4a0a0;border-radius:6px;font-size:13px;color:#c0392b;cursor:pointer;font-family:"Amazon Ember",Arial,sans-serif;transition:all .2s}
+.editor-del-btn:hover{background:#c0392b;color:#fff}
+.editor-type-badge{font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.editor-type-grid{background:#f9eee9;color:#b85f58;border:1px solid #edddd6}
+.editor-type-tp{background:#fff8e1;color:#e47911;border:1px solid #ffe082}
+.editor-loading{text-align:center;padding:30px;color:#999;font-size:13px}
+.editor-empty{text-align:center;padding:30px;color:#999;font-size:13px}
+.editor-section-label{font-size:11px;font-weight:700;color:#b85f58;letter-spacing:.1em;text-transform:uppercase;margin:16px 0 8px;display:flex;align-items:center;gap:8px}
+.editor-section-label::after{content:'';flex:1;height:1px;background:#edddd6}
+
 /* TABS */
 .tab-bar{display:flex;border-bottom:2px solid #edddd6;background:#fff;margin-bottom:0}
 .tab-btn{flex:1;padding:13px 10px;background:none;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;font-family:"Amazon Ember",Arial,sans-serif;font-size:13px;font-weight:600;color:#999;cursor:pointer;transition:all .2s;letter-spacing:.02em}
@@ -218,6 +242,7 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
       <div class="tab-bar">
         <button class="tab-btn active" onclick="switchTab('allfnds',this)">✦ All Finds Card</button>
         <button class="tab-btn" onclick="switchTab('toppick',this)">🏆 Top Picks Card</button>
+        <button class="tab-btn" onclick="switchTab('editor',this);loadSiteProducts()">✎ Edit Site</button>
       </div>
 
       <div class="panel-body">
@@ -380,6 +405,12 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
           <button class="btn-clear" onclick="clearTpForm()" style="margin-top:8px">✕ Clear Form</button>
 
         </div><!-- /tab-toppick -->
+
+        <!-- ── EDITOR TAB ── -->
+        <div class="tab-pane" id="tab-editor">
+          <div id="editorStatus" style="text-align:center;padding:20px;color:#999;font-size:13px">Click "Edit Site" tab to load your products.</div>
+          <div id="editorList"></div>
+        </div><!-- /tab-editor -->
 
       </div><!-- /panel-body -->
     </div><!-- /panel -->
@@ -1019,6 +1050,288 @@ async function pushToSite(tab){
   } finally {
     btn.disabled = false;
     btn.textContent = tab === 'allfnds' ? '🚀 Add to Site (GitHub)' : '🚀 Add to Site (GitHub)';
+  }
+}
+
+// ── SITE EDITOR ───────────────────────────────────
+let siteContent = '';
+let siteSha = '';
+
+async function loadSiteProducts(){
+  const token = localStorage.getItem('ghToken');
+  const statusEl = document.getElementById('editorStatus');
+  const listEl   = document.getElementById('editorList');
+  listEl.innerHTML = '';
+
+  if(!token){
+    statusEl.innerHTML = '⚠️ Enter your GitHub token first to load products.';
+    statusEl.style.display = 'block';
+    return;
+  }
+
+  statusEl.innerHTML = '⏳ Loading products from your site...';
+  statusEl.style.display = 'block';
+
+  try {
+    const res = await fetch(GH_API, {
+      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    if(!res.ok) throw new Error('Could not fetch index.html from GitHub');
+    const data = await res.json();
+    const rawBin = atob(data.content.replace(/\n/g,''));
+    const rawB   = new Uint8Array(rawBin.length);
+    for(let i=0;i<rawBin.length;i++) rawB[i] = rawBin.charCodeAt(i);
+    siteContent = new TextDecoder('utf-8').decode(rawB);
+    siteSha = data.sha;
+
+    // Parse grid cards
+    const gridCards   = parseCards(siteContent, 'pcard');
+    // Parse top picks
+    const tpCards     = parseCards(siteContent, 'tp-card');
+
+    statusEl.style.display = 'none';
+
+    let html = '';
+    if(gridCards.length){
+      html += `<div class="editor-section-label">✦ All Finds (${gridCards.length})</div>`;
+      gridCards.forEach((c,i) => html += buildEditorCard(c, i, 'grid'));
+    }
+    if(tpCards.length){
+      html += `<div class="editor-section-label">🏆 Top Picks (${tpCards.length})</div>`;
+      tpCards.forEach((c,i) => html += buildEditorCard(c, i, 'tp'));
+    }
+    if(!gridCards.length && !tpCards.length){
+      html = '<div class="editor-empty">No products found on your site.</div>';
+    }
+    listEl.innerHTML = html;
+
+  } catch(e){
+    statusEl.innerHTML = `❌ ${e.message}`;
+  }
+}
+
+function parseCards(html, cls){
+  const results = [];
+  const startTag = cls === 'pcard'
+    ? /<div class="pcard"/g
+    : /<div class="tp-card"/g;
+  let m;
+  while((m = startTag.exec(html)) !== null){
+    const start = m.index;
+    // Find matching closing div by counting nesting
+    let depth = 0, i = start, end = -1;
+    while(i < html.length){
+      if(html[i] === '<'){
+        if(html.slice(i,i+4) === '<div') depth++;
+        else if(html.slice(i,i+6) === '</div>'){
+          depth--;
+          if(depth === 0){ end = i + 6; break; }
+        }
+      }
+      i++;
+    }
+    if(end === -1) continue;
+    const block = html.slice(start, end);
+
+    // Extract fields
+    const name    = (block.match(/data-name="([^"]*)"/) || block.match(/class="(?:pcard|tp)-name"[^>]*>([^<]*)</)|| ['',''])[1];
+    const cat     = (block.match(/data-cat="([^"]*)"/) || ['',''])[1];
+    const link    = (block.match(/href="(https?:\/\/[^"]*)"/) || ['',''])[1];
+    const imgSrc  = (block.match(/<img[^>]+src="([^"]*)"/) || ['',''])[1];
+    const rating  = (block.match(/class="(?:pcard|tp)-rating"[^>]*>([\d.]*)</) || ['',''])[1];
+    const sold    = (block.match(/class="(?:pcard|tp)-sold"[^>]*>([^<]*)</) || ['',''])[1];
+    const nameMatch = block.match(/class="(?:pcard|tp)-name"[^>]*>([\s\S]*?)<\/div>/);
+    const displayName = nameMatch ? nameMatch[1].replace(/<[^>]+>/g,'').trim() : name;
+
+    results.push({ block, start, end, name: displayName, cat, link, imgSrc, rating, sold, cls });
+  }
+  return results;
+}
+
+function buildEditorCard(c, i, type){
+  const badge = type === 'grid'
+    ? '<span class="editor-type-badge editor-type-grid">Grid</span>'
+    : '<span class="editor-type-badge editor-type-tp">Top Pick</span>';
+  const imgEl = c.imgSrc
+    ? `<img class="editor-card-img" src="${c.imgSrc.startsWith('http') ? c.imgSrc : 'https://www.zuufinds.com/'+c.imgSrc}" onerror="this.style.display='none'">`
+    : `<div class="editor-card-img-ph">🛍️</div>`;
+
+  const catOptions = ['cute','cool','home','bedroom','bathroom','kitchen','toys']
+    .map(v => `<option value="${v}" ${c.cat===v?'selected':''}>${CAT_LABELS[v]||v}</option>`).join('');
+
+  return `
+  <div class="editor-card" id="ecard-${type}-${i}">
+    <div class="editor-card-head">
+      ${imgEl}
+      <div style="flex:1;min-width:0">
+        <div class="editor-card-title">${c.name||'Unnamed Product'}</div>
+        <div class="editor-card-cat">${CAT_LABELS[c.cat]||c.cat||'—'} &nbsp;${badge}</div>
+      </div>
+    </div>
+    <div class="editor-field">
+      <label>Product Name</label>
+      <input type="text" id="ename-${type}-${i}" value="${(c.name||'').replace(/"/g,'&quot;')}">
+    </div>
+    <div class="editor-field">
+      <label>Category</label>
+      <select id="ecat-${type}-${i}">${catOptions}</select>
+    </div>
+    <div class="editor-field">
+      <label>Affiliate Link</label>
+      <input type="text" id="elink-${type}-${i}" value="${(c.link||'').replace(/"/g,'&quot;')}">
+    </div>
+    <div class="editor-field">
+      <label>Image Path or URL</label>
+      <input type="text" id="eimg-${type}-${i}" value="${(c.imgSrc||'').replace(/"/g,'&quot;')}">
+    </div>
+    <div style="display:flex;gap:8px">
+      <div class="editor-field" style="flex:1">
+        <label>Rating</label>
+        <input type="text" id="erating-${type}-${i}" value="${c.rating||''}">
+      </div>
+      <div class="editor-field" style="flex:1">
+        <label>Sold Count</label>
+        <input type="text" id="esold-${type}-${i}" value="${(c.sold||'').replace(/"/g,'&quot;')}">
+      </div>
+    </div>
+    <div class="editor-actions">
+      <button class="editor-save-btn" onclick="saveEdit('${type}',${i})">💾 Save Changes</button>
+      <button class="editor-del-btn" onclick="deleteCard('${type}',${i})">🗑 Delete</button>
+    </div>
+  </div>`;
+}
+
+async function saveEdit(type, i){
+  const token = localStorage.getItem('ghToken');
+  if(!token){ showToast('⚠️ No token saved', false); return; }
+  if(!siteContent){ showToast('⚠️ Reload the Edit Site tab first', false); return; }
+
+  const newName   = document.getElementById(`ename-${type}-${i}`).value.trim();
+  const newCat    = document.getElementById(`ecat-${type}-${i}`).value;
+  const newLink   = document.getElementById(`elink-${type}-${i}`).value.trim();
+  const newImg    = document.getElementById(`eimg-${type}-${i}`).value.trim();
+  const newRating = document.getElementById(`erating-${type}-${i}`).value.trim();
+  const newSold   = document.getElementById(`esold-${type}-${i}`).value.trim();
+
+  if(!newName){ showToast('⚠️ Name cannot be empty', false); return; }
+
+  const btn = document.querySelector(`#ecard-${type}-${i} .editor-save-btn`);
+  btn.textContent = '⏳ Saving...'; btn.disabled = true;
+
+  try {
+    // Re-fetch fresh content to avoid conflicts
+    const res = await fetch(GH_API, {
+      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    const data = await res.json();
+    const rawBin = atob(data.content.replace(/\n/g,''));
+    const rawB = new Uint8Array(rawBin.length);
+    for(let j=0;j<rawBin.length;j++) rawB[j] = rawBin.charCodeAt(j);
+    let content = new TextDecoder('utf-8').decode(rawB);
+    const sha = data.sha;
+
+    // Parse cards again from fresh content
+    const cards = parseCards(content, type === 'grid' ? 'pcard' : 'tp-card');
+    const card  = cards[i];
+    if(!card) throw new Error('Product not found — try reloading the Edit Site tab');
+
+    // Build updated block
+    let updated = card.block;
+
+    // Update data-name
+    updated = updated.replace(/data-name="[^"]*"/, `data-name="${newName}"`);
+    // Update data-cat
+    updated = updated.replace(/data-cat="[^"]*"/, `data-cat="${newCat}"`);
+    // Update category label text (pcard-cat / tp-cat)
+    updated = updated.replace(/(class="(?:pcard|tp)-cat"[^>]*>)[^<]*/,`$1${CAT_LABELS[newCat]||newCat}`);
+    // Update name text
+    updated = updated.replace(/(class="(?:pcard|tp)-name"[^>]*>)[^<]*/,`$1${newName}`);
+    // Update link
+    updated = updated.replace(/href="https?:\/\/[^"]*"/,`href="${newLink}"`);
+    // Update rating
+    if(newRating) updated = updated.replace(/(class="(?:pcard|tp)-rating"[^>]*>)[^<]*/,`$1${newRating}`);
+    // Update sold
+    if(newSold) updated = updated.replace(/(class="(?:pcard|tp)-sold"[^>]*>)[^<]*/,`$1${newSold}`);
+    // Update image src
+    if(newImg){
+      if(updated.includes('<img')){
+        updated = updated.replace(/(<img[^>]+src=")[^"]*(")/,`$1${newImg}$2`);
+        updated = updated.replace(/(<img[^>]+alt=")[^"]*(")/,`$1${newName}$2`);
+      }
+    }
+    // Update badge label
+    updated = updated.replace(/(class="p-badge[^"]*"[^>]*>)[^<]*/,`$1${CAT_LABELS[newCat]||newCat}`);
+
+    // Replace in full content
+    content = content.slice(0, card.start) + updated + content.slice(card.end);
+
+    // Push to GitHub
+    const enc = new TextEncoder();
+    const eb  = enc.encode(content);
+    let bin = ''; eb.forEach(b => bin += String.fromCharCode(b));
+    const b64 = btoa(bin);
+
+    const pushRes = await fetch(GH_API, {
+      method:'PUT',
+      headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body: JSON.stringify({ message:`Edit product: ${newName}`, content: b64, sha })
+    });
+    if(!pushRes.ok){ const e=await pushRes.json(); throw new Error(e.message); }
+
+    showToast(`✅ "${newName}" updated on your site!`);
+    // Reload editor
+    setTimeout(()=> loadSiteProducts(), 1500);
+
+  } catch(e){
+    showToast(`❌ ${e.message}`, false);
+    btn.textContent = '💾 Save Changes'; btn.disabled = false;
+  }
+}
+
+async function deleteCard(type, i){
+  if(!confirm('Delete this product from your site? This cannot be undone.')) return;
+  const token = localStorage.getItem('ghToken');
+  if(!token){ showToast('⚠️ No token saved', false); return; }
+
+  const btn = document.querySelector(`#ecard-${type}-${i} .editor-del-btn`);
+  btn.textContent = '⏳...'; btn.disabled = true;
+
+  try {
+    const res = await fetch(GH_API, {
+      headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json'}
+    });
+    const data = await res.json();
+    const rawBin = atob(data.content.replace(/\n/g,''));
+    const rawB = new Uint8Array(rawBin.length);
+    for(let j=0;j<rawBin.length;j++) rawB[j] = rawBin.charCodeAt(j);
+    let content = new TextDecoder('utf-8').decode(rawB);
+    const sha = data.sha;
+
+    const cards = parseCards(content, type === 'grid' ? 'pcard' : 'tp-card');
+    const card  = cards[i];
+    if(!card) throw new Error('Product not found');
+
+    // Remove card block from content
+    content = content.slice(0, card.start) + content.slice(card.end);
+
+    const enc = new TextEncoder();
+    const eb  = enc.encode(content);
+    let bin = ''; eb.forEach(b => bin += String.fromCharCode(b));
+    const b64 = btoa(bin);
+
+    const pushRes = await fetch(GH_API, {
+      method:'PUT',
+      headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body: JSON.stringify({ message:`Delete product: ${card.name||'item'}`, content: b64, sha })
+    });
+    if(!pushRes.ok){ const e=await pushRes.json(); throw new Error(e.message); }
+
+    showToast(`🗑 Product deleted from your site!`);
+    setTimeout(()=> loadSiteProducts(), 1500);
+
+  } catch(e){
+    showToast(`❌ ${e.message}`, false);
+    btn.textContent = '🗑 Delete'; btn.disabled = false;
   }
 }
 
