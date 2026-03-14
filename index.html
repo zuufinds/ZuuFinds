@@ -74,7 +74,7 @@ nav{background:#2a1f1f;padding:0 24px;position:sticky;top:0;z-index:100;border-b
 .tp-card{flex:0 0 180px;background:#faf6f0;border:1px solid #edddd6;border-radius:8px;overflow:hidden;transition:box-shadow .2s,transform .2s;display:flex;flex-direction:column}
 .tp-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.1);transform:translateY(-2px)}
 .tp-img{width:100%;aspect-ratio:1/1;position:relative;overflow:hidden;background:#f0e8e4;display:flex;align-items:center;justify-content:center;font-size:38px;flex-shrink:0}
-.tp-img img{width:100%;height:100%;object-fit:contain;position:absolute;inset:0;padding:6px}
+.tp-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
 .tp-body{padding:10px 11px 12px;display:flex;flex-direction:column;flex:1}
 .tp-cat{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#b85f58;font-weight:600;margin-bottom:2px}
 .tp-name{font-size:12.5px;color:#0f1111;line-height:1.35;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;flex:1}
@@ -95,7 +95,7 @@ nav{background:#2a1f1f;padding:0 24px;position:sticky;top:0;z-index:100;border-b
 .pcard{background:#fff;border:1px solid #e8ddd6;border-radius:8px;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .2s,transform .2s}
 .pcard:hover{box-shadow:0 4px 18px rgba(0,0,0,.1);transform:translateY(-2px)}
 .pcard-img{width:100%;aspect-ratio:1/1;position:relative;overflow:hidden;background:#f8f4f0;display:flex;align-items:center;justify-content:center;font-size:44px}
-.pcard-img img{width:100%;height:100%;object-fit:contain;position:absolute;inset:0;padding:8px}
+.pcard-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
 .pcard-img .emoji-ph{position:relative;z-index:1}
 .pb1{background:linear-gradient(150deg,#f5ddd8,#e0a89e)}
 .pb2{background:linear-gradient(150deg,#ead8ec,#c4a0cc)}
@@ -366,42 +366,6 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
   </div>
 
   <div class="finds-grid" id="findsGrid">
-
-    <div class="pcard" data-cat="cute" data-name="Duck Dimmable Rechargeable Nightlight">
-      <div class="pcard-img pb1">
-        <img src="products/ducklight.jpg" alt="Duck Dimmable Rechargeable Nightlight">
-        <span class="p-badge bh cat-badge">Cute Finds</span>
-      </div>
-      <div class="pcard-body">
-        <div class="pcard-cat">Cute Finds</div>
-        <div class="pcard-name">Duck Dimmable Rechargeable Nightlight</div>
-        <div class="pcard-meta">
-          <span class="pcard-stars">★★★★★</span>
-          <span class="pcard-rating">4.8</span>
-          <span class="pcard-sold">2.8k+ sold</span>
-        </div>
-        <a href="https://amzn.to/4rCpkMw" target="_blank" rel="noopener" class="pcard-btn">Shop on Amazon</a>
-      </div>
-    </div>
-
-
-    <div class="pcard" data-cat="cute" data-name="Duck Dimmable Rechargeable Nightlight">
-      <div class="pcard-img pb1">
-        <img src="products/ducklight.jpg" alt="Duck Dimmable Rechargeable Nightlight">
-        <span class="p-badge bh cat-badge">Cute Finds</span>
-      </div>
-      <div class="pcard-body">
-        <div class="pcard-cat">Cute Finds</div>
-        <div class="pcard-name">Duck Dimmable Rechargeable Nightlight</div>
-        <div class="pcard-meta">
-          <span class="pcard-stars">★★★★★</span>
-          <span class="pcard-rating">4.8</span>
-          <span class="pcard-sold">2.8k+ sold</span>
-        </div>
-        <a href="https://amzn.to/4rCpkMw" target="_blank" rel="noopener" class="pcard-btn">Shop on Amazon</a>
-      </div>
-    </div>
-
 
     <div class="pcard" data-cat="cute" data-name="Cat Paw Cushion Kawaii Plush Seat">
       <div class="pcard-img pb1">
