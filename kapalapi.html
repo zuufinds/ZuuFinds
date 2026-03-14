@@ -1365,17 +1365,18 @@ async function saveEdit(type, i){
     // Update rating
     if(newRating) updated = updated.replace(/(class="(?:pcard|tp)-rating"[^>]*>)[^<]*/,`$1${newRating}`);
     // Update sold
-    if(newSold) updated = updated.replace(/(class="(?:pcard|tp)-sold"[^>]*>)[^<]*/,`$1${newSold}`);
-    // Update images — rebuild all img tags inside the image container
-    if(newImg){
-      // Remove all existing img tags first
+    if(newSold) updated = updated.replace(/(class="(?:pcard|tp)-sold"[^>]*>)[\s\S]*?(<\/span>)/,`$1${newSold}$2`);
+    // Update images — always rebuild if either img field has a value
+    if(newImg || newImg2){
+      // Remove all existing img tags
       updated = updated.replace(/<img[^>]+>/g, '');
-      // Find the image container div closing and insert before it
+      // Find the image container opening tag and insert right after it
       const imgContainerClass = type === 'grid' ? 'pcard-img' : 'tp-img';
       const imgDivMatch = updated.match(new RegExp(`(class="${imgContainerClass}[^"]*"[^>]*>)`));
       if(imgDivMatch){
         const insertAfter = updated.indexOf(imgDivMatch[0]) + imgDivMatch[0].length;
-        let newImgTags = `\n    <img src="${newImg}" alt="${newName}">`;
+        let newImgTags = '';
+        if(newImg) newImgTags += `\n    <img src="${newImg}" alt="${newName}">`;
         if(newImg2) newImgTags += `\n    <img src="${newImg2}" alt="${newName} detail">`;
         updated = updated.slice(0, insertAfter) + newImgTags + updated.slice(insertAfter);
       }
