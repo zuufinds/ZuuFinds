@@ -169,7 +169,8 @@ footer{background:#232f3e;color:#ddd;padding:20px 20px 14px;border-top:2px solid
 /* RESPONSIVE */
 @media(max-width:1000px){.finds-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:740px){
-  .finds-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .finds-grid{grid-template-columns:repeat(2,1fr)!important;gap:12px!important;width:100%!important}
+  .pcard{max-width:100%!important;min-width:0!important}
   .nav-search{display:none}
   .nav-socials{display:none}
   .nav-menu-btn{display:block}
@@ -177,7 +178,8 @@ footer{background:#232f3e;color:#ddd;padding:20px 20px 14px;border-top:2px solid
   .nav-inner{justify-content:space-between}
 }
 @media(max-width:480px){
-  .finds-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .finds-grid{grid-template-columns:repeat(2,1fr)!important;gap:10px!important;width:100%!important}
+  .pcard{max-width:100%!important;min-width:0!important}
   .wrap{padding:16px 12px 48px}
   .tp-card{flex:0 0 138px}
   .cat-strip-inner{justify-content:flex-start}
