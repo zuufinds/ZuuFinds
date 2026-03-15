@@ -1175,11 +1175,15 @@ async function loadSiteProducts(){
     let html = '';
     if(gridCards.length){
       html += `<div class="editor-section-label">&#10022; All Finds (${gridCards.length})</div>`;
+      html += '<div class="products-grid">';
       gridCards.forEach(c => html += buildEditorCardFromHtml(c.html, c.i, 'grid'));
+      html += '</div>';
     }
     if(tpCards.length){
       html += `<div class="editor-section-label">&#127942; Top Picks (${tpCards.length})</div>`;
+      html += '<div class="products-grid">';
       tpCards.forEach(c => html += buildEditorCardFromHtml(c.html, c.i, 'tp'));
+      html += '</div>';
     }
     if(!gridCards.length && !tpCards.length){
       html = '<div class="editor-empty">No products found. Add some using the form!</div>';
@@ -1192,7 +1196,6 @@ async function loadSiteProducts(){
 }
 
 function buildEditorCardFromHtml(cardHtml, i, type){
-  // Parse fields from card HTML
   const nameMatch  = cardHtml.match(/data-name="([^"]*)"/);
   const catMatch   = cardHtml.match(/data-cat="([^"]*)"/);
   const nameMatch2 = cardHtml.match(/class="(?:pcard|tp)-name"[^>]*>([\s\S]*?)<\/div>/);
@@ -1203,8 +1206,8 @@ function buildEditorCardFromHtml(cardHtml, i, type){
   const allImgs    = [...cardHtml.matchAll(/<img[^>]+src="([^"]*)"/g)].map(m=>m[1]);
   const imgSrc     = allImgs[0]||'';
   const imgSrc2    = allImgs[1]||'';
-  const ratingMatch= cardHtml.match(/class="(?:pcard|tp)-rating"[^>]*>([\d.]*)</);
-  const rating     = ratingMatch ? ratingMatch[1] : '';
+  const ratingM    = cardHtml.match(/class="(?:pcard|tp)-rating"[^>]*>([\d.]*)</);
+  const rating     = ratingM ? ratingM[1] : '';
   const soldMatch  = cardHtml.match(/class="(?:pcard|tp)-sold"[^>]*>([\s\S]*?)<\/span>/);
   const soldRaw    = soldMatch ? soldMatch[1].replace(/<[^>]+>/g,'').replace(/in past month/gi,'').replace(/bought/gi,'').trim() : '';
 
@@ -1218,28 +1221,40 @@ function buildEditorCardFromHtml(cardHtml, i, type){
     .map(v=>`<option value="${v}" ${cat===v?'selected':''}>${CAT_LABELS[v]||v}</option>`).join('');
 
   return `
-  <div class="editor-card" id="ecard-${type}-${i}">
-    <div class="editor-card-head">
+  <div class="p-item" id="ecard-${type}-${i}">
+    <div class="${type==='grid'?'p-item-img':''}" style="${type==='tp'?'width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:32px;background:linear-gradient(150deg,#f5ddd8,#e0a89e);overflow:hidden;position:relative;':''}">
       ${imgEl}
-      <div style="flex:1;min-width:0">
-        <div class="editor-card-title">${name||'Unnamed Product'}</div>
-        <div class="editor-card-cat">${CAT_LABELS[cat]||cat||'&mdash;'} &nbsp;${badge}</div>
+      <span class="p-item-cat">${CAT_LABELS[cat]||cat||'?'}</span>
+    </div>
+    <div class="p-item-body">
+      <div class="p-item-name">${name||'Unnamed Product'}</div>
+      <a class="p-item-link" href="${link}" target="_blank">${link||'No link'}</a>
+      <div class="p-item-actions">
+        <button class="p-item-edit" onclick="toggleEditForm('${type}',${i})">Edit</button>
+        <button class="p-item-del" onclick="deleteCard('${type}',${i})">&#128465;</button>
       </div>
     </div>
-    <div class="editor-field"><label>Product Name</label><input type="text" id="ename-${type}-${i}" value="${(name||'').replace(/"/g,'&quot;')}"></div>
-    <div class="editor-field"><label>Category</label><select id="ecat-${type}-${i}">${catOptions}</select></div>
-    <div class="editor-field"><label>Affiliate Link</label><input type="text" id="elink-${type}-${i}" value="${(link||'').replace(/"/g,'&quot;')}"></div>
-    <div class="editor-field"><label>Image 1</label><input type="text" id="eimg-${type}-${i}" value="${(imgSrc||'').replace(/"/g,'&quot;')}"></div>
-    <div class="editor-field"><label>Image 2 <span style="font-weight:400;color:#999;text-transform:none;letter-spacing:0">(optional)</span></label><input type="text" id="eimg2-${type}-${i}" value="${(imgSrc2||'').replace(/"/g,'&quot;')}"></div>
-    <div style="display:flex;gap:8px">
-      <div class="editor-field" style="flex:1"><label>Rating</label><input type="text" id="erating-${type}-${i}" value="${rating||''}"></div>
-      <div class="editor-field" style="flex:1"><label>Sold Count</label><input type="text" id="esold-${type}-${i}" value="${(soldRaw||'').replace(/"/g,'&quot;')}"></div>
-    </div>
-    <div class="editor-actions">
-      <button class="editor-save-btn" onclick="saveEdit('${type}',${i})">&#128190; Save Changes</button>
-      <button class="editor-del-btn" onclick="deleteCard('${type}',${i})">&#128465; Delete</button>
+    <div id="eform-${type}-${i}" style="display:none;padding:12px;border-top:1px solid #edddd6;background:#faf6f0">
+      <div class="editor-field"><label>Product Name</label><input type="text" id="ename-${type}-${i}" value="${(name||'').replace(/"/g,'&quot;')}"></div>
+      <div class="editor-field"><label>Category</label><select id="ecat-${type}-${i}">${catOptions}</select></div>
+      <div class="editor-field"><label>Affiliate Link</label><input type="text" id="elink-${type}-${i}" value="${(link||'').replace(/"/g,'&quot;')}"></div>
+      <div class="editor-field"><label>Image 1</label><input type="text" id="eimg-${type}-${i}" value="${(imgSrc||'').replace(/"/g,'&quot;')}"></div>
+      <div class="editor-field"><label>Image 2 <span style="font-weight:400;color:#999;text-transform:none;letter-spacing:0">(optional)</span></label><input type="text" id="eimg2-${type}-${i}" value="${(imgSrc2||'').replace(/"/g,'&quot;')}"></div>
+      <div style="display:flex;gap:8px">
+        <div class="editor-field" style="flex:1"><label>Rating</label><input type="text" id="erating-${type}-${i}" value="${rating||''}"></div>
+        <div class="editor-field" style="flex:1"><label>Sold Count</label><input type="text" id="esold-${type}-${i}" value="${(soldRaw||'').replace(/"/g,'&quot;')}"></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="editor-save-btn" onclick="saveEdit('${type}',${i})">&#128190; Save Changes</button>
+        <button onclick="toggleEditForm('${type}',${i})" style="padding:9px 14px;background:#f9eee9;border:1px solid #e0d4cc;border-radius:6px;font-size:13px;cursor:pointer;font-family:inherit">Cancel</button>
+      </div>
     </div>
   </div>`;
+}
+
+function toggleEditForm(type, i){
+  const form = document.getElementById(`eform-${type}-${i}`);
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
 }
 
 
