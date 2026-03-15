@@ -243,6 +243,7 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
         <button class="tab-btn active" onclick="switchTab('allfnds',this)">✦ All Finds Card</button>
         <button class="tab-btn" onclick="switchTab('toppick',this)">🏆 Top Picks Card</button>
         <button class="tab-btn" onclick="switchTab('editor',this);loadSiteProducts()">✎ Edit Site</button>
+        <button class="tab-btn" onclick="switchTab('updater',this)">⚙️ Update Code</button>
       </div>
 
       <div class="panel-body">
@@ -429,9 +430,24 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
 
         <!-- ── EDITOR TAB ── -->
         <div class="tab-pane" id="tab-editor">
+        <div class="tab-pane" id="tab-editor">
           <div id="editorStatus" style="text-align:center;padding:20px;color:#999;font-size:13px">Click "Edit Site" tab to load your products.</div>
           <div id="editorList"></div>
         </div><!-- /tab-editor -->
+
+        <!-- ── UPDATE CODE TAB ── -->
+        <div class="tab-pane" id="tab-updater">
+          <div style="background:#fff8e1;border:1.5px solid #ffe082;border-radius:8px;padding:14px;margin-bottom:16px;font-size:13px;color:#7a6000;line-height:1.6">
+            <strong>🛡️ Safe Code Update</strong><br>
+            Paste your new <code>index.html</code> code below. Your products are stored separately in <code>products.js</code> and will <strong>never be touched</strong> — only the site layout, CSS and JS will be updated.
+          </div>
+          <div class="form-group">
+            <label>Paste new index.html code here</label>
+            <textarea id="newIndexCode" style="min-height:200px;font-family:monospace;font-size:12px" placeholder="Paste your full index.html content here..."></textarea>
+          </div>
+          <button class="btn-primary" onclick="pushCodeUpdate()" style="background:#2a1f1f">⚙️ Push Code Update (keeps products safe)</button>
+          <div id="updaterStatus" style="margin-top:12px;font-size:13px;color:#999"></div>
+        </div><!-- /tab-updater -->
 
       </div><!-- /panel-body -->
     </div><!-- /panel -->
@@ -1002,8 +1018,10 @@ function enablePushBtns(ok){
 // ── GITHUB PUSH ───────────────────────────────────
 const GH_USER = 'zuufinds';
 const GH_REPO = 'ZuuFinds';
-const GH_FILE = 'index.html';
-const GH_API  = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
+const GH_FILE    = 'index.html';
+const GH_API     = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
+const GH_PROD_FILE = 'products.js';
+const GH_PROD_API  = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_PROD_FILE}`;
 
 async function pushToSite(tab){
   const token = localStorage.getItem('ghToken');
@@ -1031,8 +1049,8 @@ async function pushToSite(tab){
   btn.textContent = '⏳ Pushing to GitHub...';
 
   try {
-    // 1. Fetch current index.html from GitHub
-    const res = await fetch(GH_API, {
+    // 1. Fetch current products.js from GitHub
+    const res = await fetch(GH_PROD_API, {
       headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
     });
     if(!res.ok){
@@ -1040,14 +1058,13 @@ async function pushToSite(tab){
       throw new Error(err.message || `GitHub error ${res.status}`);
     }
     const data = await res.json();
-    // Safe UTF-8 decode that handles emojis and special characters
     const rawBinary = atob(data.content.replace(/\n/g,''));
     const rawBytes = new Uint8Array(rawBinary.length);
     for(let i = 0; i < rawBinary.length; i++) rawBytes[i] = rawBinary.charCodeAt(i);
     const currentContent = new TextDecoder('utf-8').decode(rawBytes);
     const sha = data.sha;
 
-    // 2. Build new card code directly (not via codeOutput to avoid any encoding issues)
+    // 2. Build new card code
     let newCard = '';
     if(tab === 'allfnds'){
       const p = {
@@ -1097,20 +1114,19 @@ async function pushToSite(tab){
 </div>`;
     }
 
-    // 3. Find insertion point and insert
+    // 3. Insert into products.js
     let updatedContent;
     if(tab === 'allfnds'){
-      // Insert into finds-grid
-      const marker = '<div class="finds-grid" id="findsGrid">';
+      // Insert at start of ZUU_GRID_PRODUCTS
+      const marker = 'window.ZUU_GRID_PRODUCTS = `';
       const idx = currentContent.indexOf(marker);
-      if(idx === -1) throw new Error('Could not find finds-grid in index.html. Make sure your index.html is up to date.');
+      if(idx === -1) throw new Error('Could not find ZUU_GRID_PRODUCTS in products.js. Make sure you uploaded the new products.js.');
       const insertAt = idx + marker.length;
-      updatedContent = currentContent.slice(0, insertAt) + '\n\n    ' + newCard.split('\n').join('\n    ') + '\n' + currentContent.slice(insertAt);
+      updatedContent = currentContent.slice(0, insertAt) + '\n' + newCard + '\n' + currentContent.slice(insertAt);
 
       // Also add to Top Picks if checkbox is ticked
       const alsoTp = document.getElementById('alsoTopPick').checked;
       if(alsoTp){
-        // Build tp-card from same fields
         const tpName   = document.getElementById('prodName').value.trim();
         const tpCat    = document.getElementById('prodCat').value;
         const tpLink   = document.getElementById('prodLink').value.trim();
@@ -1123,10 +1139,10 @@ async function pushToSite(tab){
         const tpCatLabel = CAT_LABELS[tpCat] || tpCat;
         let tpImgLines = '';
         if(tpImg){
-          tpImgLines = `\n        <img src="${tpImg}" alt="${tpName}">`;
-          if(tpImg2) tpImgLines += `\n        <img src="${tpImg2}" alt="${tpName} detail">`;
+          tpImgLines = `\n    <img src="${tpImg}" alt="${tpName}">`;
+          if(tpImg2) tpImgLines += `\n    <img src="${tpImg2}" alt="${tpName} detail">`;
         } else {
-          tpImgLines = `\n        <span>${CAT_EMOJIS[tpCat]||'🛍️'}</span>`;
+          tpImgLines = `\n    <span>${CAT_EMOJIS[tpCat]||'🛍️'}</span>`;
         }
         const tpCard = `<div class="tp-card">
   <div class="tp-img pb1">${tpImgLines}
@@ -1142,34 +1158,33 @@ async function pushToSite(tab){
     <a href="${tpLink}" target="_blank" rel="noopener" class="tp-btn">Shop on Amazon</a>
   </div>
 </div>`;
-        const tpMarker = '<div class="slider-track" id="sliderTrack">';
+        const tpMarker = 'window.ZUU_TOP_PICKS = `';
         const tpIdx = updatedContent.indexOf(tpMarker);
         if(tpIdx !== -1){
           const tpInsertAt = tpIdx + tpMarker.length;
-          updatedContent = updatedContent.slice(0, tpInsertAt) + '\n\n        ' + tpCard.split('\n').join('\n        ') + '\n' + updatedContent.slice(tpInsertAt);
+          updatedContent = updatedContent.slice(0, tpInsertAt) + '\n' + tpCard + '\n' + updatedContent.slice(tpInsertAt);
         }
       }
     } else {
-      const marker = '<div class="slider-track" id="sliderTrack">';
+      const marker = 'window.ZUU_TOP_PICKS = `';
       const idx = currentContent.indexOf(marker);
-      if(idx === -1) throw new Error('Could not find sliderTrack in index.html. Make sure your index.html is up to date.');
+      if(idx === -1) throw new Error('Could not find ZUU_TOP_PICKS in products.js. Make sure you uploaded the new products.js.');
       const insertAt = idx + marker.length;
-      updatedContent = currentContent.slice(0, insertAt) + '\n\n        ' + newCard.split('\n').join('\n        ') + '\n' + currentContent.slice(insertAt);
+      updatedContent = currentContent.slice(0, insertAt) + '\n' + newCard + '\n' + currentContent.slice(insertAt);
     }
 
-    // 4. Push updated file back to GitHub
+    // 4. Push updated products.js back to GitHub
     const prodName = tab === 'allfnds'
       ? document.getElementById('prodName').value.trim()
       : document.getElementById('tpName').value.trim();
 
-    // Safe base64 encoding that handles emojis and all Unicode characters
     const encoder = new TextEncoder();
     const encBytes = encoder.encode(updatedContent);
     let encBinary = '';
     encBytes.forEach(b => encBinary += String.fromCharCode(b));
     const safeBase64 = btoa(encBinary);
 
-    const pushRes = await fetch(GH_API, {
+    const pushRes = await fetch(GH_PROD_API, {
       method: 'PUT',
       headers: {
         Authorization: `token ${token}`,
@@ -1222,7 +1237,7 @@ async function loadSiteProducts(){
   statusEl.style.display = 'block';
 
   try {
-    const res = await fetch(GH_API, {
+    const res = await fetch(GH_PROD_API, {
       headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
     });
     if(!res.ok) throw new Error('Could not fetch index.html from GitHub');
@@ -1377,7 +1392,7 @@ async function saveEdit(type, i){
 
   try {
     // Re-fetch fresh content to avoid conflicts
-    const res = await fetch(GH_API, {
+    const res = await fetch(GH_PROD_API, {
       headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
     });
     const data = await res.json();
@@ -1436,7 +1451,7 @@ async function saveEdit(type, i){
     let bin = ''; eb.forEach(b => bin += String.fromCharCode(b));
     const b64 = btoa(bin);
 
-    const pushRes = await fetch(GH_API, {
+    const pushRes = await fetch(GH_PROD_API, {
       method:'PUT',
       headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
       body: JSON.stringify({ message:`Edit product: ${newName}`, content: b64, sha })
@@ -1462,7 +1477,7 @@ async function deleteCard(type, i){
   btn.textContent = '⏳...'; btn.disabled = true;
 
   try {
-    const res = await fetch(GH_API, {
+    const res = await fetch(GH_PROD_API, {
       headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json'}
     });
     const data = await res.json();
@@ -1484,7 +1499,7 @@ async function deleteCard(type, i){
     let bin = ''; eb.forEach(b => bin += String.fromCharCode(b));
     const b64 = btoa(bin);
 
-    const pushRes = await fetch(GH_API, {
+    const pushRes = await fetch(GH_PROD_API, {
       method:'PUT',
       headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
       body: JSON.stringify({ message:`Delete product: ${card.name||'item'}`, content: b64, sha })
@@ -1497,6 +1512,52 @@ async function deleteCard(type, i){
   } catch(e){
     showToast(`❌ ${e.message}`, false);
     btn.textContent = '🗑 Delete'; btn.disabled = false;
+  }
+}
+
+// ── CODE UPDATER ──────────────────────────────────
+async function pushCodeUpdate(){
+  const token = localStorage.getItem('ghToken');
+  if(!token){ showToast('⚠️ No GitHub token saved', false); return; }
+
+  const newCode = document.getElementById('newIndexCode').value.trim();
+  if(!newCode){ showToast('⚠️ Please paste your new index.html code first', false); return; }
+
+  // Make sure products.js script tag is present
+  if(!newCode.includes('products.js')){
+    showToast('⚠️ This index.html is missing the products.js script tag. Use the version from kapalapi.', false);
+    return;
+  }
+
+  const statusEl = document.getElementById('updaterStatus');
+  statusEl.textContent = '⏳ Pushing code update...';
+
+  try {
+    const res = await fetch(GH_API, {
+      headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json' }
+    });
+    if(!res.ok) throw new Error('Could not fetch index.html from GitHub');
+    const data = await res.json();
+    const sha = data.sha;
+
+    const enc = new TextEncoder();
+    const eb  = enc.encode(newCode);
+    let bin = ''; eb.forEach(b => bin += String.fromCharCode(b));
+    const b64 = btoa(bin);
+
+    const pushRes = await fetch(GH_API, {
+      method:'PUT',
+      headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body: JSON.stringify({ message:'Update site code (products safe in products.js)', content: b64, sha })
+    });
+    if(!pushRes.ok){ const e=await pushRes.json(); throw new Error(e.message); }
+
+    statusEl.textContent = '';
+    showToast('✅ Site code updated! Products are safe in products.js 🛡️');
+    document.getElementById('newIndexCode').value = '';
+  } catch(e){
+    statusEl.textContent = `❌ ${e.message}`;
+    showToast(`❌ ${e.message}`, false);
   }
 }
 
