@@ -243,7 +243,6 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
         <button class="tab-btn active" onclick="switchTab('allfnds',this)">✦ All Finds Card</button>
         <button class="tab-btn" onclick="switchTab('toppick',this)">🏆 Top Picks Card</button>
         <button class="tab-btn" onclick="switchTab('editor',this);loadSiteProducts()">✎ Edit Site</button>
-        <button class="tab-btn" onclick="switchTab('updater',this)">⚙️ Update Code</button>
       </div>
 
       <div class="panel-body">
@@ -435,19 +434,6 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
           <div id="editorList"></div>
         </div><!-- /tab-editor -->
 
-        <!-- ── UPDATE CODE TAB ── -->
-        <div class="tab-pane" id="tab-updater">
-          <div style="background:#fff8e1;border:1.5px solid #ffe082;border-radius:8px;padding:14px;margin-bottom:16px;font-size:13px;color:#7a6000;line-height:1.6">
-            <strong>🛡️ Safe Code Update</strong><br>
-            Paste your new <code>index.html</code> code below. Paste your updated index.html here. Only the CSS and JS will be replaced — your products in the grid and slider will stay untouched.
-          </div>
-          <div class="form-group">
-            <label>Paste new index.html code here</label>
-            <textarea id="newIndexCode" style="min-height:200px;font-family:monospace;font-size:12px" placeholder="Paste your full index.html content here..."></textarea>
-          </div>
-          <button class="btn-primary" onclick="pushCodeUpdate()" style="background:#2a1f1f">⚙️ Push Code Update (keeps products safe)</button>
-          <div id="updaterStatus" style="margin-top:12px;font-size:13px;color:#999"></div>
-        </div><!-- /tab-updater -->
 
       </div><!-- /panel-body -->
     </div><!-- /panel -->
@@ -1246,7 +1232,7 @@ async function loadSiteProducts(){
     siteContent = new TextDecoder('utf-8').decode(rawB);
     siteSha = data.sha;
 
-    // Parse grid cards and top picks directly from index.html
+    // Parse grid cards and top picks from index.html
     const gridCards = parseCards(siteContent, 'pcard');
     const tpCards   = parseCards(siteContent, 'tp-card');
 
@@ -1262,7 +1248,7 @@ async function loadSiteProducts(){
       tpCards.forEach((c,i) => html += buildEditorCard(c, i, 'tp'));
     }
     if(!gridCards.length && !tpCards.length){
-      html = '<div class="editor-empty">No products found. Make sure your index.html is up to date.</div>';
+      html = '<div class="editor-empty">No products found on your site.</div>';
     }
     listEl.innerHTML = html;
 
@@ -1403,7 +1389,7 @@ async function saveEdit(type, i){
     const sectionKey = type === 'grid' ? 'ZUU_GRID_PRODUCTS' : 'ZUU_TOP_PICKS';
     const cls = type === 'grid' ? 'pcard' : 'tp-card';
     const secMatch = jsContent.match(new RegExp(`(window\\.${sectionKey}\\s*=\\s*\`)([\\s\\S]*?)(\`\\s*;)`));
-    if(!secMatch) throw new Error(`Product section not found in index.html`);
+    if(!secMatch) throw new Error(`Product section not found — reload Edit Site tab`);
 
     let sectionHtml = secMatch[2];
     const cards = parseCards(sectionHtml, cls);
@@ -1485,7 +1471,7 @@ async function deleteCard(type, i){
     const sectionKey = type === 'grid' ? 'ZUU_GRID_PRODUCTS' : 'ZUU_TOP_PICKS';
     const cls = type === 'grid' ? 'pcard' : 'tp-card';
     const secMatch = jsContent.match(new RegExp(`(window\\.${sectionKey}\\s*=\\s*\`)([\\s\\S]*?)(\`\\s*;)`));
-    if(!secMatch) throw new Error(`Product section not found in index.html`);
+    if(!secMatch) throw new Error(`Product section not found — reload Edit Site tab`);
 
     let sectionHtml = secMatch[2];
     const cards = parseCards(sectionHtml, cls);
@@ -1519,90 +1505,6 @@ async function deleteCard(type, i){
   }
 }
 
-// ── CODE UPDATER ──────────────────────────────────
-async function pushCodeUpdate(){
-  const token = localStorage.getItem('ghToken');
-  if(!token){ showToast('⚠️ No GitHub token saved', false); return; }
-
-  const newCode = document.getElementById('newIndexCode').value.trim();
-  if(!newCode){ showToast('⚠️ Please paste your new index.html code first', false); return; }
-
-  const statusEl = document.getElementById('updaterStatus');
-  statusEl.textContent = '⏳ Fetching live site...';
-
-  try {
-    // 1. Fetch current live index.html
-    const res = await fetch(GH_API, {
-      headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json' }
-    });
-    if(!res.ok) throw new Error('Could not fetch index.html from GitHub');
-    const data = await res.json();
-    const rawBin = atob(data.content.replace(/\n/g,''));
-    const rawB = new Uint8Array(rawBin.length);
-    for(let j=0;j<rawBin.length;j++) rawB[j] = rawBin.charCodeAt(j);
-    const liveContent = new TextDecoder('utf-8').decode(rawB);
-    const sha = data.sha;
-
-    // 2. Extract products from live index.html
-    const sliderMarker  = '<div class="slider-track" id="sliderTrack">';
-    const sliderClose   = '</div>\n    </div>\n  </div>';
-    const gridMarker    = '<div class="finds-grid" id="findsGrid">';
-    const gridClose     = '<div class="show-more-wrap"';
-
-    const sliderStart = liveContent.indexOf(sliderMarker) + sliderMarker.length;
-    const sliderEnd   = liveContent.indexOf('</div>\n    </div>\n  </div>', sliderStart);
-    const gridStart   = liveContent.indexOf(gridMarker) + gridMarker.length;
-    const gridEnd     = liveContent.indexOf(gridClose);
-
-    const liveSliderCards = sliderStart > sliderMarker.length-1 ? liveContent.slice(sliderStart, sliderEnd) : '';
-    const liveGridCards   = gridStart > gridMarker.length-1     ? liveContent.slice(gridStart, gridEnd)     : '';
-
-    statusEl.textContent = '⏳ Injecting products into new code...';
-
-    // 3. Inject live products into new code
-    let updatedCode = newCode;
-
-    // Replace slider content
-    const newSliderStart = updatedCode.indexOf(sliderMarker);
-    if(newSliderStart !== -1 && liveSliderCards){
-      const newSliderEnd = updatedCode.indexOf('</div>\n    </div>\n  </div>', newSliderStart + sliderMarker.length);
-      if(newSliderEnd !== -1){
-        updatedCode = updatedCode.slice(0, newSliderStart + sliderMarker.length) + liveSliderCards + updatedCode.slice(newSliderEnd);
-      }
-    }
-
-    // Replace grid content
-    const newGridStart = updatedCode.indexOf(gridMarker);
-    if(newGridStart !== -1 && liveGridCards){
-      const newGridEnd = updatedCode.indexOf(gridClose, newGridStart + gridMarker.length);
-      if(newGridEnd !== -1){
-        updatedCode = updatedCode.slice(0, newGridStart + gridMarker.length) + liveGridCards + updatedCode.slice(newGridEnd);
-      }
-    }
-
-    statusEl.textContent = '⏳ Pushing to GitHub...';
-
-    // 4. Push updated code
-    const enc = new TextEncoder();
-    const eb  = enc.encode(updatedCode);
-    let bin = ''; eb.forEach(b => bin += String.fromCharCode(b));
-    const b64 = btoa(bin);
-
-    const pushRes = await fetch(GH_API, {
-      method:'PUT',
-      headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
-      body: JSON.stringify({ message:'Update site code (products preserved)', content: b64, sha })
-    });
-    if(!pushRes.ok){ const e=await pushRes.json(); throw new Error(e.message); }
-
-    statusEl.textContent = '';
-    showToast('✅ Site code updated! All your products are preserved 🛡️');
-    document.getElementById('newIndexCode').value = '';
-  } catch(e){
-    statusEl.textContent = `❌ ${e.message}`;
-    showToast(`❌ ${e.message}`, false);
-  }
-}
 
 // ── INIT ──────────────────────────────────────────
 (function(){
