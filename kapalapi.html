@@ -1240,7 +1240,7 @@ async function loadSiteProducts(){
     const res = await fetch(GH_PROD_API, {
       headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
     });
-    if(!res.ok) throw new Error('Could not fetch index.html from GitHub');
+    if(!res.ok) throw new Error('Could not fetch products.js from GitHub');
     const data = await res.json();
     const rawBin = atob(data.content.replace(/\n/g,''));
     const rawB   = new Uint8Array(rawBin.length);
@@ -1248,10 +1248,21 @@ async function loadSiteProducts(){
     siteContent = new TextDecoder('utf-8').decode(rawB);
     siteSha = data.sha;
 
-    // Parse grid cards
-    const gridCards   = parseCards(siteContent, 'pcard');
-    // Parse top picks
-    const tpCards     = parseCards(siteContent, 'tp-card');
+    // Extract HTML from template literals
+    const gridMatch = siteContent.match(/window\.ZUU_GRID_PRODUCTS\s*=\s*`([\s\S]*?)`\s*;/);
+    const tpMatch   = siteContent.match(/window\.ZUU_TOP_PICKS\s*=\s*`([\s\S]*?)`\s*;/);
+
+    const gridHtml = gridMatch ? gridMatch[1] : '';
+    const tpHtml   = tpMatch   ? tpMatch[1]   : '';
+
+    // Parse cards from extracted HTML
+    const gridCards = parseCards(gridHtml, 'pcard');
+    const tpCards   = parseCards(tpHtml,   'tp-card');
+
+    // Store offsets so saveEdit/deleteCard can find the right spot in products.js
+    // We tag each card with which section it belongs to
+    gridCards.forEach(c => c.section = 'grid');
+    tpCards.forEach(c => c.section = 'tp');
 
     statusEl.style.display = 'none';
 
@@ -1265,7 +1276,7 @@ async function loadSiteProducts(){
       tpCards.forEach((c,i) => html += buildEditorCard(c, i, 'tp'));
     }
     if(!gridCards.length && !tpCards.length){
-      html = '<div class="editor-empty">No products found on your site.</div>';
+      html = '<div class="editor-empty">No products found. Make sure products.js is uploaded to GitHub.</div>';
     }
     listEl.innerHTML = html;
 
@@ -1391,7 +1402,7 @@ async function saveEdit(type, i){
   btn.textContent = '⏳ Saving...'; btn.disabled = true;
 
   try {
-    // Re-fetch fresh content to avoid conflicts
+    // Re-fetch fresh content
     const res = await fetch(GH_PROD_API, {
       headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
     });
@@ -1399,36 +1410,35 @@ async function saveEdit(type, i){
     const rawBin = atob(data.content.replace(/\n/g,''));
     const rawB = new Uint8Array(rawBin.length);
     for(let j=0;j<rawBin.length;j++) rawB[j] = rawBin.charCodeAt(j);
-    let content = new TextDecoder('utf-8').decode(rawB);
+    let jsContent = new TextDecoder('utf-8').decode(rawB);
     const sha = data.sha;
 
-    // Parse cards again from fresh content
-    const cards = parseCards(content, type === 'grid' ? 'pcard' : 'tp-card');
+    // Extract the right section HTML
+    const sectionKey = type === 'grid' ? 'ZUU_GRID_PRODUCTS' : 'ZUU_TOP_PICKS';
+    const cls = type === 'grid' ? 'pcard' : 'tp-card';
+    const secMatch = jsContent.match(new RegExp(`(window\\.${sectionKey}\\s*=\\s*\`)([\\s\\S]*?)(\`\\s*;)`));
+    if(!secMatch) throw new Error(`Could not find ${sectionKey} in products.js`);
+
+    let sectionHtml = secMatch[2];
+    const cards = parseCards(sectionHtml, cls);
     const card  = cards[i];
     if(!card) throw new Error('Product not found — try reloading the Edit Site tab');
 
     // Build updated block
     let updated = card.block;
-
-    // Update data-name
     updated = updated.replace(/data-name="[^"]*"/, `data-name="${newName}"`);
-    // Update data-cat
     updated = updated.replace(/data-cat="[^"]*"/, `data-cat="${newCat}"`);
-    // Update category label text (pcard-cat / tp-cat)
-    updated = updated.replace(/(class="(?:pcard|tp)-cat"[^>]*>)[^<]*/,`$1${CAT_LABELS[newCat]||newCat}`);
-    // Update name text
-    updated = updated.replace(/(class="(?:pcard|tp)-name"[^>]*>)[^<]*/,`$1${newName}`);
-    // Update link
+    updated = updated.replace(/(class="(?:pcard|tp)-cat"[^>]*>)[\s\S]*?(<\/div>)/,`$1${CAT_LABELS[newCat]||newCat}$2`);
+    updated = updated.replace(/(class="(?:pcard|tp)-name"[^>]*>)[\s\S]*?(<\/div>)/,`$1${newName}$2`);
     updated = updated.replace(/href="https?:\/\/[^"]*"/,`href="${newLink}"`);
-    // Update rating
-    if(newRating) updated = updated.replace(/(class="(?:pcard|tp)-rating"[^>]*>)[^<]*/,`$1${newRating}`);
-    // Update sold
-    if(newSold) updated = updated.replace(/(class="(?:pcard|tp)-sold"[^>]*>)[\s\S]*?(<\/span>)/,`$1${newSold}$2`);
-    // Update images — always rebuild if either img field has a value
+    if(newRating) updated = updated.replace(/(class="(?:pcard|tp)-rating"[^>]*>)[\s\S]*?(<\/span>)/,`$1${newRating}$2`);
+    if(newSold){
+      const soldRaw = newSold.replace(/\s*(bought|sold|in past month)\s*/gi,'').trim();
+      const soldHtml = soldRaw ? `<strong>${soldRaw} bought</strong> in past month` : newSold;
+      updated = updated.replace(/(class="(?:pcard|tp)-sold"[^>]*>)[\s\S]*?(<\/span>)/,`$1${soldHtml}$2`);
+    }
     if(newImg || newImg2){
-      // Remove all existing img tags
       updated = updated.replace(/<img[^>]+>/g, '');
-      // Find the image container opening tag and insert right after it
       const imgContainerClass = type === 'grid' ? 'pcard-img' : 'tp-img';
       const imgDivMatch = updated.match(new RegExp(`(class="${imgContainerClass}[^"]*"[^>]*>)`));
       if(imgDivMatch){
@@ -1439,15 +1449,16 @@ async function saveEdit(type, i){
         updated = updated.slice(0, insertAfter) + newImgTags + updated.slice(insertAfter);
       }
     }
-    // Update badge label
-    updated = updated.replace(/(class="p-badge[^"]*"[^>]*>)[^<]*/,`$1${CAT_LABELS[newCat]||newCat}`);
 
-    // Replace in full content
-    content = content.slice(0, card.start) + updated + content.slice(card.end);
+    // Replace card in section HTML
+    sectionHtml = sectionHtml.slice(0, card.start) + updated + sectionHtml.slice(card.end);
+
+    // Replace section back into products.js
+    jsContent = jsContent.slice(0, secMatch.index) + secMatch[1] + sectionHtml + secMatch[3] + jsContent.slice(secMatch.index + secMatch[0].length);
 
     // Push to GitHub
     const enc = new TextEncoder();
-    const eb  = enc.encode(content);
+    const eb  = enc.encode(jsContent);
     let bin = ''; eb.forEach(b => bin += String.fromCharCode(b));
     const b64 = btoa(bin);
 
@@ -1484,18 +1495,28 @@ async function deleteCard(type, i){
     const rawBin = atob(data.content.replace(/\n/g,''));
     const rawB = new Uint8Array(rawBin.length);
     for(let j=0;j<rawBin.length;j++) rawB[j] = rawBin.charCodeAt(j);
-    let content = new TextDecoder('utf-8').decode(rawB);
+    let jsContent = new TextDecoder('utf-8').decode(rawB);
     const sha = data.sha;
 
-    const cards = parseCards(content, type === 'grid' ? 'pcard' : 'tp-card');
+    // Extract right section
+    const sectionKey = type === 'grid' ? 'ZUU_GRID_PRODUCTS' : 'ZUU_TOP_PICKS';
+    const cls = type === 'grid' ? 'pcard' : 'tp-card';
+    const secMatch = jsContent.match(new RegExp(`(window\\.${sectionKey}\\s*=\\s*\`)([\\s\\S]*?)(\`\\s*;)`));
+    if(!secMatch) throw new Error(`Could not find ${sectionKey} in products.js`);
+
+    let sectionHtml = secMatch[2];
+    const cards = parseCards(sectionHtml, cls);
     const card  = cards[i];
     if(!card) throw new Error('Product not found');
 
-    // Remove card block from content
-    content = content.slice(0, card.start) + content.slice(card.end);
+    // Remove card from section HTML
+    sectionHtml = sectionHtml.slice(0, card.start) + sectionHtml.slice(card.end);
+
+    // Replace section back into products.js
+    jsContent = jsContent.slice(0, secMatch.index) + secMatch[1] + sectionHtml + secMatch[3] + jsContent.slice(secMatch.index + secMatch[0].length);
 
     const enc = new TextEncoder();
-    const eb  = enc.encode(content);
+    const eb  = enc.encode(jsContent);
     let bin = ''; eb.forEach(b => bin += String.fromCharCode(b));
     const b64 = btoa(bin);
 
