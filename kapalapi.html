@@ -1006,6 +1006,8 @@ const GH_USER = 'zuufinds';
 const GH_REPO = 'ZuuFinds';
 const GH_FILE    = 'index.html';
 const GH_API     = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
+const GH_PROD_FILE = 'products.json';
+const GH_PROD_API  = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_PROD_FILE}`;
 
 async function pushToSite(tab){
   const token = localStorage.getItem('ghToken');
@@ -1033,22 +1035,20 @@ async function pushToSite(tab){
   btn.textContent = '⏳ Pushing to GitHub...';
 
   try {
-    // 1. Fetch current index.html from GitHub
-    const res = await fetch(GH_API, {
+    // 1. Fetch products.json from GitHub
+    const res = await fetch(GH_PROD_API, {
       headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
     });
-    if(!res.ok){
-      const err = await res.json();
-      throw new Error(err.message || `GitHub error ${res.status}`);
-    }
+    if(!res.ok){ const e=await res.json(); throw new Error(e.message || `GitHub error ${res.status}`); }
     const data = await res.json();
-    const rawBinary = atob(data.content.replace(/\n/g,''));
-    const rawBytes = new Uint8Array(rawBinary.length);
-    for(let i = 0; i < rawBinary.length; i++) rawBytes[i] = rawBinary.charCodeAt(i);
-    const currentContent = new TextDecoder('utf-8').decode(rawBytes);
+    const rawBin = atob(data.content.replace(/\n/g,''));
+    const rawB = new Uint8Array(rawBin.length);
+    for(let i=0;i<rawBin.length;i++) rawB[i]=rawBin.charCodeAt(i);
+    const jsonContent = new TextDecoder('utf-8').decode(rawB);
     const sha = data.sha;
+    const prodData = JSON.parse(jsonContent);
 
-    // 2. Build new card code
+    // 2. Build new card HTML
     let newCard = '';
     if(tab === 'allfnds'){
       const p = {
@@ -1064,146 +1064,79 @@ async function pushToSite(tab){
       };
       newCard = generateCode(p);
     } else {
-      const soldRaw = (document.getElementById('tpSold').value.trim() || '').replace(/\s*(bought|sold|in past month)\s*/gi,'').trim();
+      const soldRaw = (document.getElementById('tpSold').value.trim()||'').replace(/\s*(bought|sold|in past month)\s*/gi,'').trim();
       const soldHtml = soldRaw ? `<strong>${soldRaw} bought</strong> in past month` : '';
-      const cat    = document.getElementById('tpCat').value;
-      const name   = document.getElementById('tpName').value.trim();
-      const link   = document.getElementById('tpLink').value.trim();
-      const img    = document.getElementById('tpImg').value.trim();
-      const img2   = document.getElementById('tpImg2').value.trim();
-      const stars  = getTpStars();
-      const rating = document.getElementById('tpRating').value.trim() || '4.8';
-      const pb     = document.getElementById('tpBg').value || 'pb1';
-      const catLabel = CAT_LABELS[cat] || cat;
-      let imgLines = '';
-      if(img){
-        imgLines = `\n    <img src="${img}" alt="${name}">`;
-        if(img2) imgLines += `\n    <img src="${img2}" alt="${name} detail">`;
-      } else {
-        imgLines = `\n    <span>${CAT_EMOJIS[cat]||'🛍️'}</span>`;
-      }
-      newCard = `<div class="tp-card">
-  <div class="tp-img ${pb}">${imgLines}
-  </div>
-  <div class="tp-body">
-    <div class="tp-cat">${catLabel}</div>
-    <div class="tp-name">${name}</div>
-    <div class="tp-meta">
-      <span class="tp-stars">${stars}</span>
-      <span class="tp-rating">${rating}</span>
-      <span class="tp-sold">${soldHtml}</span>
-    </div>
-    <a href="${link}" target="_blank" rel="noopener" class="tp-btn">Shop on Amazon</a>
-  </div>
-</div>`;
+      const cat=document.getElementById('tpCat').value;
+      const name=document.getElementById('tpName').value.trim();
+      const link=document.getElementById('tpLink').value.trim();
+      const img=document.getElementById('tpImg').value.trim();
+      const img2=document.getElementById('tpImg2').value.trim();
+      const stars=getTpStars();
+      const rating=document.getElementById('tpRating').value.trim()||'4.8';
+      const pb=document.getElementById('tpBg').value||'pb1';
+      const catLabel=CAT_LABELS[cat]||cat;
+      let imgLines='';
+      if(img){ imgLines=`\n    <img src="${img}" alt="${name}">`; if(img2) imgLines+=`\n    <img src="${img2}" alt="${name} detail">`; }
+      else imgLines=`\n    <span>${CAT_EMOJIS[cat]||'🛍️'}</span>`;
+      newCard=`<div class="tp-card">\n  <div class="tp-img ${pb}">${imgLines}\n  </div>\n  <div class="tp-body">\n    <div class="tp-cat">${catLabel}</div>\n    <div class="tp-name">${name}</div>\n    <div class="tp-meta">\n      <span class="tp-stars">${stars}</span>\n      <span class="tp-rating">${rating}</span>\n      <span class="tp-sold">${soldHtml}</span>\n    </div>\n    <a href="${link}" target="_blank" rel="noopener" class="tp-btn">Shop on Amazon</a>\n  </div>\n</div>`;
     }
 
-    // 3. Find insertion point and insert
-    let updatedContent;
-    if(tab === 'allfnds'){
-      // Insert at start of ZUU_GRID_PRODUCTS
-      const marker = '<div class="finds-grid" id="findsGrid">';
-      const idx = currentContent.indexOf(marker);
-      if(idx === -1) throw new Error('Could not find finds-grid in index.html');
-      const insertAt = idx + marker.length;
-      updatedContent = currentContent.slice(0, insertAt) + '\n\n    ' + newCard.split('\n').join('\n    ') + '\n' + currentContent.slice(insertAt);
-
-      // Also add to Top Picks if checkbox is ticked
-      const alsoTp = document.getElementById('alsoTopPick').checked;
-      if(alsoTp){
-        const tpName   = document.getElementById('prodName').value.trim();
-        const tpCat    = document.getElementById('prodCat').value;
-        const tpLink   = document.getElementById('prodLink').value.trim();
-        const tpImg    = document.getElementById('prodImg').value.trim();
-        const tpImg2   = document.getElementById('prodImg2').value.trim();
-        const tpStars  = getStars();
-        const tpRating = document.getElementById('prodRating').value.trim() || '4.8';
-        const tpSoldRaw = (document.getElementById('prodSold').value.trim() || '').replace(/\s*(bought|sold|in past month)\s*/gi,'').trim();
-        const tpSoldHtml = tpSoldRaw ? `<strong>${tpSoldRaw} bought</strong> in past month` : '';
-        const tpCatLabel = CAT_LABELS[tpCat] || tpCat;
-        let tpImgLines = '';
-        if(tpImg){
-          tpImgLines = `\n    <img src="${tpImg}" alt="${tpName}">`;
-          if(tpImg2) tpImgLines += `\n    <img src="${tpImg2}" alt="${tpName} detail">`;
-        } else {
-          tpImgLines = `\n    <span>${CAT_EMOJIS[tpCat]||'🛍️'}</span>`;
-        }
-        const tpCard = `<div class="tp-card">
-  <div class="tp-img pb1">${tpImgLines}
-  </div>
-  <div class="tp-body">
-    <div class="tp-cat">${tpCatLabel}</div>
-    <div class="tp-name">${tpName}</div>
-    <div class="tp-meta">
-      <span class="tp-stars">${tpStars}</span>
-      <span class="tp-rating">${tpRating}</span>
-      <span class="tp-sold">${tpSoldHtml}</span>
-    </div>
-    <a href="${tpLink}" target="_blank" rel="noopener" class="tp-btn">Shop on Amazon</a>
-  </div>
-</div>`;
-        const tpMarker = '<div class="slider-track" id="sliderTrack">';
-        const tpIdx = updatedContent.indexOf(tpMarker);
-        if(tpIdx !== -1){
-          const tpInsertAt = tpIdx + tpMarker.length;
-          updatedContent = updatedContent.slice(0, tpInsertAt) + '\n\n        ' + tpCard.split('\n').join('\n        ') + '\n' + updatedContent.slice(tpInsertAt);
-        }
-      }
-    } else {
-      const marker = '<div class="slider-track" id="sliderTrack">';
-      const idx = currentContent.indexOf(marker);
-      if(idx === -1) throw new Error('Could not find sliderTrack in index.html');
-      const insertAt = idx + marker.length;
-      updatedContent = currentContent.slice(0, insertAt) + '\n\n    ' + newCard.split('\n').join('\n    ') + '\n' + currentContent.slice(insertAt);
-    }
-
-    // 4. Push updated index.html back to GitHub
-    const prodName = tab === 'allfnds'
+    // 3. Add to products.json
+    const prodName = tab==='allfnds'
       ? document.getElementById('prodName').value.trim()
       : document.getElementById('tpName').value.trim();
 
-    const encoder = new TextEncoder();
-    const encBytes = encoder.encode(updatedContent);
-    let encBinary = '';
-    encBytes.forEach(b => encBinary += String.fromCharCode(b));
-    const safeBase64 = btoa(encBinary);
-
-    const pushRes = await fetch(GH_API, {
-      method: 'PUT',
-      headers: {
-        Authorization: `token ${token}`,
-        Accept: 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        message: `Add product: ${prodName}`,
-        content: safeBase64,
-        sha: sha
-      })
-    });
-
-    if(!pushRes.ok){
-      const err = await pushRes.json();
-      throw new Error(err.message || `Push failed with status ${pushRes.status}`);
+    if(tab==='allfnds'){
+      prodData.grid.unshift(newCard);
+      // Also add to top picks if checkbox ticked
+      const alsoTp = document.getElementById('alsoTopPick').checked;
+      if(alsoTp){
+        const soldRaw2=(document.getElementById('prodSold').value.trim()||'').replace(/\s*(bought|sold|in past month)\s*/gi,'').trim();
+        const soldHtml2=soldRaw2?`<strong>${soldRaw2} bought</strong> in past month`:'';
+        const tpCat=document.getElementById('prodCat').value;
+        const tpImg=document.getElementById('prodImg').value.trim();
+        const tpImg2=document.getElementById('prodImg2').value.trim();
+        const tpStars=getStars();
+        const tpRating=document.getElementById('prodRating').value.trim()||'4.8';
+        const tpCatLabel=CAT_LABELS[tpCat]||tpCat;
+        let tpImgLines='';
+        if(tpImg){ tpImgLines=`\n    <img src="${tpImg}" alt="${prodName}">`; if(tpImg2) tpImgLines+=`\n    <img src="${tpImg2}" alt="${prodName} detail">`; }
+        else tpImgLines=`\n    <span>${CAT_EMOJIS[tpCat]||'🛍️'}</span>`;
+        const tpCard=`<div class="tp-card">\n  <div class="tp-img pb1">${tpImgLines}\n  </div>\n  <div class="tp-body">\n    <div class="tp-cat">${tpCatLabel}</div>\n    <div class="tp-name">${prodName}</div>\n    <div class="tp-meta">\n      <span class="tp-stars">${tpStars}</span>\n      <span class="tp-rating">${tpRating}</span>\n      <span class="tp-sold">${soldHtml2}</span>\n    </div>\n    <a href="${document.getElementById('prodLink').value.trim()}" target="_blank" rel="noopener" class="tp-btn">Shop on Amazon</a>\n  </div>\n</div>`;
+        prodData.topPicks.unshift(tpCard);
+      }
+    } else {
+      prodData.topPicks.unshift(newCard);
     }
 
-    const alsoTpChecked = tab === 'allfnds' && document.getElementById('alsoTopPick').checked;
-    showToast(`✅ "${prodName}" is now live on your site!${alsoTpChecked ? ' Added to Top Picks too 🏆' : ''}`);
-    if(tab === 'allfnds'){ clearForm(); saveProduct(); document.getElementById('alsoTopPick').checked = false; }
+    // 4. Push updated products.json to GitHub
+    const updatedJson = JSON.stringify(prodData, null, 2);
+    const enc = new TextEncoder();
+    const eb  = enc.encode(updatedJson);
+    let bin=''; eb.forEach(b=>bin+=String.fromCharCode(b));
+    const b64 = btoa(bin);
+
+    const pushRes = await fetch(GH_PROD_API, {
+      method:'PUT',
+      headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body: JSON.stringify({ message:`Add product: ${prodName}`, content:b64, sha })
+    });
+    if(!pushRes.ok){ const e=await pushRes.json(); throw new Error(e.message||`Push failed`); }
+
+    const alsoTpChecked = tab==='allfnds' && document.getElementById('alsoTopPick').checked;
+    showToast(`✅ "${prodName}" added to site! GitHub is rebuilding...${alsoTpChecked?' Added to Top Picks too 🏆':''}`);
+    if(tab==='allfnds'){ saveProduct(); clearForm(); document.getElementById('alsoTopPick').checked=false; }
     else clearTpForm();
 
   } catch(e){
     showToast(`❌ ${e.message}`, false);
     console.error(e);
   } finally {
-    btn.disabled = false;
-    btn.textContent = tab === 'allfnds' ? '🚀 Add to Site (GitHub)' : '🚀 Add to Site (GitHub)';
+    btn.disabled=false;
+    btn.textContent='🚀 Add to Site (GitHub)';
   }
 }
 
-// ── SITE EDITOR ───────────────────────────────────
-let siteContent = '';
-let siteSha = '';
 
 async function loadSiteProducts(){
   const token = localStorage.getItem('ghToken');
@@ -1212,153 +1145,107 @@ async function loadSiteProducts(){
   listEl.innerHTML = '';
 
   if(!token){
-    statusEl.innerHTML = '⚠️ Enter your GitHub token first to load products.';
+    statusEl.innerHTML = '⚠️ Enter your GitHub token first.';
     statusEl.style.display = 'block';
     return;
   }
 
-  statusEl.innerHTML = '⏳ Loading products from your site...';
+  statusEl.innerHTML = '⏳ Loading products...';
   statusEl.style.display = 'block';
 
   try {
-    const res = await fetch(GH_API, {
-      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
+    const res = await fetch(GH_PROD_API, {
+      headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json' }
     });
-    if(!res.ok) throw new Error('Could not fetch index.html from GitHub');
+    if(!res.ok) throw new Error('Could not fetch products.json from GitHub');
     const data = await res.json();
     const rawBin = atob(data.content.replace(/\n/g,''));
-    const rawB   = new Uint8Array(rawBin.length);
-    for(let i=0;i<rawBin.length;i++) rawB[i] = rawBin.charCodeAt(i);
-    siteContent = new TextDecoder('utf-8').decode(rawB);
+    const rawB = new Uint8Array(rawBin.length);
+    for(let i=0;i<rawBin.length;i++) rawB[i]=rawBin.charCodeAt(i);
+    const jsonStr = new TextDecoder('utf-8').decode(rawB);
+    const prodData = JSON.parse(jsonStr);
+    siteContent = jsonStr;
     siteSha = data.sha;
 
-    // Parse grid cards and top picks from index.html
-    const gridCards = parseCards(siteContent, 'pcard');
-    const tpCards   = parseCards(siteContent, 'tp-card');
+    const gridCards = prodData.grid.map((html,i)=>({html,i,type:'grid'}));
+    const tpCards   = prodData.topPicks.map((html,i)=>({html,i,type:'tp'}));
 
     statusEl.style.display = 'none';
 
     let html = '';
     if(gridCards.length){
-      html += `<div class="editor-section-label">✦ All Finds (${gridCards.length})</div>`;
-      gridCards.forEach((c,i) => html += buildEditorCard(c, i, 'grid'));
+      html += `<div class="editor-section-label">&#10022; All Finds (${gridCards.length})</div>`;
+      gridCards.forEach(c => html += buildEditorCardFromHtml(c.html, c.i, 'grid'));
     }
     if(tpCards.length){
-      html += `<div class="editor-section-label">🏆 Top Picks (${tpCards.length})</div>`;
-      tpCards.forEach((c,i) => html += buildEditorCard(c, i, 'tp'));
+      html += `<div class="editor-section-label">&#127942; Top Picks (${tpCards.length})</div>`;
+      tpCards.forEach(c => html += buildEditorCardFromHtml(c.html, c.i, 'tp'));
     }
     if(!gridCards.length && !tpCards.length){
-      html = '<div class="editor-empty">No products found on your site.</div>';
+      html = '<div class="editor-empty">No products found. Add some using the form!</div>';
     }
     listEl.innerHTML = html;
 
   } catch(e){
-    statusEl.innerHTML = `❌ ${e.message}`;
+    statusEl.innerHTML = `&#10060; ${e.message}`;
   }
 }
 
-function parseCards(html, cls){
-  const results = [];
-  const startTag = cls === 'pcard'
-    ? /<div class="pcard"/g
-    : /<div class="tp-card"/g;
-  let m;
-  while((m = startTag.exec(html)) !== null){
-    const start = m.index;
-    // Find matching closing div by counting nesting
-    let depth = 0, i = start, end = -1;
-    while(i < html.length){
-      if(html[i] === '<'){
-        if(html.slice(i,i+4) === '<div') depth++;
-        else if(html.slice(i,i+6) === '</div>'){
-          depth--;
-          if(depth === 0){ end = i + 6; break; }
-        }
-      }
-      i++;
-    }
-    if(end === -1) continue;
-    const block = html.slice(start, end);
+function buildEditorCardFromHtml(cardHtml, i, type){
+  // Parse fields from card HTML
+  const nameMatch  = cardHtml.match(/data-name="([^"]*)"/);
+  const catMatch   = cardHtml.match(/data-cat="([^"]*)"/);
+  const nameMatch2 = cardHtml.match(/class="(?:pcard|tp)-name"[^>]*>([\s\S]*?)<\/div>/);
+  const name       = nameMatch2 ? nameMatch2[1].replace(/<[^>]+>/g,'').trim() : (nameMatch?nameMatch[1]:'');
+  const cat        = catMatch ? catMatch[1] : '';
+  const linkMatch  = cardHtml.match(/href="(https?:\/\/[^"]*)"/);
+  const link       = linkMatch ? linkMatch[1] : '';
+  const allImgs    = [...cardHtml.matchAll(/<img[^>]+src="([^"]*)"/g)].map(m=>m[1]);
+  const imgSrc     = allImgs[0]||'';
+  const imgSrc2    = allImgs[1]||'';
+  const ratingMatch= cardHtml.match(/class="(?:pcard|tp)-rating"[^>]*>([\d.]*)</);
+  const rating     = ratingMatch ? ratingMatch[1] : '';
+  const soldMatch  = cardHtml.match(/class="(?:pcard|tp)-sold"[^>]*>([\s\S]*?)<\/span>/);
+  const soldRaw    = soldMatch ? soldMatch[1].replace(/<[^>]+>/g,'').replace(/in past month/gi,'').replace(/bought/gi,'').trim() : '';
 
-    // Extract fields
-    const name    = (block.match(/data-name="([^"]*)"/) || block.match(/class="(?:pcard|tp)-name"[^>]*>([^<]*)</)|| ['',''])[1];
-    const cat     = (block.match(/data-cat="([^"]*)"/) || ['',''])[1];
-    const link    = (block.match(/href="(https?:\/\/[^"]*)"/) || ['',''])[1];
-    // Extract all img srcs
-    const allImgs = [...block.matchAll(/<img[^>]+src="([^"]*)"/g)].map(m => m[1]);
-    const imgSrc  = allImgs[0] || '';
-    const imgSrc2 = allImgs[1] || '';
-    const rating  = (block.match(/class="(?:pcard|tp)-rating"[^>]*>([\d.]*)</) || ['',''])[1];
-    const sold    = (block.match(/class="(?:pcard|tp)-sold"[^>]*>([^<]*)</) || ['',''])[1];
-    const nameMatch = block.match(/class="(?:pcard|tp)-name"[^>]*>([\s\S]*?)<\/div>/);
-    const displayName = nameMatch ? nameMatch[1].replace(/<[^>]+>/g,'').trim() : name;
-
-    results.push({ block, start, end, name: displayName, cat, link, imgSrc, imgSrc2, rating, sold, cls });
-  }
-  return results;
-}
-
-function buildEditorCard(c, i, type){
-  const badge = type === 'grid'
+  const badge = type==='grid'
     ? '<span class="editor-type-badge editor-type-grid">Grid</span>'
     : '<span class="editor-type-badge editor-type-tp">Top Pick</span>';
-  const imgEl = c.imgSrc
-    ? `<img class="editor-card-img" src="${c.imgSrc.startsWith('http') ? c.imgSrc : 'https://www.zuufinds.com/'+c.imgSrc}" onerror="this.style.display='none'">`
-    : `<div class="editor-card-img-ph">🛍️</div>`;
-
+  const imgEl = imgSrc
+    ? `<img class="editor-card-img" src="${imgSrc.startsWith('http')?imgSrc:'https://www.zuufinds.com/'+imgSrc}" onerror="this.style.display='none'">`
+    : `<div class="editor-card-img-ph">&#128717;</div>`;
   const catOptions = ['cute','cool','home','bedroom','bathroom','kitchen','tech']
-    .map(v => `<option value="${v}" ${c.cat===v?'selected':''}>${CAT_LABELS[v]||v}</option>`).join('');
+    .map(v=>`<option value="${v}" ${cat===v?'selected':''}>${CAT_LABELS[v]||v}</option>`).join('');
 
   return `
   <div class="editor-card" id="ecard-${type}-${i}">
     <div class="editor-card-head">
       ${imgEl}
       <div style="flex:1;min-width:0">
-        <div class="editor-card-title">${c.name||'Unnamed Product'}</div>
-        <div class="editor-card-cat">${CAT_LABELS[c.cat]||c.cat||'—'} &nbsp;${badge}</div>
+        <div class="editor-card-title">${name||'Unnamed Product'}</div>
+        <div class="editor-card-cat">${CAT_LABELS[cat]||cat||'&mdash;'} &nbsp;${badge}</div>
       </div>
     </div>
-    <div class="editor-field">
-      <label>Product Name</label>
-      <input type="text" id="ename-${type}-${i}" value="${(c.name||'').replace(/"/g,'&quot;')}">
-    </div>
-    <div class="editor-field">
-      <label>Category</label>
-      <select id="ecat-${type}-${i}">${catOptions}</select>
-    </div>
-    <div class="editor-field">
-      <label>Affiliate Link</label>
-      <input type="text" id="elink-${type}-${i}" value="${(c.link||'').replace(/"/g,'&quot;')}">
-    </div>
-    <div class="editor-field">
-      <label>Image 1 (Main)</label>
-      <input type="text" id="eimg-${type}-${i}" value="${(c.imgSrc||'').replace(/"/g,'&quot;')}">
-    </div>
-    <div class="editor-field">
-      <label>Image 2 <span style="font-weight:400;color:#999;text-transform:none;letter-spacing:0">(optional)</span></label>
-      <input type="text" id="eimg2-${type}-${i}" value="${(c.imgSrc2||'').replace(/"/g,'&quot;')}">
-    </div>
+    <div class="editor-field"><label>Product Name</label><input type="text" id="ename-${type}-${i}" value="${(name||'').replace(/"/g,'&quot;')}"></div>
+    <div class="editor-field"><label>Category</label><select id="ecat-${type}-${i}">${catOptions}</select></div>
+    <div class="editor-field"><label>Affiliate Link</label><input type="text" id="elink-${type}-${i}" value="${(link||'').replace(/"/g,'&quot;')}"></div>
+    <div class="editor-field"><label>Image 1</label><input type="text" id="eimg-${type}-${i}" value="${(imgSrc||'').replace(/"/g,'&quot;')}"></div>
+    <div class="editor-field"><label>Image 2 <span style="font-weight:400;color:#999;text-transform:none;letter-spacing:0">(optional)</span></label><input type="text" id="eimg2-${type}-${i}" value="${(imgSrc2||'').replace(/"/g,'&quot;')}"></div>
     <div style="display:flex;gap:8px">
-      <div class="editor-field" style="flex:1">
-        <label>Rating</label>
-        <input type="text" id="erating-${type}-${i}" value="${c.rating||''}">
-      </div>
-      <div class="editor-field" style="flex:1">
-        <label>Sold Count</label>
-        <input type="text" id="esold-${type}-${i}" value="${(c.sold||'').replace(/"/g,'&quot;')}">
-      </div>
+      <div class="editor-field" style="flex:1"><label>Rating</label><input type="text" id="erating-${type}-${i}" value="${rating||''}"></div>
+      <div class="editor-field" style="flex:1"><label>Sold Count</label><input type="text" id="esold-${type}-${i}" value="${(soldRaw||'').replace(/"/g,'&quot;')}"></div>
     </div>
     <div class="editor-actions">
-      <button class="editor-save-btn" onclick="saveEdit('${type}',${i})">💾 Save Changes</button>
-      <button class="editor-del-btn" onclick="deleteCard('${type}',${i})">🗑 Delete</button>
+      <button class="editor-save-btn" onclick="saveEdit('${type}',${i})">&#128190; Save Changes</button>
+      <button class="editor-del-btn" onclick="deleteCard('${type}',${i})">&#128465; Delete</button>
     </div>
   </div>`;
 }
 
+
 async function saveEdit(type, i){
   const token = localStorage.getItem('ghToken');
   if(!token){ showToast('⚠️ No token saved', false); return; }
-  if(!siteContent){ showToast('⚠️ Reload the Edit Site tab first', false); return; }
 
   const newName   = document.getElementById(`ename-${type}-${i}`).value.trim();
   const newCat    = document.getElementById(`ecat-${type}-${i}`).value;
@@ -1366,7 +1253,7 @@ async function saveEdit(type, i){
   const newImg    = document.getElementById(`eimg-${type}-${i}`).value.trim();
   const newImg2   = document.getElementById(`eimg2-${type}-${i}`).value.trim();
   const newRating = document.getElementById(`erating-${type}-${i}`).value.trim();
-  const newSold   = document.getElementById(`esold-${type}-${i}`).value.trim();
+  const newSoldRaw= document.getElementById(`esold-${type}-${i}`).value.trim();
 
   if(!newName){ showToast('⚠️ Name cannot be empty', false); return; }
 
@@ -1374,79 +1261,78 @@ async function saveEdit(type, i){
   btn.textContent = '⏳ Saving...'; btn.disabled = true;
 
   try {
-    // Re-fetch fresh content
-    const res = await fetch(GH_API, {
-      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
+    // Fetch fresh products.json
+    const res = await fetch(GH_PROD_API, {
+      headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json' }
     });
     const data = await res.json();
     const rawBin = atob(data.content.replace(/\n/g,''));
     const rawB = new Uint8Array(rawBin.length);
-    for(let j=0;j<rawBin.length;j++) rawB[j] = rawBin.charCodeAt(j);
-    let content = new TextDecoder('utf-8').decode(rawB);
+    for(let j=0;j<rawBin.length;j++) rawB[j]=rawBin.charCodeAt(j);
+    const prodData = JSON.parse(new TextDecoder('utf-8').decode(rawB));
     const sha = data.sha;
 
-    // Extract the right section HTML
-    const sectionKey = type === 'grid' ? 'ZUU_GRID_PRODUCTS' : 'ZUU_TOP_PICKS';
-    const cls = type === 'grid' ? 'pcard' : 'tp-card';
-    const secMatch = jsContent.match(new RegExp(`(window\\.${sectionKey}\\s*=\\s*\`)([\\s\\S]*?)(\`\\s*;)`));
-    if(!secMatch) throw new Error(`Product section not found — reload Edit Site tab`);
+    // Get the card HTML from the right array
+    const arr = type==='grid' ? prodData.grid : prodData.topPicks;
+    if(i >= arr.length) throw new Error('Product not found — reload Edit Site tab');
 
-    let sectionHtml = secMatch[2];
-    const cards = parseCards(sectionHtml, cls);
-    const card  = cards[i];
-    if(!card) throw new Error('Product not found — try reloading the Edit Site tab');
-
-    // Build updated block
-    let updated = card.block;
+    // Rebuild the card HTML with updated values
+    let updated = arr[i];
+    // Update data-name and data-cat
     updated = updated.replace(/data-name="[^"]*"/, `data-name="${newName}"`);
     updated = updated.replace(/data-cat="[^"]*"/, `data-cat="${newCat}"`);
+    // Update category label
     updated = updated.replace(/(class="(?:pcard|tp)-cat"[^>]*>)[\s\S]*?(<\/div>)/,`$1${CAT_LABELS[newCat]||newCat}$2`);
+    // Update name
     updated = updated.replace(/(class="(?:pcard|tp)-name"[^>]*>)[\s\S]*?(<\/div>)/,`$1${newName}$2`);
+    // Update link
     updated = updated.replace(/href="https?:\/\/[^"]*"/,`href="${newLink}"`);
+    // Update rating
     if(newRating) updated = updated.replace(/(class="(?:pcard|tp)-rating"[^>]*>)[\s\S]*?(<\/span>)/,`$1${newRating}$2`);
-    if(newSold){
-      const soldRaw = newSold.replace(/\s*(bought|sold|in past month)\s*/gi,'').trim();
-      const soldHtml = soldRaw ? `<strong>${soldRaw} bought</strong> in past month` : newSold;
+    // Update sold
+    if(newSoldRaw){
+      const cleanSold = newSoldRaw.replace(/\s*(bought|sold|in past month)\s*/gi,'').trim();
+      const soldHtml = `<strong>${cleanSold} bought</strong> in past month`;
       updated = updated.replace(/(class="(?:pcard|tp)-sold"[^>]*>)[\s\S]*?(<\/span>)/,`$1${soldHtml}$2`);
     }
-    if(newImg || newImg2){
-      updated = updated.replace(/<img[^>]+>/g, '');
-      const imgContainerClass = type === 'grid' ? 'pcard-img' : 'tp-img';
-      const imgDivMatch = updated.match(new RegExp(`(class="${imgContainerClass}[^"]*"[^>]*>)`));
-      if(imgDivMatch){
-        const insertAfter = updated.indexOf(imgDivMatch[0]) + imgDivMatch[0].length;
-        let newImgTags = '';
-        if(newImg) newImgTags += `\n    <img src="${newImg}" alt="${newName}">`;
-        if(newImg2) newImgTags += `\n    <img src="${newImg2}" alt="${newName} detail">`;
-        updated = updated.slice(0, insertAfter) + newImgTags + updated.slice(insertAfter);
-      }
+    // Update images
+    updated = updated.replace(/<img[^>]+>/g,'');
+    const imgContainerClass = type==='grid'?'pcard-img':'tp-img';
+    const imgMatch = updated.match(new RegExp(`(class="${imgContainerClass}[^"]*"[^>]*>)`));
+    if(imgMatch && newImg){
+      const insertAt = updated.indexOf(imgMatch[0])+imgMatch[0].length;
+      let newImgTags = `\n    <img src="${newImg}" alt="${newName}">`;
+      if(newImg2) newImgTags += `\n    <img src="${newImg2}" alt="${newName} detail">`;
+      updated = updated.slice(0,insertAt)+newImgTags+updated.slice(insertAt);
     }
 
-    // Replace card in full content
-    content = content.slice(0, card.start) + updated + content.slice(card.end);
+    // Save updated card back
+    arr[i] = updated;
+    if(type==='grid') prodData.grid=arr; else prodData.topPicks=arr;
 
     // Push to GitHub
+    const updatedJson = JSON.stringify(prodData, null, 2);
     const enc = new TextEncoder();
-    const eb  = enc.encode(content);
-    let bin = ''; eb.forEach(b => bin += String.fromCharCode(b));
+    const eb  = enc.encode(updatedJson);
+    let bin=''; eb.forEach(b=>bin+=String.fromCharCode(b));
     const b64 = btoa(bin);
 
-    const pushRes = await fetch(GH_API, {
+    const pushRes = await fetch(GH_PROD_API, {
       method:'PUT',
       headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
-      body: JSON.stringify({ message:`Edit product: ${newName}`, content: b64, sha })
+      body: JSON.stringify({ message:`Edit product: ${newName}`, content:b64, sha })
     });
     if(!pushRes.ok){ const e=await pushRes.json(); throw new Error(e.message); }
 
-    showToast(`✅ "${newName}" updated on your site!`);
-    // Reload editor
-    setTimeout(()=> loadSiteProducts(), 1500);
+    showToast(`✅ "${newName}" updated! GitHub is rebuilding...`);
+    setTimeout(()=>loadSiteProducts(), 1500);
 
   } catch(e){
     showToast(`❌ ${e.message}`, false);
-    btn.textContent = '💾 Save Changes'; btn.disabled = false;
+    btn.textContent='💾 Save Changes'; btn.disabled=false;
   }
 }
+
 
 async function deleteCard(type, i){
   if(!confirm('Delete this product from your site? This cannot be undone.')) return;
@@ -1457,51 +1343,40 @@ async function deleteCard(type, i){
   btn.textContent = '⏳...'; btn.disabled = true;
 
   try {
-    const res = await fetch(GH_API, {
-      headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json'}
+    const res = await fetch(GH_PROD_API, {
+      headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json' }
     });
     const data = await res.json();
     const rawBin = atob(data.content.replace(/\n/g,''));
     const rawB = new Uint8Array(rawBin.length);
-    for(let j=0;j<rawBin.length;j++) rawB[j] = rawBin.charCodeAt(j);
-    let content = new TextDecoder('utf-8').decode(rawB);
+    for(let j=0;j<rawBin.length;j++) rawB[j]=rawBin.charCodeAt(j);
+    const prodData = JSON.parse(new TextDecoder('utf-8').decode(rawB));
     const sha = data.sha;
 
-    // Extract right section
-    const sectionKey = type === 'grid' ? 'ZUU_GRID_PRODUCTS' : 'ZUU_TOP_PICKS';
-    const cls = type === 'grid' ? 'pcard' : 'tp-card';
-    const secMatch = jsContent.match(new RegExp(`(window\\.${sectionKey}\\s*=\\s*\`)([\\s\\S]*?)(\`\\s*;)`));
-    if(!secMatch) throw new Error(`Product section not found — reload Edit Site tab`);
+    const arr = type==='grid' ? prodData.grid : prodData.topPicks;
+    const deletedName = arr[i] ? (arr[i].match(/data-name="([^"]*)"/) || arr[i].match(/class="(?:pcard|tp)-name"[^>]*>([\s\S]*?)<\/div>/) || ['','?'])[1] : '?';
+    arr.splice(i, 1);
+    if(type==='grid') prodData.grid=arr; else prodData.topPicks=arr;
 
-    let sectionHtml = secMatch[2];
-    const cards = parseCards(sectionHtml, cls);
-    const card  = cards[i];
-    if(!card) throw new Error('Product not found');
-
-    // Remove card from section HTML
-    sectionHtml = sectionHtml.slice(0, card.start) + sectionHtml.slice(card.end);
-
-    // Replace card in full content
-    jsContent = jsContent.slice(0, secMatch.index) + secMatch[1] + sectionHtml + secMatch[3] + jsContent.slice(secMatch.index + secMatch[0].length);
-
+    const updatedJson = JSON.stringify(prodData, null, 2);
     const enc = new TextEncoder();
-    const eb  = enc.encode(jsContent);
-    let bin = ''; eb.forEach(b => bin += String.fromCharCode(b));
+    const eb  = enc.encode(updatedJson);
+    let bin=''; eb.forEach(b=>bin+=String.fromCharCode(b));
     const b64 = btoa(bin);
 
-    const pushRes = await fetch(GH_API, {
+    const pushRes = await fetch(GH_PROD_API, {
       method:'PUT',
       headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
-      body: JSON.stringify({ message:`Delete product: ${card.name||'item'}`, content: b64, sha })
+      body: JSON.stringify({ message:`Delete product`, content:b64, sha })
     });
     if(!pushRes.ok){ const e=await pushRes.json(); throw new Error(e.message); }
 
-    showToast(`🗑 Product deleted from your site!`);
-    setTimeout(()=> loadSiteProducts(), 1500);
+    showToast('🗑 Product deleted! GitHub is rebuilding...');
+    setTimeout(()=>loadSiteProducts(), 1500);
 
   } catch(e){
     showToast(`❌ ${e.message}`, false);
-    btn.textContent = '🗑 Delete'; btn.disabled = false;
+    btn.textContent='🗑 Delete'; btn.disabled=false;
   }
 }
 
