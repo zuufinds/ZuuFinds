@@ -258,7 +258,8 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
     </div>
     <div class="slider-track-wrap">
       <div class="slider-track" id="sliderTrack">
-        <!-- Products loaded from products.js -->
+
+
       </div>
     </div>
   </div>
@@ -270,7 +271,7 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
   </div>
 
   <div class="finds-grid" id="findsGrid">
-    <!-- Products loaded from products.js -->
+
   <div class="show-more-wrap" id="showMoreWrap" style="display:none">
     <button class="show-more-btn" onclick="showMore()">Show More Finds</button>
   </div>
@@ -560,19 +561,5 @@ updateCount();
 initCarousels();
 </script>
 
-<script src="products.js"></script>
-<script>
-// ── LOAD PRODUCTS FROM products.js ────────────────────────────────────────────
-(function(){
-  var sliderTrack = document.getElementById('sliderTrack');
-  var findsGrid   = document.getElementById('findsGrid');
-  if(sliderTrack && window.ZUU_TOP_PICKS){
-    sliderTrack.innerHTML = window.ZUU_TOP_PICKS;
-  }
-  if(findsGrid && window.ZUU_GRID_PRODUCTS){
-    findsGrid.innerHTML = window.ZUU_GRID_PRODUCTS;
-  }
-})();
-</script>
 </body>
 </html>

@@ -439,7 +439,7 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
         <div class="tab-pane" id="tab-updater">
           <div style="background:#fff8e1;border:1.5px solid #ffe082;border-radius:8px;padding:14px;margin-bottom:16px;font-size:13px;color:#7a6000;line-height:1.6">
             <strong>🛡️ Safe Code Update</strong><br>
-            Paste your new <code>index.html</code> code below. Your products are stored separately in <code>products.js</code> and will <strong>never be touched</strong> — only the site layout, CSS and JS will be updated.
+            Paste your new <code>index.html</code> code below. Paste your updated index.html here. Only the CSS and JS will be replaced — your products in the grid and slider will stay untouched.
           </div>
           <div class="form-group">
             <label>Paste new index.html code here</label>
@@ -1020,8 +1020,6 @@ const GH_USER = 'zuufinds';
 const GH_REPO = 'ZuuFinds';
 const GH_FILE    = 'index.html';
 const GH_API     = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
-const GH_PROD_FILE = 'products.js';
-const GH_PROD_API  = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_PROD_FILE}`;
 
 async function pushToSite(tab){
   const token = localStorage.getItem('ghToken');
@@ -1049,8 +1047,8 @@ async function pushToSite(tab){
   btn.textContent = '⏳ Pushing to GitHub...';
 
   try {
-    // 1. Fetch current products.js from GitHub
-    const res = await fetch(GH_PROD_API, {
+    // 1. Fetch current index.html from GitHub
+    const res = await fetch(GH_API, {
       headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
     });
     if(!res.ok){
@@ -1114,15 +1112,15 @@ async function pushToSite(tab){
 </div>`;
     }
 
-    // 3. Insert into products.js
+    // 3. Find insertion point and insert
     let updatedContent;
     if(tab === 'allfnds'){
       // Insert at start of ZUU_GRID_PRODUCTS
-      const marker = 'window.ZUU_GRID_PRODUCTS = `';
+      const marker = '<div class="finds-grid" id="findsGrid">';
       const idx = currentContent.indexOf(marker);
-      if(idx === -1) throw new Error('Could not find ZUU_GRID_PRODUCTS in products.js. Make sure you uploaded the new products.js.');
+      if(idx === -1) throw new Error('Could not find finds-grid in index.html');
       const insertAt = idx + marker.length;
-      updatedContent = currentContent.slice(0, insertAt) + '\n' + newCard + '\n' + currentContent.slice(insertAt);
+      updatedContent = currentContent.slice(0, insertAt) + '\n\n    ' + newCard.split('\n').join('\n    ') + '\n' + currentContent.slice(insertAt);
 
       // Also add to Top Picks if checkbox is ticked
       const alsoTp = document.getElementById('alsoTopPick').checked;
@@ -1158,22 +1156,22 @@ async function pushToSite(tab){
     <a href="${tpLink}" target="_blank" rel="noopener" class="tp-btn">Shop on Amazon</a>
   </div>
 </div>`;
-        const tpMarker = 'window.ZUU_TOP_PICKS = `';
+        const tpMarker = '<div class="slider-track" id="sliderTrack">';
         const tpIdx = updatedContent.indexOf(tpMarker);
         if(tpIdx !== -1){
           const tpInsertAt = tpIdx + tpMarker.length;
-          updatedContent = updatedContent.slice(0, tpInsertAt) + '\n' + tpCard + '\n' + updatedContent.slice(tpInsertAt);
+          updatedContent = updatedContent.slice(0, tpInsertAt) + '\n\n        ' + tpCard.split('\n').join('\n        ') + '\n' + updatedContent.slice(tpInsertAt);
         }
       }
     } else {
-      const marker = 'window.ZUU_TOP_PICKS = `';
+      const marker = '<div class="slider-track" id="sliderTrack">';
       const idx = currentContent.indexOf(marker);
-      if(idx === -1) throw new Error('Could not find ZUU_TOP_PICKS in products.js. Make sure you uploaded the new products.js.');
+      if(idx === -1) throw new Error('Could not find sliderTrack in index.html');
       const insertAt = idx + marker.length;
-      updatedContent = currentContent.slice(0, insertAt) + '\n' + newCard + '\n' + currentContent.slice(insertAt);
+      updatedContent = currentContent.slice(0, insertAt) + '\n\n    ' + newCard.split('\n').join('\n    ') + '\n' + currentContent.slice(insertAt);
     }
 
-    // 4. Push updated products.js back to GitHub
+    // 4. Push updated index.html back to GitHub
     const prodName = tab === 'allfnds'
       ? document.getElementById('prodName').value.trim()
       : document.getElementById('tpName').value.trim();
@@ -1184,7 +1182,7 @@ async function pushToSite(tab){
     encBytes.forEach(b => encBinary += String.fromCharCode(b));
     const safeBase64 = btoa(encBinary);
 
-    const pushRes = await fetch(GH_PROD_API, {
+    const pushRes = await fetch(GH_API, {
       method: 'PUT',
       headers: {
         Authorization: `token ${token}`,
@@ -1237,10 +1235,10 @@ async function loadSiteProducts(){
   statusEl.style.display = 'block';
 
   try {
-    const res = await fetch(GH_PROD_API, {
+    const res = await fetch(GH_API, {
       headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
     });
-    if(!res.ok) throw new Error('Could not fetch products.js from GitHub');
+    if(!res.ok) throw new Error('Could not fetch index.html from GitHub');
     const data = await res.json();
     const rawBin = atob(data.content.replace(/\n/g,''));
     const rawB   = new Uint8Array(rawBin.length);
@@ -1248,21 +1246,9 @@ async function loadSiteProducts(){
     siteContent = new TextDecoder('utf-8').decode(rawB);
     siteSha = data.sha;
 
-    // Extract HTML from template literals
-    const gridMatch = siteContent.match(/window\.ZUU_GRID_PRODUCTS\s*=\s*`([\s\S]*?)`\s*;/);
-    const tpMatch   = siteContent.match(/window\.ZUU_TOP_PICKS\s*=\s*`([\s\S]*?)`\s*;/);
-
-    const gridHtml = gridMatch ? gridMatch[1] : '';
-    const tpHtml   = tpMatch   ? tpMatch[1]   : '';
-
-    // Parse cards from extracted HTML
-    const gridCards = parseCards(gridHtml, 'pcard');
-    const tpCards   = parseCards(tpHtml,   'tp-card');
-
-    // Store offsets so saveEdit/deleteCard can find the right spot in products.js
-    // We tag each card with which section it belongs to
-    gridCards.forEach(c => c.section = 'grid');
-    tpCards.forEach(c => c.section = 'tp');
+    // Parse grid cards and top picks directly from index.html
+    const gridCards = parseCards(siteContent, 'pcard');
+    const tpCards   = parseCards(siteContent, 'tp-card');
 
     statusEl.style.display = 'none';
 
@@ -1276,7 +1262,7 @@ async function loadSiteProducts(){
       tpCards.forEach((c,i) => html += buildEditorCard(c, i, 'tp'));
     }
     if(!gridCards.length && !tpCards.length){
-      html = '<div class="editor-empty">No products found. Make sure products.js is uploaded to GitHub.</div>';
+      html = '<div class="editor-empty">No products found. Make sure your index.html is up to date.</div>';
     }
     listEl.innerHTML = html;
 
@@ -1403,21 +1389,21 @@ async function saveEdit(type, i){
 
   try {
     // Re-fetch fresh content
-    const res = await fetch(GH_PROD_API, {
+    const res = await fetch(GH_API, {
       headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
     });
     const data = await res.json();
     const rawBin = atob(data.content.replace(/\n/g,''));
     const rawB = new Uint8Array(rawBin.length);
     for(let j=0;j<rawBin.length;j++) rawB[j] = rawBin.charCodeAt(j);
-    let jsContent = new TextDecoder('utf-8').decode(rawB);
+    let content = new TextDecoder('utf-8').decode(rawB);
     const sha = data.sha;
 
     // Extract the right section HTML
     const sectionKey = type === 'grid' ? 'ZUU_GRID_PRODUCTS' : 'ZUU_TOP_PICKS';
     const cls = type === 'grid' ? 'pcard' : 'tp-card';
     const secMatch = jsContent.match(new RegExp(`(window\\.${sectionKey}\\s*=\\s*\`)([\\s\\S]*?)(\`\\s*;)`));
-    if(!secMatch) throw new Error(`Could not find ${sectionKey} in products.js`);
+    if(!secMatch) throw new Error(`Product section not found in index.html`);
 
     let sectionHtml = secMatch[2];
     const cards = parseCards(sectionHtml, cls);
@@ -1450,19 +1436,16 @@ async function saveEdit(type, i){
       }
     }
 
-    // Replace card in section HTML
-    sectionHtml = sectionHtml.slice(0, card.start) + updated + sectionHtml.slice(card.end);
-
-    // Replace section back into products.js
-    jsContent = jsContent.slice(0, secMatch.index) + secMatch[1] + sectionHtml + secMatch[3] + jsContent.slice(secMatch.index + secMatch[0].length);
+    // Replace card in full content
+    content = content.slice(0, card.start) + updated + content.slice(card.end);
 
     // Push to GitHub
     const enc = new TextEncoder();
-    const eb  = enc.encode(jsContent);
+    const eb  = enc.encode(content);
     let bin = ''; eb.forEach(b => bin += String.fromCharCode(b));
     const b64 = btoa(bin);
 
-    const pushRes = await fetch(GH_PROD_API, {
+    const pushRes = await fetch(GH_API, {
       method:'PUT',
       headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
       body: JSON.stringify({ message:`Edit product: ${newName}`, content: b64, sha })
@@ -1488,21 +1471,21 @@ async function deleteCard(type, i){
   btn.textContent = '⏳...'; btn.disabled = true;
 
   try {
-    const res = await fetch(GH_PROD_API, {
+    const res = await fetch(GH_API, {
       headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json'}
     });
     const data = await res.json();
     const rawBin = atob(data.content.replace(/\n/g,''));
     const rawB = new Uint8Array(rawBin.length);
     for(let j=0;j<rawBin.length;j++) rawB[j] = rawBin.charCodeAt(j);
-    let jsContent = new TextDecoder('utf-8').decode(rawB);
+    let content = new TextDecoder('utf-8').decode(rawB);
     const sha = data.sha;
 
     // Extract right section
     const sectionKey = type === 'grid' ? 'ZUU_GRID_PRODUCTS' : 'ZUU_TOP_PICKS';
     const cls = type === 'grid' ? 'pcard' : 'tp-card';
     const secMatch = jsContent.match(new RegExp(`(window\\.${sectionKey}\\s*=\\s*\`)([\\s\\S]*?)(\`\\s*;)`));
-    if(!secMatch) throw new Error(`Could not find ${sectionKey} in products.js`);
+    if(!secMatch) throw new Error(`Product section not found in index.html`);
 
     let sectionHtml = secMatch[2];
     const cards = parseCards(sectionHtml, cls);
@@ -1512,7 +1495,7 @@ async function deleteCard(type, i){
     // Remove card from section HTML
     sectionHtml = sectionHtml.slice(0, card.start) + sectionHtml.slice(card.end);
 
-    // Replace section back into products.js
+    // Replace card in full content
     jsContent = jsContent.slice(0, secMatch.index) + secMatch[1] + sectionHtml + secMatch[3] + jsContent.slice(secMatch.index + secMatch[0].length);
 
     const enc = new TextEncoder();
@@ -1520,7 +1503,7 @@ async function deleteCard(type, i){
     let bin = ''; eb.forEach(b => bin += String.fromCharCode(b));
     const b64 = btoa(bin);
 
-    const pushRes = await fetch(GH_PROD_API, {
+    const pushRes = await fetch(GH_API, {
       method:'PUT',
       headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
       body: JSON.stringify({ message:`Delete product: ${card.name||'item'}`, content: b64, sha })
@@ -1544,37 +1527,76 @@ async function pushCodeUpdate(){
   const newCode = document.getElementById('newIndexCode').value.trim();
   if(!newCode){ showToast('⚠️ Please paste your new index.html code first', false); return; }
 
-  // Make sure products.js script tag is present
-  if(!newCode.includes('products.js')){
-    showToast('⚠️ This index.html is missing the products.js script tag. Use the version from kapalapi.', false);
-    return;
-  }
-
   const statusEl = document.getElementById('updaterStatus');
-  statusEl.textContent = '⏳ Pushing code update...';
+  statusEl.textContent = '⏳ Fetching live site...';
 
   try {
+    // 1. Fetch current live index.html
     const res = await fetch(GH_API, {
       headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json' }
     });
     if(!res.ok) throw new Error('Could not fetch index.html from GitHub');
     const data = await res.json();
+    const rawBin = atob(data.content.replace(/\n/g,''));
+    const rawB = new Uint8Array(rawBin.length);
+    for(let j=0;j<rawBin.length;j++) rawB[j] = rawBin.charCodeAt(j);
+    const liveContent = new TextDecoder('utf-8').decode(rawB);
     const sha = data.sha;
 
+    // 2. Extract products from live index.html
+    const sliderMarker  = '<div class="slider-track" id="sliderTrack">';
+    const sliderClose   = '</div>\n    </div>\n  </div>';
+    const gridMarker    = '<div class="finds-grid" id="findsGrid">';
+    const gridClose     = '<div class="show-more-wrap"';
+
+    const sliderStart = liveContent.indexOf(sliderMarker) + sliderMarker.length;
+    const sliderEnd   = liveContent.indexOf('</div>\n    </div>\n  </div>', sliderStart);
+    const gridStart   = liveContent.indexOf(gridMarker) + gridMarker.length;
+    const gridEnd     = liveContent.indexOf(gridClose);
+
+    const liveSliderCards = sliderStart > sliderMarker.length-1 ? liveContent.slice(sliderStart, sliderEnd) : '';
+    const liveGridCards   = gridStart > gridMarker.length-1     ? liveContent.slice(gridStart, gridEnd)     : '';
+
+    statusEl.textContent = '⏳ Injecting products into new code...';
+
+    // 3. Inject live products into new code
+    let updatedCode = newCode;
+
+    // Replace slider content
+    const newSliderStart = updatedCode.indexOf(sliderMarker);
+    if(newSliderStart !== -1 && liveSliderCards){
+      const newSliderEnd = updatedCode.indexOf('</div>\n    </div>\n  </div>', newSliderStart + sliderMarker.length);
+      if(newSliderEnd !== -1){
+        updatedCode = updatedCode.slice(0, newSliderStart + sliderMarker.length) + liveSliderCards + updatedCode.slice(newSliderEnd);
+      }
+    }
+
+    // Replace grid content
+    const newGridStart = updatedCode.indexOf(gridMarker);
+    if(newGridStart !== -1 && liveGridCards){
+      const newGridEnd = updatedCode.indexOf(gridClose, newGridStart + gridMarker.length);
+      if(newGridEnd !== -1){
+        updatedCode = updatedCode.slice(0, newGridStart + gridMarker.length) + liveGridCards + updatedCode.slice(newGridEnd);
+      }
+    }
+
+    statusEl.textContent = '⏳ Pushing to GitHub...';
+
+    // 4. Push updated code
     const enc = new TextEncoder();
-    const eb  = enc.encode(newCode);
+    const eb  = enc.encode(updatedCode);
     let bin = ''; eb.forEach(b => bin += String.fromCharCode(b));
     const b64 = btoa(bin);
 
     const pushRes = await fetch(GH_API, {
       method:'PUT',
       headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
-      body: JSON.stringify({ message:'Update site code (products safe in products.js)', content: b64, sha })
+      body: JSON.stringify({ message:'Update site code (products preserved)', content: b64, sha })
     });
     if(!pushRes.ok){ const e=await pushRes.json(); throw new Error(e.message); }
 
     statusEl.textContent = '';
-    showToast('✅ Site code updated! Products are safe in products.js 🛡️');
+    showToast('✅ Site code updated! All your products are preserved 🛡️');
     document.getElementById('newIndexCode').value = '';
   } catch(e){
     statusEl.textContent = `❌ ${e.message}`;
