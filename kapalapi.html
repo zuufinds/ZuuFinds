@@ -333,7 +333,6 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
 
           <button class="btn-primary" onclick="addProduct()">✦ Generate Card Code</button>
           <button class="btn-push" id="pushBtn" onclick="pushToSite('allfnds')">🚀 Add to Site (GitHub)</button>
-          <button class="btn-secondary" onclick="saveProduct()">💾 Save to Product List</button>
           <button class="btn-clear" onclick="clearForm()">✕ Clear Form</button>
 
         </div><!-- /tab-allfnds -->
@@ -448,7 +447,7 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
       <div class="products-grid" id="productsList">
         <div class="empty-state">
           <div class="es-icon">🛒</div>
-          <p>No products saved yet.<br>Fill the form and click "Save to Product List".</p>
+          <p>No products saved yet.<br>Products you add will appear here automatically.</p>
         </div>
       </div>
     </div>
@@ -750,7 +749,7 @@ function renderProducts(){
   document.getElementById('prodCount').textContent = `${products.length} product${products.length!==1?'s':''}`;
 
   if(products.length===0){
-    grid.innerHTML = `<div class="empty-state"><div class="es-icon">🛒</div><p>No products saved yet.<br>Fill the form and click "Save to Product List".</p></div>`;
+    grid.innerHTML = `<div class="empty-state"><div class="es-icon">🛒</div><p>No products saved yet.<br>Products you add will appear here automatically.</p></div>`;
     return;
   }
 
@@ -1196,13 +1195,13 @@ async function loadSiteProducts(){
 }
 
 function buildEditorCardFromHtml(cardHtml, i, type){
-  const nameMatch  = cardHtml.match(/data-name="([^"]*)"/);
-  const catMatch   = cardHtml.match(/data-cat="([^"]*)"/);
   const nameMatch2 = cardHtml.match(/class="(?:pcard|tp)-name"[^>]*>([\s\S]*?)<\/div>/);
-  const name       = nameMatch2 ? nameMatch2[1].replace(/<[^>]+>/g,'').trim() : (nameMatch?nameMatch[1]:'');
-  const cat        = catMatch ? catMatch[1] : '';
-  const linkMatch  = cardHtml.match(/href="(https?:\/\/[^"]*)"/);
-  const link       = linkMatch ? linkMatch[1] : '';
+  const nameMatchD = cardHtml.match(/data-name="([^"]*)"/);
+  const name       = nameMatch2 ? nameMatch2[1].replace(/<[^>]+>/g,'').trim() : (nameMatchD?nameMatchD[1]:'');
+  const catM       = cardHtml.match(/data-cat="([^"]*)"/);
+  const cat        = catM ? catM[1] : '';
+  const linkM      = cardHtml.match(/href="(https?:\/\/[^"]*)"/);
+  const link       = linkM ? linkM[1] : '';
   const allImgs    = [...cardHtml.matchAll(/<img[^>]+src="([^"]*)"/g)].map(m=>m[1]);
   const imgSrc     = allImgs[0]||'';
   const imgSrc2    = allImgs[1]||'';
@@ -1221,40 +1220,28 @@ function buildEditorCardFromHtml(cardHtml, i, type){
     .map(v=>`<option value="${v}" ${cat===v?'selected':''}>${CAT_LABELS[v]||v}</option>`).join('');
 
   return `
-  <div class="p-item" id="ecard-${type}-${i}">
-    <div class="${type==='grid'?'p-item-img':''}" style="${type==='tp'?'width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:32px;background:linear-gradient(150deg,#f5ddd8,#e0a89e);overflow:hidden;position:relative;':''}">
+  <div class="editor-card" id="ecard-${type}-${i}">
+    <div class="editor-card-head">
       ${imgEl}
-      <span class="p-item-cat">${CAT_LABELS[cat]||cat||'?'}</span>
-    </div>
-    <div class="p-item-body">
-      <div class="p-item-name">${name||'Unnamed Product'}</div>
-      <a class="p-item-link" href="${link}" target="_blank">${link||'No link'}</a>
-      <div class="p-item-actions">
-        <button class="p-item-edit" onclick="toggleEditForm('${type}',${i})">Edit</button>
-        <button class="p-item-del" onclick="deleteCard('${type}',${i})">&#128465;</button>
+      <div style="flex:1;min-width:0">
+        <div class="editor-card-title">${name||'Unnamed Product'}</div>
+        <div class="editor-card-cat">${CAT_LABELS[cat]||cat||'&mdash;'} &nbsp;${badge}</div>
       </div>
     </div>
-    <div id="eform-${type}-${i}" style="display:none;padding:12px;border-top:1px solid #edddd6;background:#faf6f0">
-      <div class="editor-field"><label>Product Name</label><input type="text" id="ename-${type}-${i}" value="${(name||'').replace(/"/g,'&quot;')}"></div>
-      <div class="editor-field"><label>Category</label><select id="ecat-${type}-${i}">${catOptions}</select></div>
-      <div class="editor-field"><label>Affiliate Link</label><input type="text" id="elink-${type}-${i}" value="${(link||'').replace(/"/g,'&quot;')}"></div>
-      <div class="editor-field"><label>Image 1</label><input type="text" id="eimg-${type}-${i}" value="${(imgSrc||'').replace(/"/g,'&quot;')}"></div>
-      <div class="editor-field"><label>Image 2 <span style="font-weight:400;color:#999;text-transform:none;letter-spacing:0">(optional)</span></label><input type="text" id="eimg2-${type}-${i}" value="${(imgSrc2||'').replace(/"/g,'&quot;')}"></div>
-      <div style="display:flex;gap:8px">
-        <div class="editor-field" style="flex:1"><label>Rating</label><input type="text" id="erating-${type}-${i}" value="${rating||''}"></div>
-        <div class="editor-field" style="flex:1"><label>Sold Count</label><input type="text" id="esold-${type}-${i}" value="${(soldRaw||'').replace(/"/g,'&quot;')}"></div>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button class="editor-save-btn" onclick="saveEdit('${type}',${i})">&#128190; Save Changes</button>
-        <button onclick="toggleEditForm('${type}',${i})" style="padding:9px 14px;background:#f9eee9;border:1px solid #e0d4cc;border-radius:6px;font-size:13px;cursor:pointer;font-family:inherit">Cancel</button>
-      </div>
+    <div class="editor-field"><label>Product Name</label><input type="text" id="ename-${type}-${i}" value="${(name||'').replace(/"/g,'&quot;')}"></div>
+    <div class="editor-field"><label>Category</label><select id="ecat-${type}-${i}">${catOptions}</select></div>
+    <div class="editor-field"><label>Affiliate Link</label><input type="text" id="elink-${type}-${i}" value="${(link||'').replace(/"/g,'&quot;')}"></div>
+    <div class="editor-field"><label>Image 1</label><input type="text" id="eimg-${type}-${i}" value="${(imgSrc||'').replace(/"/g,'&quot;')}"></div>
+    <div class="editor-field"><label>Image 2 <span style="font-weight:400;color:#999;text-transform:none;letter-spacing:0">(optional)</span></label><input type="text" id="eimg2-${type}-${i}" value="${(imgSrc2||'').replace(/"/g,'&quot;')}"></div>
+    <div style="display:flex;gap:8px">
+      <div class="editor-field" style="flex:1"><label>Rating</label><input type="text" id="erating-${type}-${i}" value="${rating||''}"></div>
+      <div class="editor-field" style="flex:1"><label>Sold Count</label><input type="text" id="esold-${type}-${i}" value="${(soldRaw||'').replace(/"/g,'&quot;')}"></div>
+    </div>
+    <div class="editor-actions">
+      <button class="editor-save-btn" onclick="saveEdit('${type}',${i})">&#128190; Save Changes</button>
+      <button class="editor-del-btn" onclick="deleteCard('${type}',${i})">&#128465; Delete</button>
     </div>
   </div>`;
-}
-
-function toggleEditForm(type, i){
-  const form = document.getElementById(`eform-${type}-${i}`);
-  form.style.display = form.style.display === 'none' ? 'block' : 'none';
 }
 
 
