@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Zuu Finds — Your Favourite Amazon Finds</title>
+<title>Zuu Finds &mdash; Your Favourite Amazon Finds</title>
 <link rel="icon" type="image/png" href="logoimgs/zuufavicon.png">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-serif;font-size:15px;line-height:1.6}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-serif;font-size:15px;line-height:1.6;display:flex;flex-direction:column;min-height:100vh}
 a{text-decoration:none;color:inherit}
 img{display:block;max-width:100%}
 
@@ -60,7 +60,7 @@ nav{background:#2a1f1f;padding:0 24px;position:sticky;top:0;z-index:100;border-b
 .f-btn.active{color:#b85f58;border-bottom-color:#b85f58;font-weight:700}
 
 /* LAYOUT */
-.wrap{max-width:1200px;margin:0 auto;padding:24px 20px 60px}
+.wrap{max-width:1200px;margin:0 auto;padding:24px 20px 60px;flex:1}
 
 /* TOP PICKS SLIDER */
 .toppicks-section{background:#fff;border:1px solid #edddd6;border-radius:10px;padding:18px 0;margin-bottom:28px;overflow:hidden}
@@ -133,11 +133,6 @@ nav{background:#2a1f1f;padding:0 24px;position:sticky;top:0;z-index:100;border-b
 .pb10{background:linear-gradient(150deg,#dce8e0,#90b8a0)}
 .pb11{background:linear-gradient(150deg,#ece4d8,#c4a87c)}
 .pb12{background:linear-gradient(150deg,#f4dce4,#d498ac)}
-.p-badge{position:absolute;top:7px;left:7px;font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:2px;z-index:3}
-.bh{background:#b85f58;color:#fff}
-.bn{background:#9b7b8a;color:#fff}
-.bs{background:#c8a87a;color:#0f1111}
-.bl{background:#f4a0b0;color:#fff}
 body.filtered .cat-badge{display:none}
 .pcard-body{padding:11px 12px 13px;flex:1;display:flex;flex-direction:column;gap:5px}
 .pcard-cat{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#b85f58;font-weight:600}
@@ -155,21 +150,21 @@ body.filtered .cat-badge{display:none}
 .show-more-btn:hover{background:#b85f58;color:#fff}
 
 /* FOOTER */
-footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid #b85f58;text-align:center}
-.footer-top{max-width:1200px;margin:0 auto 24px}
-.footer-logo-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:10px}
-.footer-logo-row img{height:32px}
-.footer-logo-row span{font-size:18px;font-weight:700;color:#fff}
+footer{background:#232f3e;color:#ddd;padding:20px 20px 14px;border-top:2px solid #b85f58;text-align:center}
+.footer-top{max-width:1200px;margin:0 auto 12px}
+.footer-logo-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:6px}
+.footer-logo-row img{height:26px}
+.footer-logo-row span{font-size:15px;font-weight:700;color:#fff}
 .footer-logo-row span em{font-style:italic;color:#d4948a}
-.footer-tagline{font-size:13px;color:#aaa;margin-bottom:20px;line-height:1.6}
-.footer-social{display:flex;gap:14px;justify-content:center;margin-bottom:24px}
-.footer-social a{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#ddd;transition:all .2s}
+.footer-tagline{font-size:12px;color:#aaa;margin-bottom:12px;line-height:1.5}
+.footer-social{display:flex;gap:10px;justify-content:center;margin-bottom:12px}
+.footer-social a{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#ddd;transition:all .2s}
 .footer-social a:hover{background:#b85f58;border-color:#b85f58;color:#fff;transform:translateY(-2px)}
-.footer-social a svg{width:22px;height:22px;fill:currentColor}
-.footer-links{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-bottom:20px}
+.footer-social a svg{width:18px;height:18px;fill:currentColor}
+.footer-links{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:10px}
 .footer-links a{font-size:12.5px;color:#aaa;transition:color .2s}
 .footer-links a:hover{color:#fff}
-.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:14px;font-size:11.5px;color:#666;max-width:1200px;margin:0 auto}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:10px;font-size:11px;color:#666;max-width:1200px;margin:0 auto}
 
 /* RESPONSIVE */
 @media(max-width:1000px){.finds-grid{grid-template-columns:repeat(3,1fr)}}
@@ -234,7 +229,7 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
 
 <div class="hero">
   <h1>Your Favourite <em>Amazon Finds</em></h1>
-  <p>Cute, cool &amp; cosy picks hand-curated just for you. New finds everyday &#128149;</p>
+  <p>Cute, cool &amp; cosy picks curated just for you. New finds everyday &#128149;</p>
   <p class="hero-disclosure"><span class="disc-label">Affiliate Disclosure:</span> As an Amazon Associate I earn from qualifying purchases.</p>
   <div class="cat-strip">
     <div class="cat-strip-inner">
@@ -270,6 +265,22 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
   </div>
   <div class="tp-body">
     <div class="tp-cat">Kitchen Favorites</div>
+    <div class="tp-name">2 in 1 Oil Dispenser and Sprayer</div>
+    <div class="tp-meta">
+      <span class="tp-stars">★★★★☆</span>
+      <span class="tp-rating">4.3</span>
+      <span class="tp-sold"><strong>2k+ bought</strong> in past month</span>
+    </div>
+    <a href="https://amzn.to/3NtGVIa" target="_blank" rel="noopener" class="tp-btn">Shop on Amazon</a>
+  </div>
+</div>
+<div class="tp-card">
+  <div class="tp-img pb1">
+    <img src="products/toyhammock.jpg" alt="Stuffed Animal Storage Hammock with LED Light">
+    <img src="products/toyhammock2.jpg" alt="Stuffed Animal Storage Hammock with LED Light detail">
+  </div>
+  <div class="tp-body">
+    <div class="tp-cat">Home Finds</div>
     <div class="tp-name">Stuffed Animal Storage Hammock with LED Light</div>
     <div class="tp-meta">
       <span class="tp-stars">★★★★★</span>
@@ -503,7 +514,6 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
     <a href="https://amzn.to/4rrTTV2" target="_blank" rel="noopener" class="tp-btn">Shop on Amazon</a>
   </div>
 </div>
-
       </div>
     </div>
   </div>
@@ -638,6 +648,8 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
   <div class="pcard-img pb6">
     <img src="products/minifridge.jpg" alt="Mini Portable Fridge Cooler and Warmer 4L for Skincare and Beverages">
     <img src="products/minifridge2.jpg" alt="Mini Portable Fridge Cooler and Warmer 4L for Skincare and Beverages detail">
+    
+    
     <span class="p-badge bh cat-badge">Cool Finds</span>
   </div>
   <div class="pcard-body">
@@ -648,7 +660,7 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
       <span class="pcard-rating">4.3</span>
       <span class="pcard-sold"><strong>300+ bought</strong> in past month</span>
     </div>
-    <a href="https://amzn.to/47y1k5N" target="_blank" rel="noopener" class="pcard-btn">Shop on Amazon</a>
+    <a href="https://amzn.to/46UUgjr" target="_blank" rel="noopener" class="pcard-btn">Shop on Amazon</a>
   </div>
 </div>
 <div class="pcard" data-cat="kitchen" data-name="Ceramic Garlic Grater Plate 4-Piece Set with Peeler, Brush and Stand">
@@ -923,11 +935,12 @@ footer{background:#232f3e;color:#ddd;padding:36px 20px 20px;border-top:3px solid
     </div>
   </div>
   <div class="footer-bottom">
-    &copy; 2025 Zuu Finds &middot; All rights reserved &middot; <a href="#">Affiliate Disclaimer</a>
+    &copy; 2026 Zuu Finds &middot; All rights reserved &middot; <a href="#">Affiliate Disclaimer</a>
   </div>
 </footer>
 
 <script>
+
 // SLIDER
 let slideIndex = 0;
 function getCardWidth(){
@@ -1178,6 +1191,7 @@ function initCarousels(){
 applyRowLimit(document.querySelectorAll('#findsGrid .pcard'));
 updateCount();
 initCarousels();
+
 </script>
 </body>
 </html>
