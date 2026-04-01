@@ -62,10 +62,7 @@ nav{background:#2a1f1f;padding:0 24px;position:sticky;top:0;z-index:100;border-b
 /* LAYOUT */
 .wrap{max-width:1200px;margin:0 auto;padding:24px 20px 60px;flex:1}
 
-/* NUMBER BADGE */
-/* NUMBER BADGE */
-.num-badge{position:absolute;top:7px;left:8px;z-index:10;font-size:17px;font-weight:800;color:#111;pointer-events:none;font-family:"Amazon Ember",Arial,sans-serif;line-height:1;text-shadow:0 1px 4px rgba(255,255,255,1),0 -1px 4px rgba(255,255,255,1)}
-body.filtered .num-badge{display:none}
+
 
 /* ALL FINDS */
 .finds-section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
@@ -111,16 +108,12 @@ body.filtered .num-badge{display:none}
 .pb10{background:linear-gradient(150deg,#dce8e0,#90b8a0)}
 .pb11{background:linear-gradient(150deg,#ece4d8,#c4a87c)}
 .pb12{background:linear-gradient(150deg,#f4dce4,#d498ac)}
+/* NUMBER BADGE */
+.num-badge{position:absolute;top:8px;left:8px;z-index:10;font-size:17px;font-weight:900;color:#111;pointer-events:none;font-family:"Amazon Ember",Arial,sans-serif;line-height:1;-webkit-text-stroke:3px #fff;paint-order:stroke fill}
+body.filtered .num-badge{display:none}
 body.filtered .cat-badge{display:none}
-.pcard-body{padding:11px 12px 13px;flex:1;display:flex;flex-direction:column;gap:5px}
-.pcard-cat{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#b85f58;font-weight:600}
-.pcard-name{font-size:13.5px;color:#0f1111;line-height:1.35;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.pcard-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:2px}
-.pcard-stars{color:#e47911;font-size:11px}
-.pcard-rating{font-size:11px;font-weight:700;color:#e47911}
-.pcard-sold{font-size:10.5px;color:#555}
-.pcard-sold strong{font-weight:700;color:#0f1111}
-.pcard-btn{display:block;text-align:center;background:#fff4c2;color:#0f1111;padding:9px 0;border-radius:20px;font-size:13px;font-weight:700;margin-top:8px;transition:background .2s;border:1px solid #e8d87a}
+.pcard-body{padding:10px 12px 12px;display:flex;flex-direction:column}
+.pcard-btn{display:block;text-align:center;background:#fff4c2;color:#0f1111;padding:9px 0;border-radius:20px;font-size:13px;font-weight:700;transition:background .2s;border:1px solid #e8d87a}
 .pcard-btn:hover{background:#ffe566}
 .pcard.row-hidden{display:none}
 .show-more-wrap{text-align:center;margin-top:20px}
@@ -151,6 +144,7 @@ footer{background:#232f3e;color:#ddd;padding:20px 20px 14px;border-top:2px solid
   .nav-search{display:none}
   .nav-socials{display:none}
   .nav-menu-btn{display:block}
+  .tp-card{flex:0 0 150px}
   .nav-inner{justify-content:space-between}
 }
 @media(max-width:480px){
@@ -222,8 +216,11 @@ footer{background:#232f3e;color:#ddd;padding:20px 20px 14px;border-top:2px solid
 </div>
 
 <div class="wrap">
+    </div>
+  </div>
 
-    <div class="finds-section-head">
+  <!-- ALL FINDS -->
+  <div class="finds-section-head">
     <h2>&#10022; All Finds</h2>
     <span class="finds-count" id="findsCount"></span>
   </div>
@@ -829,17 +826,16 @@ applyRowLimit(document.querySelectorAll('#findsGrid .pcard'));
 updateCount();
 initCarousels();
 
-// NUMBER BADGES — injected after carousel init so they survive innerHTML rebuilds
+// NUMBER BADGES — injected after carousel so they survive innerHTML rebuilds
 (function(){
   var cards = Array.from(document.querySelectorAll('#findsGrid .pcard'));
   var total = cards.length;
   cards.forEach(function(card, i){
-    var num = total - i; // bottom card = #1, top card = highest
     var imgWrap = card.querySelector('.pcard-img');
     if(!imgWrap) return;
     var badge = document.createElement('span');
     badge.className = 'num-badge';
-    badge.textContent = '#' + num;
+    badge.textContent = '#' + (total - i);
     imgWrap.appendChild(badge);
   });
 })();
