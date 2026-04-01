@@ -726,7 +726,6 @@ function initCarousels(){
     if(imgs.length === 0) return;
 
     var badge = imgWrap.querySelector('.p-badge');
-    var numBadge = imgWrap.querySelector('.num-badge');
 
     // Build slides wrapper
     var slides = document.createElement('div');
@@ -740,7 +739,6 @@ function initCarousels(){
     });
 
     imgWrap.innerHTML = '';
-    if(numBadge) imgWrap.appendChild(numBadge);
     imgWrap.appendChild(slides);
     if(badge) imgWrap.appendChild(badge);
 
@@ -830,6 +828,21 @@ function initCarousels(){
 applyRowLimit(document.querySelectorAll('#findsGrid .pcard'));
 updateCount();
 initCarousels();
+
+// NUMBER BADGES — injected after carousel init so they survive innerHTML rebuilds
+(function(){
+  var cards = Array.from(document.querySelectorAll('#findsGrid .pcard'));
+  var total = cards.length;
+  cards.forEach(function(card, i){
+    var num = total - i; // bottom card = #1, top card = highest
+    var imgWrap = card.querySelector('.pcard-img');
+    if(!imgWrap) return;
+    var badge = document.createElement('span');
+    badge.className = 'num-badge';
+    badge.textContent = '#' + num;
+    imgWrap.appendChild(badge);
+  });
+})();
 
 </script>
 </body>
