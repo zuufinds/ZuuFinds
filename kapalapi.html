@@ -164,6 +164,9 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
 .btn-push{width:100%;padding:13px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:15px;font-weight:700;cursor:pointer;font-family:"Amazon Ember",Arial,sans-serif;transition:background .2s;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px}
 .btn-push:hover{background:#2ea043}
 .btn-push:disabled{background:#555;cursor:not-allowed;opacity:.6}
+.btn-push-tp{width:100%;padding:13px;background:#238636;color:#fff;border:none;border-radius:6px;font-size:15px;font-weight:700;cursor:pointer;font-family:"Amazon Ember",Arial,sans-serif;transition:background .2s;margin-top:8px}
+.btn-push-tp:hover{background:#2ea043}
+.btn-push-tp:disabled{background:#555;cursor:not-allowed;opacity:.6}
 
 /* EDITOR */
 .editor-card{background:#faf6f0;border:1px solid #edddd6;border-radius:8px;padding:14px;margin-bottom:12px;position:relative}
@@ -238,6 +241,7 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
       <!-- TAB BAR -->
       <div class="tab-bar">
         <button class="tab-btn active" onclick="switchTab('allfnds',this)">✦ All Finds Card</button>
+        <button class="tab-btn" onclick="switchTab('toppick',this)">🏆 Top Picks Card</button>
         <button class="tab-btn" onclick="switchTab('editor',this);loadSiteProducts()">✎ Edit Site</button>
         <button class="tab-btn" onclick="switchTab('updater',this)">⚙️ Update Code</button>
       </div>
@@ -282,7 +286,50 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
             <input type="text" id="prodImg2" placeholder="products/image-detail.jpg  or  https://..." oninput="updateImg2Preview()"/>
             <div class="img-preview-wrap" id="imgPreviewWrap2"><span>🖼️</span></div>
           </div>
+
+          <div class="form-group">
+            <label>Star Rating</label>
+            <div class="star-row">
+              <input class="star-opt" type="radio" name="stars" id="s5" value="★★★★★" onchange="updatePreview()">
+              <label for="s5" title="5 stars">★</label>
+              <input class="star-opt" type="radio" name="stars" id="s4" value="★★★★☆" onchange="updatePreview()">
+              <label for="s4" title="4 stars">★</label>
+              <input class="star-opt" type="radio" name="stars" id="s3" value="★★★☆☆" onchange="updatePreview()">
+              <label for="s3" title="3 stars">★</label>
+              <input class="star-opt" type="radio" name="stars" id="s2" value="★★☆☆☆" onchange="updatePreview()">
+              <label for="s2" title="2 stars">★</label>
+              <input class="star-opt" type="radio" name="stars" id="s1" value="★☆☆☆☆" onchange="updatePreview()">
+              <label for="s1" title="1 star">★</label>
+            </div>
           </div>
+
+          <div class="form-group">
+            <label>Numeric Rating</label>
+            <input type="number" id="prodRating" placeholder="e.g. 4.8" min="1" max="5" step="0.1" oninput="updatePreview()"/>
+          </div>
+
+          <div class="form-group">
+            <label>Sold Count <span style="font-weight:400;color:#999;text-transform:none;letter-spacing:0">("in past month" added automatically)</span></label>
+            <input type="text" id="prodSold" placeholder="e.g. 2.3k+ or 200+" oninput="updatePreview()"/>
+          </div>
+
+          <div class="form-group">
+            <label>Badge Color</label>
+            <div class="badge-opts">
+              <div class="badge-opt bh selected" data-badge="bh" onclick="selectBadge(this)">Rose</div>
+              <div class="badge-opt bn" data-badge="bn" onclick="selectBadge(this)">Mauve</div>
+              <div class="badge-opt bs" data-badge="bs" onclick="selectBadge(this)">Gold</div>
+              <div class="badge-opt bl" data-badge="bl" onclick="selectBadge(this)">Pink</div>
+            </div>
+          </div>
+
+          <!-- Also add to Top Picks -->
+          <div style="background:#fff8e1;border:1.5px solid #ffe082;border-radius:8px;padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px">
+            <input type="checkbox" id="alsoTopPick" style="width:18px;height:18px;accent-color:#e47911;cursor:pointer;flex-shrink:0">
+            <div>
+              <label for="alsoTopPick" style="font-size:13px;font-weight:700;color:#b8860b;cursor:pointer">🏆 Also add to Top Picks</label>
+              <div style="font-size:11px;color:#999;margin-top:1px">Adds this product to both the grid and the Top Picks slider</div>
+            </div>
           </div>
 
           <button class="btn-primary" onclick="addProduct()">✦ Generate Card Code</button>
@@ -290,6 +337,95 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
           <button class="btn-clear" onclick="clearForm()">✕ Clear Form</button>
 
         </div><!-- /tab-allfnds -->
+
+        <!-- ── TOP PICKS TAB ── -->
+        <div class="tab-pane" id="tab-toppick">
+
+          <div class="form-group">
+            <label>Product Name</label>
+            <input type="text" id="tpName" placeholder="e.g. Parlovable Women's Fuzzy Slippers" oninput="updateTpPreview()"/>
+          </div>
+
+          <div class="form-group">
+            <label>Category</label>
+            <select id="tpCat" onchange="updateTpPreview()">
+              <option value="">— Select category —</option>
+              <option value="cute">Cute Finds</option>
+              <option value="cool">Cool Finds</option>
+              <option value="home">Home Finds</option>
+              <option value="bedroom">Bedroom Finds</option>
+              <option value="bathroom">Bathroom Finds</option>
+              <option value="kitchen">Kitchen Favorites</option>
+              <option value="tech">Tech &amp; Electronics</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Affiliate Link (Amazon)</label>
+            <input type="url" id="tpLink" placeholder="https://amzn.to/xxxxxxx" oninput="updateTpPreview()"/>
+          </div>
+
+          <div class="form-group">
+            <label>Product Image Path or URL</label>
+            <input type="text" id="tpImg" placeholder="products/image.jpg  or  https://..." oninput="updateTpImgPreview()"/>
+            <div class="img-preview-wrap" id="tpImgPreviewWrap"><span>🖼️</span></div>
+          </div>
+
+          <div class="form-group">
+            <label>Product Image 2 <span style="font-weight:400;color:#999;text-transform:none;letter-spacing:0">(optional)</span></label>
+            <input type="text" id="tpImg2" placeholder="products/image-detail.jpg  or  https://..." oninput="updateTpImg2Preview()"/>
+            <div class="img-preview-wrap" id="tpImgPreviewWrap2"><span>🖼️</span></div>
+          </div>
+
+          <div class="form-group">
+            <label>Star Rating</label>
+            <div class="star-row">
+              <input class="tp-star-opt" type="radio" name="tpstars" id="tp5" value="★★★★★" onchange="updateTpPreview()">
+              <label for="tp5" title="5 stars">★</label>
+              <input class="tp-star-opt" type="radio" name="tpstars" id="tp4" value="★★★★☆" onchange="updateTpPreview()">
+              <label for="tp4" title="4 stars">★</label>
+              <input class="tp-star-opt" type="radio" name="tpstars" id="tp3" value="★★★☆☆" onchange="updateTpPreview()">
+              <label for="tp3" title="3 stars">★</label>
+              <input class="tp-star-opt" type="radio" name="tpstars" id="tp2" value="★★☆☆☆" onchange="updateTpPreview()">
+              <label for="tp2" title="2 stars">★</label>
+              <input class="tp-star-opt" type="radio" name="tpstars" id="tp1" value="★☆☆☆☆" onchange="updateTpPreview()">
+              <label for="tp1" title="1 star">★</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Numeric Rating</label>
+            <input type="number" id="tpRating" placeholder="e.g. 4.9" min="1" max="5" step="0.1" oninput="updateTpPreview()"/>
+          </div>
+
+          <div class="form-group">
+            <label>Sold Count <span style="font-weight:400;color:#999;text-transform:none;letter-spacing:0">("in past month" added automatically)</span></label>
+            <input type="text" id="tpSold" placeholder="e.g. 2.3k+ or 200+" oninput="updateTpPreview()"/>
+          </div>
+
+          <div class="form-group">
+            <label>Card Background</label>
+            <select id="tpBg" onchange="updateTpPreview()">
+              <option value="pb1">pb1 — Pink Coral</option>
+              <option value="pb2">pb2 — Lavender</option>
+              <option value="pb3">pb3 — Sky Blue</option>
+              <option value="pb4">pb4 — Warm Sand</option>
+              <option value="pb5">pb5 — Mint Green</option>
+              <option value="pb6">pb6 — Peach</option>
+              <option value="pb7">pb7 — Soft Purple</option>
+              <option value="pb8">pb8 — Butter</option>
+              <option value="pb9">pb9 — Rose</option>
+              <option value="pb10">pb10 — Sage</option>
+              <option value="pb11">pb11 — Caramel</option>
+              <option value="pb12">pb12 — Dusty Pink</option>
+            </select>
+          </div>
+
+          <button class="btn-primary" onclick="generateTpCode()">🏆 Generate Top Pick Code</button>
+          <button class="btn-push-tp" id="pushTpBtn" onclick="pushToSite('toppick')">🚀 Add to Site (GitHub)</button>
+          <button class="btn-clear" onclick="clearTpForm()" style="margin-top:8px">✕ Clear Form</button>
+
+        </div><!-- /tab-toppick -->
 
         <!-- ── EDITOR TAB ── -->
         <div class="tab-pane" id="tab-editor">
@@ -380,7 +516,21 @@ const PB_MAP = {
   bedroom:'pb5', bathroom:'pb9', kitchen:'pb10', tech:'pb11'
 };
 
+let selectedBadge = 'bh';
 let products = JSON.parse(localStorage.getItem('zuuProducts') || '[]');
+
+// ── HELPERS ───────────────────────────────────────
+function getStars(){
+  const checked = document.querySelector('.star-opt:checked');
+  return checked ? checked.value : '★★★★★';
+}
+
+function selectBadge(el){
+  document.querySelectorAll('.badge-opt').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedBadge = el.dataset.badge;
+  updatePreview();
+}
 
 function showToast(msg, success=true){
   const t = document.getElementById('toast');
@@ -442,7 +592,7 @@ function updatePreview(){
     badgeEl.className = 'preview-badge';
     previewImg.appendChild(badgeEl);
   }
-  badgeEl.className = 'preview-badge bh cat-badge';
+  badgeEl.className = `preview-badge ${selectedBadge} cat-badge`;
   badgeEl.textContent = catLabel;
 
   // Image or emoji
@@ -477,8 +627,100 @@ function generateCode(p){
   const name     = p.name || 'Product Name';
   const link     = p.link || 'YOUR_AFFILIATE_LINK_HERE';
   const img      = p.img || '';
-  const img2 = document.getElementById('prodImg2').value.trim();
-  const product = { id: Date.now(), name, cat, link, img, img2 };
+  const img2     = p.img2 || '';
+  const stars    = p.stars || '★★★★★';
+  const soldRaw  = p.sold ? p.sold.replace(/\s*(bought|sold|in past month)\s*/gi,'').trim() : '';
+  const soldHtml = soldRaw ? `<strong>${soldRaw} bought</strong> in past month` : '';
+  const rating   = p.rating || '4.8';
+  const badge    = p.badge || 'bh';
+  const catLabel = CAT_LABELS[cat] || cat;
+  const pb       = PB_MAP[cat] || 'pb1';
+
+  let imgLines = '';
+  if(img){
+    imgLines = `\n    <img src="${img}" alt="${name}">`;
+    if(img2) imgLines += `\n    <img src="${img2}" alt="${name} detail">`;
+  } else {
+    imgLines = `\n    <span class="emoji-ph">${CAT_EMOJIS[cat]||'🛍️'}</span>`;
+  }
+
+  return `<div class="pcard" data-cat="${cat}" data-name="${name}">
+  <div class="pcard-img ${pb}">${imgLines}
+    <span class="p-badge ${badge} cat-badge">${catLabel}</span>
+  </div>
+  <div class="pcard-body">
+    <div class="pcard-cat">${catLabel}</div>
+    <div class="pcard-name">${name}</div>
+    <div class="pcard-meta">
+      <span class="pcard-stars">${stars}</span>
+      <span class="pcard-rating">${rating}</span>
+      <span class="pcard-sold">${soldHtml}</span>
+    </div>
+    <a href="${link}" target="_blank" rel="noopener" class="pcard-btn">Shop on Amazon</a>
+  </div>
+</div>`;
+}
+
+function updateCode(){
+  const p = {
+    name:  document.getElementById('prodName').value.trim(),
+    cat:   document.getElementById('prodCat').value,
+    link:  document.getElementById('prodLink').value.trim(),
+    img:   document.getElementById('prodImg').value.trim(),
+    img2:  document.getElementById('prodImg2').value.trim(),
+    stars: getStars(),
+    sold:  document.getElementById('prodSold').value.trim(),
+    rating: document.getElementById('prodRating').value.trim(),
+    badge: selectedBadge
+  };
+  if(!p.name && !p.cat){
+    document.getElementById('codeOutput').innerHTML = '<span style="opacity:.4">// Fill the form to generate your card code...</span>';
+    return;
+  }
+  document.getElementById('codeOutput').textContent = generateCode(p);
+}
+
+function addProduct(){
+  const name = document.getElementById('prodName').value.trim();
+  const cat  = document.getElementById('prodCat').value;
+  const link = document.getElementById('prodLink').value.trim();
+  if(!name){ showToast('⚠️ Please enter a product name', false); return; }
+  if(!cat){  showToast('⚠️ Please select a category', false); return; }
+  if(!link){ showToast('⚠️ Please enter an affiliate link', false); return; }
+  updateCode();
+  copyCode(true);
+  showToast('✅ Code generated & copied to clipboard!');
+}
+
+// ── COPY ──────────────────────────────────────────
+function copyCode(silent=false){
+  const code = document.getElementById('codeOutput').textContent;
+  if(code.includes('Fill the form')){ showToast('⚠️ Generate code first', false); return; }
+  navigator.clipboard.writeText(code).then(()=>{
+    if(!silent){
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = '✓ Copied!';
+      btn.classList.add('copied');
+      setTimeout(()=>{ btn.textContent = 'Copy Code'; btn.classList.remove('copied'); }, 2000);
+      showToast('📋 Code copied! Paste it into index.html');
+    }
+  });
+}
+
+// ── SAVE / DELETE ─────────────────────────────────
+function saveProduct(){
+  const name  = document.getElementById('prodName').value.trim();
+  const cat   = document.getElementById('prodCat').value;
+  const link  = document.getElementById('prodLink').value.trim();
+  const img   = document.getElementById('prodImg').value.trim();
+  const stars = getStars();
+  const sold  = document.getElementById('prodSold').value.trim();
+  const rating = document.getElementById('prodRating').value.trim();
+  if(!name){ showToast('⚠️ Please enter a product name', false); return; }
+  if(!cat){  showToast('⚠️ Please select a category', false); return; }
+  if(!link){ showToast('⚠️ Please enter an affiliate link', false); return; }
+
+  const product = { id: Date.now(), name, cat, link, img, stars, sold, rating, badge: selectedBadge };
   products.push(product);
   localStorage.setItem('zuuProducts', JSON.stringify(products));
   renderProducts();
@@ -502,6 +744,13 @@ function editProduct(id){
   document.getElementById('prodImg').value  = p.img || '';
   document.getElementById('prodSold').value = p.sold || '';
   document.getElementById('prodRating').value = p.rating || '';
+  // Stars
+  document.querySelectorAll('.star-opt').forEach(s=>{ if(s.value===p.stars) s.checked=true; });
+  // Badge
+  document.querySelectorAll('.badge-opt').forEach(b=>{
+    b.classList.toggle('selected', b.dataset.badge===p.badge);
+  });
+  selectedBadge = p.badge;
   updateImgPreview();
   updatePreview();
   window.scrollTo({top:0,behavior:'smooth'});
@@ -556,6 +805,7 @@ function clearForm(){
   document.getElementById('prodRating').value = '';
   document.querySelectorAll('.star-opt').forEach(s=>s.checked=false);
   document.querySelectorAll('.badge-opt').forEach(b=>b.classList.toggle('selected', b.dataset.badge==='bh'));
+  selectedBadge = 'bh';
   document.getElementById('imgPreviewWrap').innerHTML = '<span>🖼️</span>';
   document.getElementById('imgPreviewWrap').classList.remove('has-img');
   document.getElementById('imgPreviewWrap2').innerHTML = '<span>🖼️</span>';
@@ -579,3 +829,664 @@ function switchTab(tab, btn){
   document.getElementById('previewPanelTitle').textContent = tab === 'toppick' ? '🏆 Top Pick Preview & Code' : 'Live Preview & Code';
 }
 
+// ── TOP PICKS HELPERS ─────────────────────────────
+function getTpStars(){
+  const checked = document.querySelector('.tp-star-opt:checked');
+  return checked ? checked.value : '★★★★★';
+}
+
+function updateTpImgPreview(){
+  const src = document.getElementById('tpImg').value.trim();
+  const wrap = document.getElementById('tpImgPreviewWrap');
+  if(src){
+    wrap.innerHTML = `<img src="${resolveImgSrc(src)}" onerror="this.style.display='none'" alt="preview">`;
+    wrap.classList.add('has-img');
+  } else {
+    wrap.innerHTML = '<span>🖼️</span>';
+    wrap.classList.remove('has-img');
+  }
+  updateTpPreview();
+}
+
+function updateTpImg2Preview(){
+  const src = document.getElementById('tpImg2').value.trim();
+  const wrap = document.getElementById('tpImgPreviewWrap2');
+  if(src){
+    wrap.innerHTML = `<img src="${resolveImgSrc(src)}" onerror="this.style.display='none'" alt="preview">`;
+    wrap.classList.add('has-img');
+  } else {
+    wrap.innerHTML = '<span>🖼️</span>';
+    wrap.classList.remove('has-img');
+  }
+}
+
+function updateTpPreview(){
+  const name   = document.getElementById('tpName').value.trim() || 'Product name will appear here';
+  const cat    = document.getElementById('tpCat').value;
+  const img    = document.getElementById('tpImg').value.trim();
+  const stars  = getTpStars();
+  const rating = document.getElementById('tpRating').value.trim() || '4.8';
+  const tpSoldRaw = (document.getElementById('tpSold').value.trim() || '').replace(/\s*(bought|sold|in past month)\s*/gi,'').trim();
+  const tpSoldPreview = tpSoldRaw ? `${tpSoldRaw}+ bought in past month` : '';
+  const pb     = document.getElementById('tpBg').value || 'pb1';
+  const catLabel = CAT_LABELS[cat] || 'Category';
+  const emoji  = CAT_EMOJIS[cat] || '🛍️';
+
+  document.getElementById('previewName').textContent = name;
+  document.getElementById('previewCat').textContent  = catLabel;
+  document.getElementById('previewMeta').textContent = `${stars} ${rating}${tpSoldPreview ? ' · ' + tpSoldPreview : ''}`;
+
+  const previewImg = document.getElementById('previewImg');
+  previewImg.className = `preview-card-img ${pb}`;
+  // No badge on top picks
+  const existingBadge = previewImg.querySelector('.preview-badge');
+  if(existingBadge) existingBadge.remove();
+
+  let existingImg   = previewImg.querySelector('img');
+  let existingEmoji = document.getElementById('previewEmoji');
+  if(img){
+    if(!existingImg){
+      existingImg = document.createElement('img');
+      existingImg.style.cssText = 'width:100%;height:100%;object-fit:contain;position:absolute;inset:0;padding:6px';
+      previewImg.appendChild(existingImg);
+    }
+    existingImg.src = img;
+    if(existingEmoji) existingEmoji.style.display = 'none';
+  } else {
+    if(existingImg) existingImg.remove();
+    if(!existingEmoji){
+      existingEmoji = document.createElement('span');
+      existingEmoji.id = 'previewEmoji';
+      previewImg.appendChild(existingEmoji);
+    }
+    existingEmoji.style.display = '';
+    existingEmoji.textContent = emoji;
+  }
+
+  updateTpCode();
+}
+
+function updateTpCode(){
+  const cat    = document.getElementById('tpCat').value;
+  const name   = document.getElementById('tpName').value.trim();
+  const link   = document.getElementById('tpLink').value.trim();
+  const img    = document.getElementById('tpImg').value.trim();
+  const img2   = document.getElementById('tpImg2').value.trim();
+  const stars  = getTpStars();
+  const rating = document.getElementById('tpRating').value.trim() || '4.8';
+  const soldRaw = (document.getElementById('tpSold').value.trim() || '').replace(/\s*(bought|sold|in past month)\s*/gi,'').trim();
+  const soldHtml = soldRaw ? `<strong>${soldRaw} bought</strong> in past month` : '';
+  const pb     = document.getElementById('tpBg').value || 'pb1';
+  const catLabel = CAT_LABELS[cat] || (cat || 'Category');
+
+  if(!name && !cat){
+    document.getElementById('codeOutput').innerHTML = '<span style="opacity:.4">// Fill the form to generate your Top Pick code...</span>';
+    return;
+  }
+
+  let imgLines = '';
+  if(img){
+    imgLines = `\n    <img src="${img}" alt="${name||'Product'}">`;
+    if(img2) imgLines += `\n    <img src="${img2}" alt="${name||'Product'} detail">`;
+  } else {
+    imgLines = `\n    <span>${CAT_EMOJIS[cat]||'🛍️'}</span>`;
+  }
+
+  const code = `<div class="tp-card">
+  <div class="tp-img ${pb}">${imgLines}
+  </div>
+  <div class="tp-body">
+    <div class="tp-cat">${catLabel}</div>
+    <div class="tp-name">${name||'Product Name'}</div>
+    <div class="tp-meta">
+      <span class="tp-stars">${stars}</span>
+      <span class="tp-rating">${rating}</span>
+      <span class="tp-sold">${soldHtml}</span>
+    </div>
+    <a href="${link||'YOUR_AFFILIATE_LINK_HERE'}" target="_blank" rel="noopener" class="tp-btn">Shop on Amazon</a>
+  </div>
+</div>`;
+
+  document.getElementById('codeOutput').textContent = code;
+}
+
+function generateTpCode(){
+  const name = document.getElementById('tpName').value.trim();
+  const cat  = document.getElementById('tpCat').value;
+  const link = document.getElementById('tpLink').value.trim();
+  if(!name){ showToast('⚠️ Please enter a product name', false); return; }
+  if(!cat){  showToast('⚠️ Please select a category', false); return; }
+  if(!link){ showToast('⚠️ Please enter an affiliate link', false); return; }
+  updateTpCode();
+  const code = document.getElementById('codeOutput').textContent;
+  navigator.clipboard.writeText(code).then(()=>{
+    showToast('🏆 Top Pick code generated & copied! Paste inside sliderTrack in index.html');
+  });
+}
+
+function clearTpForm(){
+  document.getElementById('tpName').value   = '';
+  document.getElementById('tpCat').value    = '';
+  document.getElementById('tpLink').value   = '';
+  document.getElementById('tpImg').value    = '';
+  document.getElementById('tpImg2').value   = '';
+  document.getElementById('tpRating').value = '';
+  document.getElementById('tpSold').value   = '';
+  document.getElementById('tpBg').value     = 'pb1';
+  document.querySelectorAll('.tp-star-opt').forEach(s => s.checked = false);
+  document.getElementById('tpImgPreviewWrap').innerHTML = '<span>🖼️</span>';
+  document.getElementById('tpImgPreviewWrap').classList.remove('has-img');
+  document.getElementById('tpImgPreviewWrap2').innerHTML = '<span>🖼️</span>';
+  document.getElementById('tpImgPreviewWrap2').classList.remove('has-img');
+  document.getElementById('codeOutput').innerHTML = '<span style="opacity:.4">// Fill the form to generate your Top Pick code...</span>';
+  document.getElementById('previewName').textContent = 'Product name will appear here';
+  document.getElementById('previewCat').textContent  = 'Category';
+  document.getElementById('previewMeta').textContent = '★★★★★ 4.8 · 1.2k+ sold';
+}
+
+// ── GITHUB TOKEN ──────────────────────────────────
+function saveToken(){
+  const t = document.getElementById('ghToken').value.trim();
+  if(!t){ showToast('⚠️ Please paste your GitHub token first', false); return; }
+  if(!t.startsWith('ghp_') && !t.startsWith('github_pat_')){
+    showToast('⚠️ Token should start with ghp_ or github_pat_', false); return;
+  }
+  localStorage.setItem('ghToken', t);
+  setTokenStatus(true);
+  enablePushBtns(true);
+  showToast('🔑 Token saved! You can now push directly to GitHub.');
+}
+function checkToken(){
+  const t = document.getElementById('ghToken').value.trim();
+  if(!t){ setTokenStatus(false); enablePushBtns(false); }
+}
+function setTokenStatus(ok){
+  const el = document.getElementById('ghStatus');
+  if(ok){ el.textContent = '✓ Connected'; el.className = 'gh-status connected'; }
+  else  { el.textContent = 'Not connected'; el.className = 'gh-status disconnected'; }
+}
+function enablePushBtns(ok){
+  const b1 = document.getElementById('pushBtn');
+  const b2 = document.getElementById('pushTpBtn');
+  if(b1) b1.disabled = !ok;
+  if(b2) b2.disabled = !ok;
+  // Update button style opacity
+  [b1,b2].forEach(b => { if(b) b.style.opacity = ok ? '1' : '0.6'; });
+}
+
+// ── GITHUB PUSH ───────────────────────────────────
+const GH_USER = 'zuufinds';
+const GH_REPO = 'ZuuFinds';
+const GH_FILE    = 'index.html';
+const GH_API     = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
+const GH_PROD_FILE = 'products.json';
+const GH_PROD_API  = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_PROD_FILE}`;
+
+async function pushToSite(tab){
+  const token = localStorage.getItem('ghToken');
+  if(!token){ showToast('⚠️ No GitHub token saved. Enter your token first.', false); return; }
+
+  // Validate fields
+  if(tab === 'allfnds'){
+    const name = document.getElementById('prodName').value.trim();
+    const cat  = document.getElementById('prodCat').value;
+    const link = document.getElementById('prodLink').value.trim();
+    if(!name){ showToast('⚠️ Please enter a product name', false); return; }
+    if(!cat){  showToast('⚠️ Please select a category', false); return; }
+    if(!link){ showToast('⚠️ Please enter an affiliate link', false); return; }
+  } else {
+    const name = document.getElementById('tpName').value.trim();
+    const cat  = document.getElementById('tpCat').value;
+    const link = document.getElementById('tpLink').value.trim();
+    if(!name){ showToast('⚠️ Please enter a product name', false); return; }
+    if(!cat){  showToast('⚠️ Please select a category', false); return; }
+    if(!link){ showToast('⚠️ Please enter an affiliate link', false); return; }
+  }
+
+  const btn = document.getElementById(tab === 'allfnds' ? 'pushBtn' : 'pushTpBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Pushing to GitHub...';
+
+  try {
+    // 1. Fetch products.json from GitHub
+    const res = await fetch(GH_PROD_API, {
+      headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
+    });
+    if(!res.ok){ const e=await res.json(); throw new Error(e.message || `GitHub error ${res.status}`); }
+    const data = await res.json();
+    const rawBin = atob(data.content.replace(/\n/g,''));
+    const rawB = new Uint8Array(rawBin.length);
+    for(let i=0;i<rawBin.length;i++) rawB[i]=rawBin.charCodeAt(i);
+    const jsonContent = new TextDecoder('utf-8').decode(rawB);
+    const sha = data.sha;
+    const prodData = JSON.parse(jsonContent);
+
+    // 2. Build new card HTML
+    let newCard = '';
+    if(tab === 'allfnds'){
+      const p = {
+        name:   document.getElementById('prodName').value.trim(),
+        cat:    document.getElementById('prodCat').value,
+        link:   document.getElementById('prodLink').value.trim(),
+        img:    document.getElementById('prodImg').value.trim(),
+        img2:   document.getElementById('prodImg2').value.trim(),
+        stars:  getStars(),
+        sold:   document.getElementById('prodSold').value.trim(),
+        rating: document.getElementById('prodRating').value.trim(),
+        badge:  selectedBadge
+      };
+      newCard = generateCode(p);
+    } else {
+      const soldRaw = (document.getElementById('tpSold').value.trim()||'').replace(/\s*(bought|sold|in past month)\s*/gi,'').trim();
+      const soldHtml = soldRaw ? `<strong>${soldRaw} bought</strong> in past month` : '';
+      const cat=document.getElementById('tpCat').value;
+      const name=document.getElementById('tpName').value.trim();
+      const link=document.getElementById('tpLink').value.trim();
+      const img=document.getElementById('tpImg').value.trim();
+      const img2=document.getElementById('tpImg2').value.trim();
+      const stars=getTpStars();
+      const rating=document.getElementById('tpRating').value.trim()||'4.8';
+      const pb=document.getElementById('tpBg').value||'pb1';
+      const catLabel=CAT_LABELS[cat]||cat;
+      let imgLines='';
+      if(img){ imgLines=`\n    <img src="${img}" alt="${name}">`; if(img2) imgLines+=`\n    <img src="${img2}" alt="${name} detail">`; }
+      else imgLines=`\n    <span>${CAT_EMOJIS[cat]||'🛍️'}</span>`;
+      newCard=`<div class="tp-card">\n  <div class="tp-img ${pb}">${imgLines}\n  </div>\n  <div class="tp-body">\n    <div class="tp-cat">${catLabel}</div>\n    <div class="tp-name">${name}</div>\n    <div class="tp-meta">\n      <span class="tp-stars">${stars}</span>\n      <span class="tp-rating">${rating}</span>\n      <span class="tp-sold">${soldHtml}</span>\n    </div>\n    <a href="${link}" target="_blank" rel="noopener" class="tp-btn">Shop on Amazon</a>\n  </div>\n</div>`;
+    }
+
+    // 3. Add to products.json
+    const prodName = tab==='allfnds'
+      ? document.getElementById('prodName').value.trim()
+      : document.getElementById('tpName').value.trim();
+
+    if(tab==='allfnds'){
+      prodData.grid.unshift(newCard);
+      // Also add to top picks if checkbox ticked
+      const alsoTp = document.getElementById('alsoTopPick').checked;
+      if(alsoTp){
+        const soldRaw2=(document.getElementById('prodSold').value.trim()||'').replace(/\s*(bought|sold|in past month)\s*/gi,'').trim();
+        const soldHtml2=soldRaw2?`<strong>${soldRaw2} bought</strong> in past month`:'';
+        const tpCat=document.getElementById('prodCat').value;
+        const tpImg=document.getElementById('prodImg').value.trim();
+        const tpImg2=document.getElementById('prodImg2').value.trim();
+        const tpStars=getStars();
+        const tpRating=document.getElementById('prodRating').value.trim()||'4.8';
+        const tpCatLabel=CAT_LABELS[tpCat]||tpCat;
+        let tpImgLines='';
+        if(tpImg){ tpImgLines=`\n    <img src="${tpImg}" alt="${prodName}">`; if(tpImg2) tpImgLines+=`\n    <img src="${tpImg2}" alt="${prodName} detail">`; }
+        else tpImgLines=`\n    <span>${CAT_EMOJIS[tpCat]||'🛍️'}</span>`;
+        const tpCard=`<div class="tp-card">\n  <div class="tp-img pb1">${tpImgLines}\n  </div>\n  <div class="tp-body">\n    <div class="tp-cat">${tpCatLabel}</div>\n    <div class="tp-name">${prodName}</div>\n    <div class="tp-meta">\n      <span class="tp-stars">${tpStars}</span>\n      <span class="tp-rating">${tpRating}</span>\n      <span class="tp-sold">${soldHtml2}</span>\n    </div>\n    <a href="${document.getElementById('prodLink').value.trim()}" target="_blank" rel="noopener" class="tp-btn">Shop on Amazon</a>\n  </div>\n</div>`;
+        prodData.topPicks.unshift(tpCard);
+      }
+    } else {
+      prodData.topPicks.unshift(newCard);
+    }
+
+    // 4. Push updated products.json to GitHub
+    const updatedJson = JSON.stringify(prodData, null, 2);
+    const enc = new TextEncoder();
+    const eb  = enc.encode(updatedJson);
+    let bin=''; eb.forEach(b=>bin+=String.fromCharCode(b));
+    const b64 = btoa(bin);
+
+    const pushRes = await fetch(GH_PROD_API, {
+      method:'PUT',
+      headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body: JSON.stringify({ message:`Add product: ${prodName}`, content:b64, sha })
+    });
+    if(!pushRes.ok){ const e=await pushRes.json(); throw new Error(e.message||`Push failed`); }
+
+    const alsoTpChecked = tab==='allfnds' && document.getElementById('alsoTopPick').checked;
+    showToast(`✅ "${prodName}" added to site! GitHub is rebuilding...${alsoTpChecked?' Added to Top Picks too 🏆':''}`);
+    if(tab==='allfnds'){ saveProduct(); clearForm(); document.getElementById('alsoTopPick').checked=false; }
+    else clearTpForm();
+
+  } catch(e){
+    showToast(`❌ ${e.message}`, false);
+    console.error(e);
+  } finally {
+    btn.disabled=false;
+    btn.textContent='🚀 Add to Site (GitHub)';
+  }
+}
+
+
+async function loadSiteProducts(){
+  const token = localStorage.getItem('ghToken');
+  const statusEl = document.getElementById('editorStatus');
+  const listEl   = document.getElementById('editorList');
+  listEl.innerHTML = '';
+
+  if(!token){
+    statusEl.innerHTML = '⚠️ Enter your GitHub token first.';
+    statusEl.style.display = 'block';
+    return;
+  }
+
+  statusEl.innerHTML = '⏳ Loading products...';
+  statusEl.style.display = 'block';
+
+  try {
+    const res = await fetch(GH_PROD_API, {
+      headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json' }
+    });
+    if(!res.ok) throw new Error('Could not fetch products.json from GitHub');
+    const data = await res.json();
+    const rawBin = atob(data.content.replace(/\n/g,''));
+    const rawB = new Uint8Array(rawBin.length);
+    for(let i=0;i<rawBin.length;i++) rawB[i]=rawBin.charCodeAt(i);
+    const jsonStr = new TextDecoder('utf-8').decode(rawB);
+    const prodData = JSON.parse(jsonStr);
+    siteContent = jsonStr;
+    siteSha = data.sha;
+
+    const gridCards = prodData.grid.map((html,i)=>({html,i,type:'grid'}));
+    const tpCards   = prodData.topPicks.map((html,i)=>({html,i,type:'tp'}));
+
+    statusEl.style.display = 'none';
+
+    let html = '';
+    if(gridCards.length){
+      html += `<div class="editor-section-label">&#10022; All Finds (${gridCards.length})</div>`;
+      html += '<div class="products-grid">';
+      gridCards.forEach(c => html += buildEditorCardFromHtml(c.html, c.i, 'grid'));
+      html += '</div>';
+    }
+    if(tpCards.length){
+      html += `<div class="editor-section-label">&#127942; Top Picks (${tpCards.length})</div>`;
+      html += '<div class="products-grid">';
+      tpCards.forEach(c => html += buildEditorCardFromHtml(c.html, c.i, 'tp'));
+      html += '</div>';
+    }
+    if(!gridCards.length && !tpCards.length){
+      html = '<div class="editor-empty">No products found. Add some using the form!</div>';
+    }
+    listEl.innerHTML = html;
+
+  } catch(e){
+    statusEl.innerHTML = `&#10060; ${e.message}`;
+  }
+}
+
+function buildEditorCardFromHtml(cardHtml, i, type){
+  const nameMatch2 = cardHtml.match(/class="(?:pcard|tp)-name"[^>]*>([\s\S]*?)<\/div>/);
+  const nameMatchD = cardHtml.match(/data-name="([^"]*)"/);
+  const name       = nameMatch2 ? nameMatch2[1].replace(/<[^>]+>/g,'').trim() : (nameMatchD?nameMatchD[1]:'');
+  const catM       = cardHtml.match(/data-cat="([^"]*)"/);
+  const cat        = catM ? catM[1] : '';
+  const linkM      = cardHtml.match(/href="(https?:\/\/[^"]*)"/);
+  const link       = linkM ? linkM[1] : '';
+  const allImgs    = [...cardHtml.matchAll(/<img[^>]+src="([^"]*)"/g)].map(m=>m[1]);
+  const imgSrc     = allImgs[0]||'';
+  const imgSrc2    = allImgs[1]||'';
+  const ratingM    = cardHtml.match(/class="(?:pcard|tp)-rating"[^>]*>([\d.]*)</);
+  const rating     = ratingM ? ratingM[1] : '';
+  const soldMatch  = cardHtml.match(/class="(?:pcard|tp)-sold"[^>]*>([\s\S]*?)<\/span>/);
+  const soldRaw    = soldMatch ? soldMatch[1].replace(/<[^>]+>/g,'').replace(/in past month/gi,'').replace(/bought/gi,'').trim() : '';
+
+  const badge = type==='grid'
+    ? '<span class="editor-type-badge editor-type-grid">Grid</span>'
+    : '<span class="editor-type-badge editor-type-tp">Top Pick</span>';
+  const imgEl = imgSrc
+    ? `<img class="editor-card-img" src="${imgSrc.startsWith('http')?imgSrc:'https://www.zuufinds.com/'+imgSrc}" onerror="this.style.display='none'">`
+    : `<div class="editor-card-img-ph">&#128717;</div>`;
+  const catOptions = ['cute','cool','home','bedroom','bathroom','kitchen','tech']
+    .map(v=>`<option value="${v}" ${cat===v?'selected':''}>${CAT_LABELS[v]||v}</option>`).join('');
+
+  return `
+  <div class="editor-card" id="ecard-${type}-${i}">
+    <div class="editor-card-head">
+      ${imgEl}
+      <div style="flex:1;min-width:0">
+        <div class="editor-card-title">${name||'Unnamed Product'}</div>
+        <div class="editor-card-cat">${CAT_LABELS[cat]||cat||'&mdash;'} &nbsp;${badge}</div>
+      </div>
+    </div>
+    <div class="editor-field"><label>Product Name</label><input type="text" id="ename-${type}-${i}" value="${(name||'').replace(/"/g,'&quot;')}"></div>
+    <div class="editor-field"><label>Category</label><select id="ecat-${type}-${i}">${catOptions}</select></div>
+    <div class="editor-field"><label>Affiliate Link</label><input type="text" id="elink-${type}-${i}" value="${(link||'').replace(/"/g,'&quot;')}"></div>
+    <div class="editor-field"><label>Image 1</label><input type="text" id="eimg-${type}-${i}" value="${(imgSrc||'').replace(/"/g,'&quot;')}"></div>
+    <div class="editor-field"><label>Image 2 <span style="font-weight:400;color:#999;text-transform:none;letter-spacing:0">(optional)</span></label><input type="text" id="eimg2-${type}-${i}" value="${(imgSrc2||'').replace(/"/g,'&quot;')}"></div>
+    <div style="display:flex;gap:8px">
+      <div class="editor-field" style="flex:1"><label>Rating</label><input type="text" id="erating-${type}-${i}" value="${rating||''}"></div>
+      <div class="editor-field" style="flex:1"><label>Sold Count</label><input type="text" id="esold-${type}-${i}" value="${(soldRaw||'').replace(/"/g,'&quot;')}"></div>
+    </div>
+    <div class="editor-actions">
+      <button class="editor-save-btn" onclick="saveEdit('${type}',${i})">&#128190; Save Changes</button>
+      <button class="editor-del-btn" onclick="deleteCard('${type}',${i})">&#128465; Delete</button>
+    </div>
+  </div>`;
+}
+
+
+async function saveEdit(type, i){
+  const token = localStorage.getItem('ghToken');
+  if(!token){ showToast('⚠️ No token saved', false); return; }
+
+  const newName   = document.getElementById(`ename-${type}-${i}`).value.trim();
+  const newCat    = document.getElementById(`ecat-${type}-${i}`).value;
+  const newLink   = document.getElementById(`elink-${type}-${i}`).value.trim();
+  const newImg    = document.getElementById(`eimg-${type}-${i}`).value.trim();
+  const newImg2   = document.getElementById(`eimg2-${type}-${i}`).value.trim();
+  const newRating = document.getElementById(`erating-${type}-${i}`).value.trim();
+  const newSoldRaw= document.getElementById(`esold-${type}-${i}`).value.trim();
+
+  if(!newName){ showToast('⚠️ Name cannot be empty', false); return; }
+
+  const btn = document.querySelector(`#ecard-${type}-${i} .editor-save-btn`);
+  btn.textContent = '⏳ Saving...'; btn.disabled = true;
+
+  try {
+    // Fetch fresh products.json
+    const res = await fetch(GH_PROD_API, {
+      headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json' }
+    });
+    const data = await res.json();
+    const rawBin = atob(data.content.replace(/\n/g,''));
+    const rawB = new Uint8Array(rawBin.length);
+    for(let j=0;j<rawBin.length;j++) rawB[j]=rawBin.charCodeAt(j);
+    const prodData = JSON.parse(new TextDecoder('utf-8').decode(rawB));
+    const sha = data.sha;
+
+    // Get the card HTML from the right array
+    const arr = type==='grid' ? prodData.grid : prodData.topPicks;
+    if(i >= arr.length) throw new Error('Product not found — reload Edit Site tab');
+
+    // Rebuild the card HTML with updated values
+    let updated = arr[i];
+    // Update data-name and data-cat
+    updated = updated.replace(/data-name="[^"]*"/, `data-name="${newName}"`);
+    updated = updated.replace(/data-cat="[^"]*"/, `data-cat="${newCat}"`);
+    // Update category label
+    updated = updated.replace(/(class="(?:pcard|tp)-cat"[^>]*>)[\s\S]*?(<\/div>)/,`$1${CAT_LABELS[newCat]||newCat}$2`);
+    // Update name
+    updated = updated.replace(/(class="(?:pcard|tp)-name"[^>]*>)[\s\S]*?(<\/div>)/,`$1${newName}$2`);
+    // Update link
+    updated = updated.replace(/href="https?:\/\/[^"]*"/,`href="${newLink}"`);
+    // Update rating
+    if(newRating) updated = updated.replace(/(class="(?:pcard|tp)-rating"[^>]*>)[\s\S]*?(<\/span>)/,`$1${newRating}$2`);
+    // Update sold
+    if(newSoldRaw){
+      const cleanSold = newSoldRaw.replace(/\s*(bought|sold|in past month)\s*/gi,'').trim();
+      const soldHtml = `<strong>${cleanSold} bought</strong> in past month`;
+      updated = updated.replace(/(class="(?:pcard|tp)-sold"[^>]*>)[\s\S]*?(<\/span>)/,`$1${soldHtml}$2`);
+    }
+    // Update images
+    updated = updated.replace(/<img[^>]+>/g,'');
+    const imgContainerClass = type==='grid'?'pcard-img':'tp-img';
+    const imgMatch = updated.match(new RegExp(`(class="${imgContainerClass}[^"]*"[^>]*>)`));
+    if(imgMatch && newImg){
+      const insertAt = updated.indexOf(imgMatch[0])+imgMatch[0].length;
+      let newImgTags = `\n    <img src="${newImg}" alt="${newName}">`;
+      if(newImg2) newImgTags += `\n    <img src="${newImg2}" alt="${newName} detail">`;
+      updated = updated.slice(0,insertAt)+newImgTags+updated.slice(insertAt);
+    }
+
+    // Save updated card back
+    arr[i] = updated;
+    if(type==='grid') prodData.grid=arr; else prodData.topPicks=arr;
+
+    // Push to GitHub
+    const updatedJson = JSON.stringify(prodData, null, 2);
+    const enc = new TextEncoder();
+    const eb  = enc.encode(updatedJson);
+    let bin=''; eb.forEach(b=>bin+=String.fromCharCode(b));
+    const b64 = btoa(bin);
+
+    const pushRes = await fetch(GH_PROD_API, {
+      method:'PUT',
+      headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body: JSON.stringify({ message:`Edit product: ${newName}`, content:b64, sha })
+    });
+    if(!pushRes.ok){ const e=await pushRes.json(); throw new Error(e.message); }
+
+    showToast(`✅ "${newName}" updated! GitHub is rebuilding...`);
+    setTimeout(()=>loadSiteProducts(), 1500);
+
+  } catch(e){
+    showToast(`❌ ${e.message}`, false);
+    btn.textContent='💾 Save Changes'; btn.disabled=false;
+  }
+}
+
+
+async function deleteCard(type, i){
+  if(!confirm('Delete this product from your site? This cannot be undone.')) return;
+  const token = localStorage.getItem('ghToken');
+  if(!token){ showToast('⚠️ No token saved', false); return; }
+
+  const btn = document.querySelector(`#ecard-${type}-${i} .editor-del-btn`);
+  btn.textContent = '⏳...'; btn.disabled = true;
+
+  try {
+    const res = await fetch(GH_PROD_API, {
+      headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json' }
+    });
+    const data = await res.json();
+    const rawBin = atob(data.content.replace(/\n/g,''));
+    const rawB = new Uint8Array(rawBin.length);
+    for(let j=0;j<rawBin.length;j++) rawB[j]=rawBin.charCodeAt(j);
+    const prodData = JSON.parse(new TextDecoder('utf-8').decode(rawB));
+    const sha = data.sha;
+
+    const arr = type==='grid' ? prodData.grid : prodData.topPicks;
+    const deletedName = arr[i] ? (arr[i].match(/data-name="([^"]*)"/) || arr[i].match(/class="(?:pcard|tp)-name"[^>]*>([\s\S]*?)<\/div>/) || ['','?'])[1] : '?';
+    arr.splice(i, 1);
+    if(type==='grid') prodData.grid=arr; else prodData.topPicks=arr;
+
+    const updatedJson = JSON.stringify(prodData, null, 2);
+    const enc = new TextEncoder();
+    const eb  = enc.encode(updatedJson);
+    let bin=''; eb.forEach(b=>bin+=String.fromCharCode(b));
+    const b64 = btoa(bin);
+
+    const pushRes = await fetch(GH_PROD_API, {
+      method:'PUT',
+      headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body: JSON.stringify({ message:`Delete product`, content:b64, sha })
+    });
+    if(!pushRes.ok){ const e=await pushRes.json(); throw new Error(e.message); }
+
+    showToast('🗑 Product deleted! GitHub is rebuilding...');
+    setTimeout(()=>loadSiteProducts(), 1500);
+
+  } catch(e){
+    showToast(`❌ ${e.message}`, false);
+    btn.textContent='🗑 Delete'; btn.disabled=false;
+  }
+}
+
+
+// ── CODE UPDATER ──────────────────────────────────
+async function pushCodeUpdate(){
+  const token = localStorage.getItem('ghToken');
+  if(!token){ showToast('⚠️ No GitHub token saved', false); return; }
+
+  const newCode = document.getElementById('newIndexCode').value.trim();
+  if(!newCode){ showToast('⚠️ Please paste your new index.html code first', false); return; }
+
+  const statusEl = document.getElementById('updaterStatus');
+  statusEl.textContent = '⏳ Fetching live products from GitHub...';
+
+  try {
+    // 1. Fetch current live index.html to extract products
+    const res = await fetch(GH_API, {
+      headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json' }
+    });
+    if(!res.ok) throw new Error('Could not fetch index.html from GitHub');
+    const data = await res.json();
+    const rawBin = atob(data.content.replace(/\n/g,''));
+    const rawB = new Uint8Array(rawBin.length);
+    for(let j=0;j<rawBin.length;j++) rawB[j]=rawBin.charCodeAt(j);
+    const liveContent = new TextDecoder('utf-8').decode(rawB);
+    const sha = data.sha;
+
+    statusEl.textContent = '⏳ Injecting products into new code...';
+
+    // 2. Extract products from live index.html
+    const sliderMarker = '<div class="slider-track" id="sliderTrack">';
+    const gridMarker   = '<div class="finds-grid" id="findsGrid">';
+    const gridClose    = '<div class="show-more-wrap"';
+
+    const liveSliderStart = liveContent.indexOf(sliderMarker) + sliderMarker.length;
+    const liveSliderEnd   = liveContent.indexOf('</div>', liveContent.indexOf('</div>', liveSliderStart) + 1);
+    const liveGridStart   = liveContent.indexOf(gridMarker) + gridMarker.length;
+    const liveGridEnd     = liveContent.indexOf(gridClose);
+
+    const liveSlider = liveSliderStart > sliderMarker.length ? liveContent.slice(liveSliderStart, liveSliderEnd) : '';
+    const liveGrid   = liveGridStart > gridMarker.length     ? liveContent.slice(liveGridStart, liveGridEnd)     : '';
+
+    // 3. Inject products into new code
+    let updatedCode = newCode;
+
+    const newSliderStart = updatedCode.indexOf(sliderMarker);
+    if(newSliderStart !== -1 && liveSlider.trim()){
+      const newSliderEnd = updatedCode.indexOf('</div>', updatedCode.indexOf('</div>', newSliderStart + sliderMarker.length) + 1);
+      updatedCode = updatedCode.slice(0, newSliderStart + sliderMarker.length) + liveSlider + updatedCode.slice(newSliderEnd);
+    }
+
+    const newGridStart = updatedCode.indexOf(gridMarker);
+    if(newGridStart !== -1 && liveGrid.trim()){
+      const newGridEnd = updatedCode.indexOf(gridClose, newGridStart);
+      updatedCode = updatedCode.slice(0, newGridStart + gridMarker.length) + liveGrid + updatedCode.slice(newGridEnd);
+    }
+
+    statusEl.textContent = '⏳ Pushing to GitHub...';
+
+    // 4. Push updated code
+    const enc = new TextEncoder();
+    const eb  = enc.encode(updatedCode);
+    let bin=''; eb.forEach(b=>bin+=String.fromCharCode(b));
+    const b64 = btoa(bin);
+
+    const pushRes = await fetch(GH_API, {
+      method:'PUT',
+      headers:{ Authorization:`token ${token}`, Accept:'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body: JSON.stringify({ message:'Update site code (products preserved)', content:b64, sha })
+    });
+    if(!pushRes.ok){ const e=await pushRes.json(); throw new Error(e.message); }
+
+    statusEl.textContent = '';
+    document.getElementById('newIndexCode').value = '';
+    showToast('✅ Site updated! All products preserved 🛡️');
+
+  } catch(e){
+    statusEl.textContent = `❌ ${e.message}`;
+    showToast(`❌ ${e.message}`, false);
+  }
+}
+
+// ── INIT ──────────────────────────────────────────
+(function(){
+  renderProducts();
+  const saved = localStorage.getItem('ghToken');
+  if(saved){ document.getElementById('ghToken').value = saved; setTokenStatus(true); enablePushBtns(true); }
+  if(!document.querySelector('.products-head button.export-btn')){
+    document.querySelector('.products-head').insertAdjacentHTML('beforeend',
+      `<button class="export-btn" onclick="exportAll()" style="background:#f9eee9;border:1px solid #e0d4cc;color:#5c4a4a;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;font-family:Arial,sans-serif;transition:all .2s" onmouseover="this.style.background='#b85f58';this.style.color='#fff'" onmouseout="this.style.background='#f9eee9';this.style.color='#5c4a4a'">Export All Codes</button>`
+    );
+  }
+})();
+</script>
+</body>
+</html>
