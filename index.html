@@ -190,8 +190,8 @@ footer{background:#232f3e;color:#ddd;padding:20px 20px 14px;border-top:2px solid
   left:6px;
   background:transparent;
   color:#000;
-  font-size:13px;
-  font-weight:800;
+  font-size:14px;
+  font-weight:900;
   z-index:10;
   padding:0;
   line-height:1;
@@ -208,18 +208,11 @@ body.view-all .toppicks-section{display:none}
 body.view-all .finds-section-head{display:none}
 body.view-all .finds-count{display:none}
 
-/* GLOBAL MINIMAL PRODUCT VIEW */
+/* HIDE TEXT ONLY (KEEP SIZE SAME) */
 .pcard-cat,
 .pcard-name,
 .pcard-meta{
   display:none !important;
-}
-.pcard-body{
-  padding:8px 8px 10px;
-  gap:0;
-}
-.pcard-btn{
-  margin-top:0;
 }
 </style>
 </head>
@@ -1252,24 +1245,6 @@ function applyNumberBadges(){
   });
 }
 
-</script>
-
-<script>
-function applyNumberBadges(){
-  const cards=document.querySelectorAll('.pcard');
-  cards.forEach((card,i)=>{
-    let badge=card.querySelector('.num-badge');
-    if(!badge){
-      badge=document.createElement('div');
-      badge.className='num-badge';
-      card.querySelector('.pcard-img').appendChild(badge);
-    }
-    badge.textContent='#'+(i+1);
-  });
-}
-window.addEventListener('load',()=>{
-  setTimeout(applyNumberBadges,300);
-});
 </script>
 </body>
 </html>

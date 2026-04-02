@@ -206,12 +206,23 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
   .output-panel{position:static}
 }
 
-/* SIMPLIFIED ADMIN UI */
+/* SIMPLIFIED ADMIN */
 #prodName,
 .star-row,
 #prodSold,
 .badge-opts{
   display:none !important;
+}
+
+/* remove top picks tab */
+button[onclick*="toppick"]{
+  display:none !important;
+}
+
+/* editor only keep basic fields */
+.editor-field:has(input:not([id*="Link"]):not([id*="Img"])),
+.editor-field:has(select){
+  display:block;
 }
 </style>
 </head>
