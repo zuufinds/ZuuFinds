@@ -14,7 +14,7 @@ img{display:block;max-width:100%}
 
 /* NAV */
 nav{background:#2a1f1f;padding:0 24px;position:sticky;top:0;z-index:100;border-bottom:2px solid #b85f58}
-.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:16px;height:76px}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;height:76px}
 .nav-brand{display:flex;align-items:center;gap:10px;flex-shrink:0;text-decoration:none}
 .nav-brand img{height:40px;display:block}
 .nav-brand-text{color:#fff;font-size:19px;font-weight:700;line-height:1;letter-spacing:-.01em}
@@ -25,7 +25,7 @@ nav{background:#2a1f1f;padding:0 24px;position:sticky;top:0;z-index:100;border-b
 .nav-search button{background:#b85f58;border:none;padding:0 18px;height:42px;cursor:pointer;color:#fff;font-size:18px;transition:background .2s;flex-shrink:0}
 .nav-search button:hover{background:#9e4e48}
 .nav-socials{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.nav-socials a{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#e8ddd4;transition:all .2s}
+.nav-socials a{display:flex;align-items:center;justify-content:space-between;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#e8ddd4;transition:all .2s}
 .nav-socials a:hover{background:#b85f58;border-color:#b85f58;color:#fff}
 .nav-socials a svg{width:17px;height:17px;fill:currentColor}
 .nav-menu-btn{display:none;background:none;border:none;color:#e8ddd4;font-size:24px;cursor:pointer;padding:4px;margin-left:4px}
@@ -53,7 +53,7 @@ nav{background:#2a1f1f;padding:0 24px;position:sticky;top:0;z-index:100;border-b
 /* CATEGORY STRIP */
 .cat-strip{background:transparent;overflow-x:auto;scrollbar-width:none;padding-bottom:0}
 .cat-strip::-webkit-scrollbar{display:none}
-.cat-strip-inner{max-width:1200px;margin:0 auto;display:flex;gap:0;white-space:nowrap;justify-content:center;border-top:1px solid rgba(184,95,88,.15)}
+.cat-strip-inner{max-width:1200px;margin:0 auto;display:flex;gap:0;white-space:nowrap;justify-content:space-between;border-top:1px solid rgba(184,95,88,.15)}
 .f-btn{background:none;border:none;border-bottom:3px solid transparent;padding:11px 14px;font-size:13px;color:#5c4a4a;cursor:pointer;transition:all .18s;font-family:"Amazon Ember",Arial,sans-serif;display:inline-flex;align-items:center;gap:6px;font-weight:500;white-space:nowrap;flex-shrink:0}
 .f-btn img{width:20px;height:20px;object-fit:contain;border-radius:50%}
 .f-btn:hover{color:#b85f58;border-bottom-color:#e8d4c8}
@@ -67,13 +67,13 @@ nav{background:#2a1f1f;padding:0 24px;position:sticky;top:0;z-index:100;border-b
 .toppicks-head{display:flex;align-items:center;justify-content:space-between;padding:0 20px;margin-bottom:14px}
 .toppicks-head h2{font-size:17px;font-weight:700;color:#0f1111}
 .toppicks-nav{display:flex;gap:6px}
-.tp-nav-btn{width:30px;height:30px;border-radius:50%;border:1.5px solid #e0d4cc;background:#fff;cursor:pointer;font-size:15px;color:#5c4a4a;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.tp-nav-btn{width:30px;height:30px;border-radius:50%;border:1.5px solid #e0d4cc;background:#fff;cursor:pointer;font-size:15px;color:#5c4a4a;display:flex;align-items:center;justify-content:space-between;transition:all .2s;flex-shrink:0}
 .tp-nav-btn:hover{background:#b85f58;border-color:#b85f58;color:#fff}
 .slider-track-wrap{overflow:hidden;padding:0 20px}
 .slider-track{display:flex;gap:14px;transition:transform .35s cubic-bezier(.4,0,.2,1);will-change:transform}
 .tp-card{flex:0 0 180px;background:#faf6f0;border:1px solid #edddd6;border-radius:8px;overflow:hidden;transition:box-shadow .2s,transform .2s;display:flex;flex-direction:column}
 .tp-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.1);transform:translateY(-2px)}
-.tp-img{width:100%;aspect-ratio:1/1;position:relative;overflow:hidden;background:#f0e8e4;display:flex;align-items:center;justify-content:center;font-size:38px;flex-shrink:0}
+.tp-img{width:100%;aspect-ratio:1/1;position:relative;overflow:hidden;background:#f0e8e4;display:flex;align-items:center;justify-content:space-between;font-size:38px;flex-shrink:0}
 .tp-img>img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
 .tp-body{padding:10px 11px 12px;display:flex;flex-direction:column;flex:1}
 .tp-cat{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#b85f58;font-weight:600;margin-bottom:2px}
@@ -96,13 +96,13 @@ nav{background:#2a1f1f;padding:0 24px;position:sticky;top:0;z-index:100;border-b
 .pcard{background:#fff;border:1px solid #e8ddd6;border-radius:8px;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .2s,transform .2s}
 .pcard:hover{box-shadow:0 4px 18px rgba(0,0,0,.1);transform:translateY(-2px)}
 /* CARD IMAGE CAROUSEL */
-.pcard-img{width:100%;aspect-ratio:1/1;position:relative;overflow:hidden;background:#f8f4f0;display:flex;align-items:center;justify-content:center;font-size:44px}
+.pcard-img{width:100%;aspect-ratio:1/1;position:relative;overflow:hidden;background:#f8f4f0;display:flex;align-items:center;justify-content:space-between;font-size:44px}
 .pcard-img .card-slides{position:absolute;inset:0;display:flex;transition:transform .5s cubic-bezier(.4,0,.2,1)}
 .pcard-img .card-slide{min-width:100%;height:100%;position:relative;flex-shrink:0}
 .pcard-img .card-slide img{width:100%;height:100%;object-fit:cover;display:block}
 .pcard-img .emoji-ph{position:relative;z-index:1}
 /* Arrows — show on hover only */
-.card-arrow{position:absolute;top:50%;transform:translateY(-50%);width:26px;height:26px;background:rgba(255,255,255,.85);border:none;border-radius:50%;font-size:13px;font-weight:700;cursor:pointer;z-index:5;display:flex;align-items:center;justify-content:center;opacity:0;transition:background .2s,opacity .2s;color:#2a1f1f;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.card-arrow{position:absolute;top:50%;transform:translateY(-50%);width:26px;height:26px;background:rgba(255,255,255,.85);border:none;border-radius:50%;font-size:13px;font-weight:700;cursor:pointer;z-index:5;display:flex;align-items:center;justify-content:space-between;opacity:0;transition:background .2s,opacity .2s;color:#2a1f1f;box-shadow:0 1px 4px rgba(0,0,0,.2)}
 .card-arrow:hover{background:#fff}
 .card-arrow.prev{left:6px}
 .card-arrow.next{right:6px}
@@ -152,16 +152,16 @@ body.filtered .cat-badge{display:none}
 /* FOOTER */
 footer{background:#232f3e;color:#ddd;padding:20px 20px 14px;border-top:2px solid #b85f58;text-align:center}
 .footer-top{max-width:1200px;margin:0 auto 12px}
-.footer-logo-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:6px}
+.footer-logo-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
 .footer-logo-row img{height:26px}
 .footer-logo-row span{font-size:15px;font-weight:700;color:#fff}
 .footer-logo-row span em{font-style:italic;color:#d4948a}
 .footer-tagline{font-size:12px;color:#aaa;margin-bottom:12px;line-height:1.5}
-.footer-social{display:flex;gap:10px;justify-content:center;margin-bottom:12px}
-.footer-social a{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#ddd;transition:all .2s}
+.footer-social{display:flex;gap:10px;justify-content:space-between;margin-bottom:12px}
+.footer-social a{display:flex;align-items:center;justify-content:space-between;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#ddd;transition:all .2s}
 .footer-social a:hover{background:#b85f58;border-color:#b85f58;color:#fff;transform:translateY(-2px)}
 .footer-social a svg{width:18px;height:18px;fill:currentColor}
-.footer-links{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:10px}
+.footer-links{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;margin-bottom:10px}
 .footer-links a{font-size:12.5px;color:#aaa;transition:color .2s}
 .footer-links a:hover{color:#fff}
 .footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:10px;font-size:11px;color:#666;max-width:1200px;margin:0 auto}
@@ -227,8 +227,11 @@ body:not(.view-all) .toppicks-section{display:block}
       <img src="logoimgs/zuu512.png" alt="Zuu Finds">
       <div class="nav-brand-text">Zuu <em>Finds</em></div>
     </a>
-    
-    <div class="nav-socials">
+    <div class="nav-search">
+      <input type="text" id="searchInput" placeholder="Search for cute finds, home picks, gifts..." oninput="searchProducts()">
+      <button onclick="searchProducts()">&#128269;</button>
+    </div>
+    <div class="nav-socials" style="display:flex">
       <a href="https://x.com/zuufinds" target="_blank" rel="noopener" title="X / Twitter">
         <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
       </a>
@@ -248,14 +251,14 @@ body:not(.view-all) .toppicks-section{display:block}
         <button onclick="searchProducts()">&#128269;</button>
       </div>
     </div>
-    
-    
-    
-    
-    
-    
-    
-    
+    <a href="#" onclick="filterAll();toggleMenu();return false"><img src="icons/allfinds.png"> All Finds</a>
+    <a href="#" onclick="filterCat(this,'cute');toggleMenu();return false"><img src="icons/cute.png"> Cute Finds</a>
+    <a href="#" onclick="filterCat(this,'cool');toggleMenu();return false"><img src="icons/cool.png"> Cool Finds</a>
+    <a href="#" onclick="filterCat(this,'home');toggleMenu();return false"><img src="icons/home.png"> Home Finds</a>
+    <a href="#" onclick="filterCat(this,'bedroom');toggleMenu();return false"><img src="icons/bedroom.png"> Bedroom Finds</a>
+    <a href="#" onclick="filterCat(this,'bathroom');toggleMenu();return false"><img src="icons/bathroom.png"> Bathroom Finds</a>
+    <a href="#" onclick="filterCat(this,'kitchen');toggleMenu();return false"><img src="icons/kitchenfav.png"> Kitchen Favorites</a>
+    <a href="#" onclick="filterCat(this,'tech');toggleMenu();return false"><img src="icons/tech.png"> Tech &amp; Electronics</a>
   </div>
 </nav>
 
