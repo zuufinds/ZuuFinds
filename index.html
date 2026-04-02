@@ -183,37 +183,40 @@ footer{background:#232f3e;color:#ddd;padding:20px 20px 14px;border-top:2px solid
   .cat-strip-inner{justify-content:flex-start}
 }
 
-/* NUMBER BADGE */
+/* NUMBER BADGE — bold black number, thin white outline, no background */
 .num-badge{
   position:absolute;
-  top:6px;
-  left:6px;
+  top:7px;
+  left:7px;
   background:transparent;
   color:#000;
-  font-size:14px;
-  font-weight:700;
+  font-size:17px;
+  font-weight:900;
   z-index:10;
   padding:0;
   line-height:1;
-  -webkit-text-stroke:1px #f5e6d3;
+  -webkit-text-stroke:2px #fff;
+  paint-order:stroke fill;
+  text-shadow:0 0 3px rgba(255,255,255,0.8);
 }
 
-/* ALL FINDS MODE — hide name/meta/cat, compact body */
+/* ALL FINDS MODE — clean product image + button only */
 body.view-all .pcard-cat{display:none}
 body.view-all .pcard-name{display:none}
 body.view-all .pcard-meta{display:none}
-body.view-all 
+body.view-all .pcard-body{padding:7px 8px 9px;gap:0}
 body.view-all .pcard-btn{margin-top:0;font-size:12px;padding:7px 0}
 body.view-all .toppicks-section{display:none}
 body.view-all .finds-section-head{display:none}
 body.view-all .finds-count{display:none}
 
-/* HIDE TEXT ONLY (KEEP SIZE SAME) */
-.pcard-cat,
-.pcard-name,
-.pcard-meta{
-  display:none !important;
-}
+/* CATEGORY VIEWS — show everything normally */
+body:not(.view-all) .pcard-cat{display:block}
+body:not(.view-all) .pcard-name{display:-webkit-box}
+body:not(.view-all) .pcard-meta{display:flex}
+body:not(.view-all) .pcard-body{padding:11px 12px 13px;gap:5px}
+body:not(.view-all) .pcard-btn{margin-top:8px;font-size:13px;padding:9px 0}
+body:not(.view-all) .toppicks-section{display:block}
 </style>
 </head>
 <body>
