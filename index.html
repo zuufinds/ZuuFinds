@@ -184,7 +184,19 @@ footer{background:#232f3e;color:#ddd;padding:20px 20px 14px;border-top:2px solid
 }
 
 /* NUMBER BADGE */
-.num-badge{position:absolute;top:7px;left:7px;background:#000;color:#fff;font-size:11px;font-weight:800;min-width:24px;height:24px;border-radius:12px;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 0 0 1.5px #fff,0 1px 4px rgba(0,0,0,.4);letter-spacing:0;padding:0 5px;line-height:1}
+.num-badge{
+  position:absolute;
+  top:6px;
+  left:6px;
+  background:transparent;
+  color:#000;
+  font-size:13px;
+  font-weight:800;
+  z-index:10;
+  padding:0;
+  line-height:1;
+  -webkit-text-stroke:1px #fff;
+}
 
 /* ALL FINDS MODE — hide name/meta/cat, compact body */
 body.view-all .pcard-cat{display:none}
@@ -195,6 +207,20 @@ body.view-all .pcard-btn{margin-top:0;font-size:12px;padding:7px 0}
 body.view-all .toppicks-section{display:none}
 body.view-all .finds-section-head{display:none}
 body.view-all .finds-count{display:none}
+
+/* GLOBAL MINIMAL PRODUCT VIEW */
+.pcard-cat,
+.pcard-name,
+.pcard-meta{
+  display:none !important;
+}
+.pcard-body{
+  padding:8px 8px 10px;
+  gap:0;
+}
+.pcard-btn{
+  margin-top:0;
+}
 </style>
 </head>
 <body>
@@ -1226,6 +1252,24 @@ function applyNumberBadges(){
   });
 }
 
+</script>
+
+<script>
+function applyNumberBadges(){
+  const cards=document.querySelectorAll('.pcard');
+  cards.forEach((card,i)=>{
+    let badge=card.querySelector('.num-badge');
+    if(!badge){
+      badge=document.createElement('div');
+      badge.className='num-badge';
+      card.querySelector('.pcard-img').appendChild(badge);
+    }
+    badge.textContent='#'+(i+1);
+  });
+}
+window.addEventListener('load',()=>{
+  setTimeout(applyNumberBadges,300);
+});
 </script>
 </body>
 </html>
