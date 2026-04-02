@@ -55,7 +55,7 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
 .star-row{display:flex;gap:6px}
 .star-opt{display:none}
 .star-opt+label{font-size:22px;cursor:pointer;color:#ddd;transition:color .15s;line-height:1}
-.star-opt:checked~label,.star-row:not(/*removed_has*/(.star-opt:checked)) label:hover,
+.star-opt:checked~label,.star-row label:hover,
 .star-row label:hover,.star-row label:hover~label{color:#e47911}
 .star-row{flex-direction:row-reverse;justify-content:flex-end}
 .star-row label:hover,.star-row label:hover~label{color:#e47911}
@@ -204,19 +204,7 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
 @media(max-width:760px){
   .admin-wrap{grid-template-columns:1fr}
   .output-panel{position:static}
-}
-
-
-/* ALL FINDS FORM — hide name, stars, rating, sold, badge */
-#tab-allfnds #prodName,
-#tab-allfnds .star-row,
-#tab-allfnds #prodRating,
-#tab-allfnds .form-group/*removed_has*/(#prodRating),
-#tab-allfnds .form-group/*removed_has*/(#prodSold),
-#tab-allfnds .form-group/*removed_has*/(#prodName),
-#tab-allfnds .badge-opts,
-#tab-allfnds .form-group/*removed_has*/(.badge-opts){display:none}
-</style>
+}</style>
 </head>
 <body>
 
@@ -263,11 +251,18 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
         <div class="tab-pane active" id="tab-allfnds">
 
           <div class="form-group">
-            <label>Product Name</label>
-            <input type="text" id="prodName" placeholder="e.g. Parlovable Women's Fuzzy Slippers" oninput="updatePreview()"/>
+            <label>Category</label>
+            <select id="prodCat" onchange="updatePreview()">
+              <option value="">â€” Select category â€”</option>
+              <option value="cute">Cute Finds</option>
+              <option value="cool">Cool Finds</option>
+              <option value="home">Home Finds</option>
+              <option value="bedroom">Bedroom Finds</option>
+              <option value="bathroom">Bathroom Finds</option>
+              <option value="kitchen">Kitchen Favorites</option>
+              <option value="tech">Tech &amp; Electronics</option>
+            </select>
           </div>
-
-          
 
           <div class="form-group">
             <label>Affiliate Link (Amazon)</label>
@@ -286,31 +281,9 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
             <div class="img-preview-wrap" id="imgPreviewWrap2"><span>🖼️</span></div>
           </div>
 
-          <div class="form-group">
-            <label>Star Rating</label>
-            <div class="star-row">
-              <input class="star-opt" type="radio" name="stars" id="s5" value="★★★★★" onchange="updatePreview()">
-              <label for="s5" title="5 stars">★</label>
-              <input class="star-opt" type="radio" name="stars" id="s4" value="★★★★☆" onchange="updatePreview()">
-              <label for="s4" title="4 stars">★</label>
-              <input class="star-opt" type="radio" name="stars" id="s3" value="★★★☆☆" onchange="updatePreview()">
-              <label for="s3" title="3 stars">★</label>
-              <input class="star-opt" type="radio" name="stars" id="s2" value="★★☆☆☆" onchange="updatePreview()">
-              <label for="s2" title="2 stars">★</label>
-              <input class="star-opt" type="radio" name="stars" id="s1" value="★☆☆☆☆" onchange="updatePreview()">
-              <label for="s1" title="1 star">★</label>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Numeric Rating</label>
-            <input type="number" id="prodRating" placeholder="e.g. 4.8" min="1" max="5" step="0.1" oninput="updatePreview()"/>
-          </div>
-
-          <div class="form-group">
-            <label>Sold Count <span style="font-weight:400;color:#999;text-transform:none;letter-spacing:0">("in past month" added automatically)</span></label>
-            <input type="text" id="prodSold" placeholder="e.g. 2.3k+ or 200+" oninput="updatePreview()"/>
-          </div>
+          <input type="hidden" id="prodName" value="">
+          <input type="hidden" id="prodRating" value="">
+          <input type="hidden" id="prodSold" value="">
 
           <div class="form-group">
             <label>Badge Color</label>
@@ -554,7 +527,7 @@ function updateImg2Preview(){
 }
 
 function updatePreview(){
-  const name = document.getElementById('prodName').value.trim() || 'Product name will appear here';
+  const name = 'Product preview';
   const cat  = document.getElementById('prodCat').value;
   const img  = document.getElementById('prodImg').value.trim();
   const stars = getStars();
@@ -668,10 +641,8 @@ function updateCode(){
 }
 
 function addProduct(){
-  const name = document.getElementById('prodName').value.trim();
   const cat  = document.getElementById('prodCat').value;
   const link = document.getElementById('prodLink').value.trim();
-  if(!name){ showToast('⚠️ Please enter a product name', false); return; }
   if(!cat){  showToast('⚠️ Please select a category', false); return; }
   if(!link){ showToast('⚠️ Please enter an affiliate link', false); return; }
   updateCode();
@@ -696,17 +667,16 @@ function copyCode(silent=false){
 
 // ── SAVE / DELETE ─────────────────────────────────
 function saveProduct(){
-  const name  = document.getElementById('prodName').value.trim();
   const cat   = document.getElementById('prodCat').value;
   const link  = document.getElementById('prodLink').value.trim();
   const img   = document.getElementById('prodImg').value.trim();
   const stars = getStars();
   const sold  = document.getElementById('prodSold').value.trim();
   const rating = document.getElementById('prodRating').value.trim();
-  if(!name){ showToast('⚠️ Please enter a product name', false); return; }
   if(!cat){  showToast('⚠️ Please select a category', false); return; }
   if(!link){ showToast('⚠️ Please enter an affiliate link', false); return; }
 
+  const name = (CAT_LABELS[cat]||cat||'Product') + ' Find';
   const product = { id: Date.now(), name, cat, link, img, stars, sold, rating, badge: selectedBadge };
   products.push(product);
   localStorage.setItem('zuuProducts', JSON.stringify(products));
@@ -1249,7 +1219,6 @@ function buildEditorCardFromHtml(cardHtml, i, type){
         <div class="editor-card-cat">${CAT_LABELS[cat]||cat||'&mdash;'} &nbsp;${badge}</div>
       </div>
     </div>
-    <div class="editor-field"><label>Category</label><select id="ecat-${type}-${i}">${catOptions}</select></div>
     <div class="editor-field"><label>Affiliate Link</label><input type="text" id="elink-${type}-${i}" value="${(link||'').replace(/"/g,'&quot;')}"></div>
     <div class="editor-field"><label>Image 1</label><input type="text" id="eimg-${type}-${i}" value="${(imgSrc||'').replace(/"/g,'&quot;')}"></div>
     <div class="editor-field"><label>Image 2 <span style="font-weight:400;color:#999;text-transform:none;letter-spacing:0">(optional)</span></label><input type="text" id="eimg2-${type}-${i}" value="${(imgSrc2||'').replace(/"/g,'&quot;')}"></div>
@@ -1266,7 +1235,6 @@ async function saveEdit(type, i){
   const token = localStorage.getItem('ghToken');
   if(!token){ showToast('⚠️ No token saved', false); return; }
 
-  const newCat  = document.getElementById(`ecat-${type}-${i}`).value;
   const newLink = document.getElementById(`elink-${type}-${i}`).value.trim();
   const newImg  = document.getElementById(`eimg-${type}-${i}`).value.trim();
   const newImg2Element = document.getElementById(`eimg2-${type}-${i}`);
@@ -1294,11 +1262,7 @@ async function saveEdit(type, i){
     if(!card) throw new Error('Product not found — reload Edit Site tab');
 
     let updated = card.block;
-    if(newCat){
-      updated = updated.replace(/data-cat="[^"]*"/, `data-cat="${newCat}"`);
-      updated = updated.replace(/(class="(?:pcard|tp)-cat"[^>]*>)[\s\S]*?(<\/div>)/,`$1${CAT_LABELS[newCat]||newCat}$2`);
-    }
-    updated = updated.replace(/href="https?:\/\/[^"]*"/,`href="${newLink}"`);
+    updated = updated.replace(/href="https?:\/\/[^\"]*"/,`href="${newLink}"`);
     if(newImg || newImg2){
       updated = updated.replace(/<img[^>]+>/g,'');
       const imgClass = type==='grid'?'pcard-img':'tp-img';
@@ -1475,3 +1439,11 @@ async function pushCodeUpdate(){
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
