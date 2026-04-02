@@ -55,7 +55,7 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
 .star-row{display:flex;gap:6px}
 .star-opt{display:none}
 .star-opt+label{font-size:22px;cursor:pointer;color:#ddd;transition:color .15s;line-height:1}
-.star-opt:checked~label,.star-row:not(:has(.star-opt:checked)) label:hover,
+.star-opt:checked~label,.star-row:not(/*removed_has*/(.star-opt:checked)) label:hover,
 .star-row label:hover,.star-row label:hover~label{color:#e47911}
 .star-row{flex-direction:row-reverse;justify-content:flex-end}
 .star-row label:hover,.star-row label:hover~label{color:#e47911}
@@ -211,11 +211,11 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
 #tab-allfnds #prodName,
 #tab-allfnds .star-row,
 #tab-allfnds #prodRating,
-#tab-allfnds .form-group:has(#prodRating),
-#tab-allfnds .form-group:has(#prodSold),
-#tab-allfnds .form-group:has(#prodName),
+#tab-allfnds .form-group/*removed_has*/(#prodRating),
+#tab-allfnds .form-group/*removed_has*/(#prodSold),
+#tab-allfnds .form-group/*removed_has*/(#prodName),
 #tab-allfnds .badge-opts,
-#tab-allfnds .form-group:has(.badge-opts){display:none}
+#tab-allfnds .form-group/*removed_has*/(.badge-opts){display:none}
 </style>
 </head>
 <body>
@@ -252,7 +252,7 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
       <!-- TAB BAR -->
       <div class="tab-bar">
         <button class="tab-btn active" onclick="switchTab('allfnds',this)">✦ All Finds Card</button>
-        <button class="tab-btn" onclick="switchTab('toppick',this)">🏆 Top Picks Card</button>
+        
         <button class="tab-btn" onclick="switchTab('editor',this);loadSiteProducts()">✎ Edit Site</button>
         <button class="tab-btn" onclick="switchTab('updater',this)">⚙️ Update Code</button>
       </div>
@@ -262,21 +262,12 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
         <!-- ── ALL FINDS TAB ── -->
         <div class="tab-pane active" id="tab-allfnds">
 
-          
-
           <div class="form-group">
-            <label>Category</label>
-            <select id="prodCat" onchange="updatePreview()">
-              <option value="">— Select category —</option>
-              <option value="cute">Cute Finds</option>
-              <option value="cool">Cool Finds</option>
-              <option value="home">Home Finds</option>
-              <option value="bedroom">Bedroom Finds</option>
-              <option value="bathroom">Bathroom Finds</option>
-              <option value="kitchen">Kitchen Favorites</option>
-              <option value="tech">Tech &amp; Electronics</option>
-            </select>
+            <label>Product Name</label>
+            <input type="text" id="prodName" placeholder="e.g. Parlovable Women's Fuzzy Slippers" oninput="updatePreview()"/>
           </div>
+
+          
 
           <div class="form-group">
             <label>Affiliate Link (Amazon)</label>
@@ -295,12 +286,31 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
             <div class="img-preview-wrap" id="imgPreviewWrap2"><span>🖼️</span></div>
           </div>
 
-          
+          <div class="form-group">
+            <label>Star Rating</label>
+            <div class="star-row">
+              <input class="star-opt" type="radio" name="stars" id="s5" value="★★★★★" onchange="updatePreview()">
+              <label for="s5" title="5 stars">★</label>
+              <input class="star-opt" type="radio" name="stars" id="s4" value="★★★★☆" onchange="updatePreview()">
+              <label for="s4" title="4 stars">★</label>
+              <input class="star-opt" type="radio" name="stars" id="s3" value="★★★☆☆" onchange="updatePreview()">
+              <label for="s3" title="3 stars">★</label>
+              <input class="star-opt" type="radio" name="stars" id="s2" value="★★☆☆☆" onchange="updatePreview()">
+              <label for="s2" title="2 stars">★</label>
+              <input class="star-opt" type="radio" name="stars" id="s1" value="★☆☆☆☆" onchange="updatePreview()">
+              <label for="s1" title="1 star">★</label>
+            </div>
           </div>
 
-          
+          <div class="form-group">
+            <label>Numeric Rating</label>
+            <input type="number" id="prodRating" placeholder="e.g. 4.8" min="1" max="5" step="0.1" oninput="updatePreview()"/>
+          </div>
 
-          
+          <div class="form-group">
+            <label>Sold Count <span style="font-weight:400;color:#999;text-transform:none;letter-spacing:0">("in past month" added automatically)</span></label>
+            <input type="text" id="prodSold" placeholder="e.g. 2.3k+ or 200+" oninput="updatePreview()"/>
+          </div>
 
           <div class="form-group">
             <label>Badge Color</label>
@@ -330,21 +340,12 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
         <!-- ── TOP PICKS TAB ── -->
         <div class="tab-pane" id="tab-toppick">
 
-          
-
           <div class="form-group">
-            <label>Category</label>
-            <select id="tpCat" onchange="updateTpPreview()">
-              <option value="">— Select category —</option>
-              <option value="cute">Cute Finds</option>
-              <option value="cool">Cool Finds</option>
-              <option value="home">Home Finds</option>
-              <option value="bedroom">Bedroom Finds</option>
-              <option value="bathroom">Bathroom Finds</option>
-              <option value="kitchen">Kitchen Favorites</option>
-              <option value="tech">Tech &amp; Electronics</option>
-            </select>
+            <label>Product Name</label>
+            <input type="text" id="tpName" placeholder="e.g. Parlovable Women's Fuzzy Slippers" oninput="updateTpPreview()"/>
           </div>
+
+          
 
           <div class="form-group">
             <label>Affiliate Link (Amazon)</label>
@@ -363,12 +364,31 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
             <div class="img-preview-wrap" id="tpImgPreviewWrap2"><span>🖼️</span></div>
           </div>
 
-          
+          <div class="form-group">
+            <label>Star Rating</label>
+            <div class="star-row">
+              <input class="tp-star-opt" type="radio" name="tpstars" id="tp5" value="★★★★★" onchange="updateTpPreview()">
+              <label for="tp5" title="5 stars">★</label>
+              <input class="tp-star-opt" type="radio" name="tpstars" id="tp4" value="★★★★☆" onchange="updateTpPreview()">
+              <label for="tp4" title="4 stars">★</label>
+              <input class="tp-star-opt" type="radio" name="tpstars" id="tp3" value="★★★☆☆" onchange="updateTpPreview()">
+              <label for="tp3" title="3 stars">★</label>
+              <input class="tp-star-opt" type="radio" name="tpstars" id="tp2" value="★★☆☆☆" onchange="updateTpPreview()">
+              <label for="tp2" title="2 stars">★</label>
+              <input class="tp-star-opt" type="radio" name="tpstars" id="tp1" value="★☆☆☆☆" onchange="updateTpPreview()">
+              <label for="tp1" title="1 star">★</label>
+            </div>
           </div>
 
-          
+          <div class="form-group">
+            <label>Numeric Rating</label>
+            <input type="number" id="tpRating" placeholder="e.g. 4.9" min="1" max="5" step="0.1" oninput="updateTpPreview()"/>
+          </div>
 
-          
+          <div class="form-group">
+            <label>Sold Count <span style="font-weight:400;color:#999;text-transform:none;letter-spacing:0">("in past month" added automatically)</span></label>
+            <input type="text" id="tpSold" placeholder="e.g. 2.3k+ or 200+" oninput="updateTpPreview()"/>
+          </div>
 
           <div class="form-group">
             <label>Card Background</label>
@@ -1229,10 +1249,10 @@ function buildEditorCardFromHtml(cardHtml, i, type){
         <div class="editor-card-cat">${CAT_LABELS[cat]||cat||'&mdash;'} &nbsp;${badge}</div>
       </div>
     </div>
-    
-    
-    
-    
+    <div class="editor-field"><label>Category</label><select id="ecat-${type}-${i}">${catOptions}</select></div>
+    <div class="editor-field"><label>Affiliate Link</label><input type="text" id="elink-${type}-${i}" value="${(link||'').replace(/"/g,'&quot;')}"></div>
+    <div class="editor-field"><label>Image 1</label><input type="text" id="eimg-${type}-${i}" value="${(imgSrc||'').replace(/"/g,'&quot;')}"></div>
+    <div class="editor-field"><label>Image 2 <span style="font-weight:400;color:#999;text-transform:none;letter-spacing:0">(optional)</span></label><input type="text" id="eimg2-${type}-${i}" value="${(imgSrc2||'').replace(/"/g,'&quot;')}"></div>
     <input type="hidden" id="ename-${type}-${i}" value="${(name||'').replace(/"/g,'&quot;')}">
     <div class="editor-actions">
       <button class="editor-save-btn" onclick="saveEdit('${type}',${i})">&#128190; Save Changes</button>
