@@ -1251,6 +1251,9 @@ function buildEditorCardFromHtml(cardHtml, i, type){
       <div class="editor-field" style="flex:1"><label>Rating</label><input type="text" id="erating-${type}-${i}" value="${rating||''}"></div>
       <div class="editor-field" style="flex:1"><label>Sold Count</label><input type="text" id="esold-${type}-${i}" value="${(soldRaw||'').replace(/"/g,'&quot;')}"></div>
     </div>
+    <div style="background:#f9eee9;border:1px solid #edddd6;border-radius:6px;padding:8px 10px;font-size:11px;color:#888;margin-bottom:8px">
+      &#128276; Name, rating &amp; sold count are <strong>hidden on the main page</strong> but stored and shown in category views.
+    </div>
     <div class="editor-actions">
       <button class="editor-save-btn" onclick="saveEdit('${type}',${i})">&#128190; Save Changes</button>
       <button class="editor-del-btn" onclick="deleteCard('${type}',${i})">&#128465; Delete</button>

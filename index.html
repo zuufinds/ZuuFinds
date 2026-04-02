@@ -182,6 +182,19 @@ footer{background:#232f3e;color:#ddd;padding:20px 20px 14px;border-top:2px solid
   .tp-card{flex:0 0 138px}
   .cat-strip-inner{justify-content:flex-start}
 }
+
+/* NUMBER BADGE */
+.num-badge{position:absolute;top:7px;left:7px;background:#000;color:#fff;font-size:11px;font-weight:800;min-width:24px;height:24px;border-radius:12px;display:flex;align-items:center;justify-content:center;z-index:10;box-shadow:0 0 0 1.5px #fff,0 1px 4px rgba(0,0,0,.4);letter-spacing:0;padding:0 5px;line-height:1}
+
+/* ALL FINDS MODE — hide name/meta/cat, compact body */
+body.view-all .pcard-cat{display:none}
+body.view-all .pcard-name{display:none}
+body.view-all .pcard-meta{display:none}
+body.view-all .pcard-body{padding:7px 8px 9px;gap:0}
+body.view-all .pcard-btn{margin-top:0;font-size:12px;padding:7px 0}
+body.view-all .toppicks-section{display:none}
+body.view-all .finds-section-head{display:none}
+body.view-all .finds-count{display:none}
 </style>
 </head>
 <body>
@@ -997,6 +1010,7 @@ function showMore(){
 
 // FILTER
 function filterAll(el){
+  document.body.classList.add('view-all');
   document.querySelectorAll('.f-btn').forEach(function(b){ b.classList.remove('active'); });
   if(el && el.classList) el.classList.add('active');
   const cards = document.querySelectorAll('#findsGrid .pcard');
@@ -1008,6 +1022,7 @@ function filterAll(el){
   updateCount();
 }
 function filterCat(el, cat){
+  document.body.classList.remove('view-all');
   document.querySelectorAll('.f-btn').forEach(function(b){ b.classList.remove('active'); });
   if(el && el.classList) el.classList.add('active');
   const cards = document.querySelectorAll('#findsGrid .pcard');
@@ -1188,9 +1203,28 @@ function initCarousels(){
 }
 
 // Init
+document.body.classList.add('view-all');
 applyRowLimit(document.querySelectorAll('#findsGrid .pcard'));
 updateCount();
 initCarousels();
+applyNumberBadges();
+
+function applyNumberBadges(){
+  var cards = Array.from(document.querySelectorAll('#findsGrid .pcard'));
+  var total = cards.length;
+  cards.forEach(function(card, idx){
+    // Remove existing
+    var ex = card.querySelector('.num-badge');
+    if(ex) ex.remove();
+    // #1 = oldest = last card, so number = total - idx
+    var num = total - idx;
+    var badge = document.createElement('div');
+    badge.className = 'num-badge';
+    badge.textContent = num;
+    var imgWrap = card.querySelector('.pcard-img');
+    if(imgWrap) imgWrap.appendChild(badge);
+  });
+}
 
 </script>
 </body>
