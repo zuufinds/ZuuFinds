@@ -249,20 +249,7 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
 
         <!-- ── ALL FINDS TAB ── -->
         <div class="tab-pane active" id="tab-allfnds">
-
-          <div class="form-group">
-            <label>Category</label>
-            <select id="prodCat" onchange="updatePreview()">
-              <option value="">â€” Select category â€”</option>
-              <option value="cute">Cute Finds</option>
-              <option value="cool">Cool Finds</option>
-              <option value="home">Home Finds</option>
-              <option value="bedroom">Bedroom Finds</option>
-              <option value="bathroom">Bathroom Finds</option>
-              <option value="kitchen">Kitchen Favorites</option>
-              <option value="tech">Tech &amp; Electronics</option>
-            </select>
-          </div>
+          <input type="hidden" id="prodCat" value="home">
 
           <div class="form-group">
             <label>Affiliate Link (Amazon)</label>
@@ -284,16 +271,6 @@ body{background:#faf6f0;color:#0f1111;font-family:"Amazon Ember",Arial,sans-seri
           <input type="hidden" id="prodName" value="">
           <input type="hidden" id="prodRating" value="">
           <input type="hidden" id="prodSold" value="">
-
-          <div class="form-group">
-            <label>Badge Color</label>
-            <div class="badge-opts">
-              <div class="badge-opt bh selected" data-badge="bh" onclick="selectBadge(this)">Rose</div>
-              <div class="badge-opt bn" data-badge="bn" onclick="selectBadge(this)">Mauve</div>
-              <div class="badge-opt bs" data-badge="bs" onclick="selectBadge(this)">Gold</div>
-              <div class="badge-opt bl" data-badge="bl" onclick="selectBadge(this)">Pink</div>
-            </div>
-          </div>
 
           <!-- Also add to Top Picks -->
           <div style="background:#fff8e1;border:1.5px solid #ffe082;border-radius:8px;padding:12px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px">
@@ -1315,17 +1292,20 @@ async function deleteCard(type, i){
     const rawBin = atob(data.content.replace(/\n/g,''));
     const rawB = new Uint8Array(rawBin.length);
     for(let j=0;j<rawBin.length;j++) rawB[j]=rawBin.charCodeAt(j);
-    const prodData = JSON.parse(new TextDecoder('utf-8').decode(rawB));
+    let htmlContent = new TextDecoder('utf-8').decode(rawB);
     const sha = data.sha;
 
-    const arr = type==='grid' ? prodData.grid : prodData.topPicks;
-    const deletedName = arr[i] ? (arr[i].match(/data-name="([^"]*)"/) || arr[i].match(/class="(?:pcard|tp)-name"[^>]*>([\s\S]*?)<\/div>/) || ['','?'])[1] : '?';
-    arr.splice(i, 1);
-    if(type==='grid') prodData.grid=arr; else prodData.topPicks=arr;
+    // Parse cards from index.html using HTML parser
+    const cls = type==='grid' ? 'pcard' : 'tp-card';
+    const cards = parseCardsFromHtml(htmlContent, cls);
+    const card = cards[i];
+    if(!card) throw new Error('Product not found — reload Edit Site tab');
 
-    const updatedJson = JSON.stringify(prodData, null, 2);
+    // Remove this card block from the HTML
+    htmlContent = htmlContent.slice(0, card.start) + htmlContent.slice(card.end);
+
     const enc = new TextEncoder();
-    const eb  = enc.encode(updatedJson);
+    const eb  = enc.encode(htmlContent);
     let bin=''; eb.forEach(b=>bin+=String.fromCharCode(b));
     const b64 = btoa(bin);
 
@@ -1336,7 +1316,7 @@ async function deleteCard(type, i){
     });
     if(!pushRes.ok){ const e=await pushRes.json(); throw new Error(e.message); }
 
-    showToast('🗑 Product deleted! GitHub is rebuilding...');
+    showToast('🗑 Product deleted!');
     setTimeout(()=>loadSiteProducts(), 1500);
 
   } catch(e){
