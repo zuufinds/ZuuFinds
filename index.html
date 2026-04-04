@@ -134,7 +134,7 @@ nav{background:#2a1f1f;padding:0 24px;position:sticky;top:0;z-index:100;border-b
 .pb11{background:linear-gradient(150deg,#ece4d8,#c4a87c)}
 .pb12{background:linear-gradient(150deg,#f4dce4,#d498ac)}
 body.filtered .cat-badge{display:none}
-
+.pcard-body{padding:11px 12px 13px;flex:1;display:flex;flex-direction:column;gap:5px}
 .pcard-cat{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#b85f58;font-weight:600}
 .pcard-name{font-size:13.5px;color:#0f1111;line-height:1.35;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .pcard-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:2px}
@@ -171,10 +171,8 @@ footer{background:#232f3e;color:#ddd;padding:20px 20px 14px;border-top:2px solid
 @media(max-width:740px){
   .finds-grid{grid-template-columns:repeat(2,1fr);gap:12px}
   .nav-search{display:none}
-  .nav-socials{display:flex;gap:6px;margin-left:auto}
-  .nav-socials a{width:30px;height:30px}
-  .nav-socials a svg{width:15px;height:15px}
-  .nav-menu-btn{display:none}
+  .nav-socials{display:none}
+  .nav-menu-btn{display:block}
   .tp-card{flex:0 0 150px}
   .nav-inner{justify-content:space-between}
 }
@@ -184,41 +182,6 @@ footer{background:#232f3e;color:#ddd;padding:20px 20px 14px;border-top:2px solid
   .tp-card{flex:0 0 138px}
   .cat-strip-inner{justify-content:flex-start}
 }
-
-/* NUMBER BADGE — bold black number, thin white outline, no background */
-.num-badge{
-  position:absolute;
-  top:7px;
-  left:7px;
-  background:transparent;
-  color:#000;
-  font-size:17px;
-  font-weight:900;
-  z-index:10;
-  padding:0;
-  line-height:1;
-  -webkit-text-stroke:2px #fff;
-  paint-order:stroke fill;
-  text-shadow:0 0 3px rgba(255,255,255,0.8);
-}
-
-/* ALL FINDS MODE — clean product image + button only */
-body.view-all .pcard-cat{display:none}
-body.view-all .pcard-name{display:none}
-body.view-all .pcard-meta{display:none}
-body.view-all .pcard-body{padding:7px 8px 9px;gap:0}
-body.view-all .pcard-btn{margin-top:0;font-size:12px;padding:7px 0}
-body.view-all .toppicks-section{display:none}
-body.view-all .finds-section-head{display:none}
-body.view-all .finds-count{display:none}
-
-/* CATEGORY VIEWS — show everything normally */
-body:not(.view-all) .pcard-cat{display:block}
-body:not(.view-all) .pcard-name{display:-webkit-box}
-body:not(.view-all) .pcard-meta{display:flex}
-body:not(.view-all) .pcard-body{padding:11px 12px 13px;gap:5px}
-body:not(.view-all) .pcard-btn{margin-top:8px;font-size:13px;padding:9px 0}
-body:not(.view-all) .toppicks-section{display:block}
 </style>
 </head>
 <body>
@@ -229,7 +192,10 @@ body:not(.view-all) .toppicks-section{display:block}
       <img src="logoimgs/zuu512.png" alt="Zuu Finds">
       <div class="nav-brand-text">Zuu <em>Finds</em></div>
     </a>
-    
+    <div class="nav-search">
+      <input type="text" id="searchInput" placeholder="Search for cute finds, home picks, gifts..." oninput="searchProducts()">
+      <button onclick="searchProducts()">&#128269;</button>
+    </div>
     <div class="nav-socials">
       <a href="https://x.com/zuufinds" target="_blank" rel="noopener" title="X / Twitter">
         <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
@@ -241,6 +207,23 @@ body:not(.view-all) .toppicks-section{display:block}
         <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.27 8.27 0 0 0 4.84 1.55V6.79a4.85 4.85 0 0 1-1.07-.1z"/></svg>
       </a>
     </div>
+    <button class="nav-menu-btn" onclick="toggleMenu()">&#9776;</button>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <div class="mobile-search">
+      <div class="mobile-search-inner">
+        <input type="text" id="mobileSearchInput" placeholder="Search finds..." oninput="searchProducts()">
+        <button onclick="searchProducts()">&#128269;</button>
+      </div>
+    </div>
+    <a href="#" onclick="filterAll();toggleMenu();return false"><img src="icons/allfinds.png"> All Finds</a>
+    <a href="#" onclick="filterCat(this,'cute');toggleMenu();return false"><img src="icons/cute.png"> Cute Finds</a>
+    <a href="#" onclick="filterCat(this,'cool');toggleMenu();return false"><img src="icons/cool.png"> Cool Finds</a>
+    <a href="#" onclick="filterCat(this,'home');toggleMenu();return false"><img src="icons/home.png"> Home Finds</a>
+    <a href="#" onclick="filterCat(this,'bedroom');toggleMenu();return false"><img src="icons/bedroom.png"> Bedroom Finds</a>
+    <a href="#" onclick="filterCat(this,'bathroom');toggleMenu();return false"><img src="icons/bathroom.png"> Bathroom Finds</a>
+    <a href="#" onclick="filterCat(this,'kitchen');toggleMenu();return false"><img src="icons/kitchenfav.png"> Kitchen Favorites</a>
+    <a href="#" onclick="filterCat(this,'tech');toggleMenu();return false"><img src="icons/tech.png"> Tech &amp; Electronics</a>
   </div>
 </nav>
 
@@ -248,6 +231,17 @@ body:not(.view-all) .toppicks-section{display:block}
   <h1>Your Favourite <em>Amazon Finds</em></h1>
   <p>Cute, cool &amp; cosy picks curated just for you. New finds everyday &#128149;</p>
   <p class="hero-disclosure"><span class="disc-label">Affiliate Disclosure:</span> As an Amazon Associate I earn from qualifying purchases.</p>
+  <div class="cat-strip">
+    <div class="cat-strip-inner">
+      <button class="f-btn active" onclick="filterAll(this)"><img src="icons/allfinds.png"> All Finds</button>
+      <button class="f-btn" onclick="filterCat(this,'cute')"><img src="icons/cute.png"> Cute Finds</button>
+      <button class="f-btn" onclick="filterCat(this,'cool')"><img src="icons/cool.png"> Cool Finds</button>
+      <button class="f-btn" onclick="filterCat(this,'home')"><img src="icons/home.png"> Home Finds</button>
+      <button class="f-btn" onclick="filterCat(this,'bedroom')"><img src="icons/bedroom.png"> Bedroom Finds</button>
+      <button class="f-btn" onclick="filterCat(this,'bathroom')"><img src="icons/bathroom.png"> Bathroom Finds</button>
+      <button class="f-btn" onclick="filterCat(this,'kitchen')"><img src="icons/kitchenfav.png"> Kitchen Favorites</button>
+      <button class="f-btn" onclick="filterCat(this,'tech')"><img src="icons/tech.png"> Tech &amp; Electronics</button>
+    </div>
   </div>
 </div>
 
@@ -531,23 +525,6 @@ body:not(.view-all) .toppicks-section{display:block}
   </div>
 
   <div class="finds-grid" id="findsGrid">
-<div class="pcard" data-cat="home" data-name="Home Finds Find">
-  <div class="pcard-img pb2">
-    <img src="products/chirp.jpg" alt="Home Finds Find">
-    <img src="products/chirp2.jpg" alt="Home Finds Find detail">
-  </div>
-  <div class="pcard-body">
-    <div class="pcard-cat">Home Finds</div>
-    <div class="pcard-name">Home Finds Find</div>
-    <div class="pcard-meta">
-      <span class="pcard-stars">★★★★★</span>
-      <span class="pcard-rating">4.8</span>
-      <span class="pcard-sold"></span>
-    </div>
-    <a href="https://amzn.to/4sCgGPa" target="_blank" rel="noopener" class="pcard-btn">Shop on Amazon</a>
-  </div>
-</div>
-
     <div class="pcard" data-cat="kitchen" data-name="2 in 1 Oil Dispenser and Sprayer">
   <div class="pcard-img pb10">
     <img src="products/oil.jpg" alt="2 in 1 Oil Dispenser and Sprayer">
@@ -1020,7 +997,6 @@ function showMore(){
 
 // FILTER
 function filterAll(el){
-  document.body.classList.add('view-all');
   document.querySelectorAll('.f-btn').forEach(function(b){ b.classList.remove('active'); });
   if(el && el.classList) el.classList.add('active');
   const cards = document.querySelectorAll('#findsGrid .pcard');
@@ -1032,7 +1008,6 @@ function filterAll(el){
   updateCount();
 }
 function filterCat(el, cat){
-  document.body.classList.remove('view-all');
   document.querySelectorAll('.f-btn').forEach(function(b){ b.classList.remove('active'); });
   if(el && el.classList) el.classList.add('active');
   const cards = document.querySelectorAll('#findsGrid .pcard');
@@ -1213,28 +1188,9 @@ function initCarousels(){
 }
 
 // Init
-document.body.classList.add('view-all');
 applyRowLimit(document.querySelectorAll('#findsGrid .pcard'));
 updateCount();
 initCarousels();
-applyNumberBadges();
-
-function applyNumberBadges(){
-  var cards = Array.from(document.querySelectorAll('#findsGrid .pcard'));
-  var total = cards.length;
-  cards.forEach(function(card, idx){
-    // Remove existing
-    var ex = card.querySelector('.num-badge');
-    if(ex) ex.remove();
-    // #1 = oldest = last card, so number = total - idx
-    var num = total - idx;
-    var badge = document.createElement('div');
-    badge.className = 'num-badge';
-    badge.textContent = num;
-    var imgWrap = card.querySelector('.pcard-img');
-    if(imgWrap) imgWrap.appendChild(badge);
-  });
-}
 
 </script>
 </body>
